@@ -3,8 +3,6 @@ package comicbook.microsservice.comicbookmicroservice.model;
 import com.sun.istack.Nullable;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 import java.util.List;
 import java.util.UUID;
 
@@ -18,8 +16,6 @@ public class Strip {
     private String opis;
     private String slika;
     private int ukupni_rating;
-    @NotNull
-    @Size(min=0)
     private int ukupno_komentara;
     @Nullable
     private int izdanje;
