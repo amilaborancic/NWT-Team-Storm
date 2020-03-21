@@ -1,5 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +19,7 @@ public class Katalog {
 
     //veze
     @ManyToMany
+    @JsonIgnore
     private List<Strip> stripovi;
 
     //getters
@@ -26,7 +29,9 @@ public class Katalog {
     }
     public Long getId_korisnik() { return id_korisnik; }
     public List<Strip> getStripovi() { return stripovi; }
-    //konstruktor
+    public void setStripovi(List<Strip> stripovi) { this.stripovi = stripovi; }
+
+    //konstruktori
     public Katalog(String naziv, Long id_korisnik){
         this.naziv = naziv;
         this.id_korisnik = id_korisnik;
