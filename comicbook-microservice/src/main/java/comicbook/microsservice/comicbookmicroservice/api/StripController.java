@@ -39,7 +39,7 @@ public class StripController {
         return null;
     }
 
-    //svi stripovi koje je neki autor napisao - SEARCH BY AUTHOR funkcionalnost
+    //svi stripovi jednog autora - SEARCH BY AUTHOR funkcionalnost
     @GetMapping(value="/search-author")
     public List<Strip> stripoviPoAutoru(@RequestBody Autor autor){
         Set<Strip> stripovi = new HashSet<>(); //koristimo set kako bi se uklonili duplikati
@@ -62,6 +62,14 @@ public class StripController {
         int ukupnoStripova = stripRepository.countByIdZanr(id);
         var indeksi = Paginacija(brojStranice, ukupnoStripova);
         return stripRepository.findByIdZanr(id).subList(indeksi.getFirst(), indeksi.getSecond());
+    }
+
+    //svi stripovi sa odredjenim nazivom - SEARCH BY TITLE funkcionalnost
+    @GetMapping(value="/search-title")
+    public List<Strip> stripoviPoNazivu(@Param("naziv") String naziv, @Param("brojStranice") int brojStranice){
+        int ukupnoStripova = stripRepository.countByNazivContaining(naziv);
+        var indeksi = Paginacija(brojStranice, ukupnoStripova);
+        return stripRepository.findByNazivContaining(naziv).subList(indeksi.getFirst(), indeksi.getSecond());
     }
 
     //pomocna funkcija za racunanje paginacije
