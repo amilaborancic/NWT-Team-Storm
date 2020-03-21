@@ -1,5 +1,7 @@
 package comicbook.microsservice.comicbookmicroservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -14,6 +16,7 @@ public class Autor {
 
     //veze
     @ManyToMany(mappedBy = "autori")
+    @JsonIgnore
     private List<Strip> stripovi;
 
     //getters and setters
@@ -29,6 +32,7 @@ public class Autor {
     public List<Strip> getStripovi() {
         return stripovi;
     }
+    public void setStripovi(List<Strip> stripovi) { this.stripovi = stripovi; }
 
     //konstruktor
     protected Autor(){}

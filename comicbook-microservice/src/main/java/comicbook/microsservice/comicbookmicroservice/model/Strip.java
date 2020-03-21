@@ -58,19 +58,18 @@ public class Strip {
     public Long getId_izdavac() {
         return id_izdavac;
     }
+    public void setAutori(List<Autor> autori) { this.autori = autori; }
 
     //konstruktor
     protected Strip() { }
-    public Strip(String naziv, String opis, String slika, float ukupni_rating, Integer ukupno_komentara, Integer izdanje, List<Autor> autori, Long id_izdavac, Long id_zanr){
+    public Strip(String naziv, String opis, String slika, float ukupni_rating, Integer ukupno_komentara, Integer izdanje, Long id_izdavac, Long id_zanr){
         this.naziv = naziv;
         this.opis = opis;
         this.slika = slika;
         this.ukupni_rating = ukupni_rating;
         this.ukupno_komentara = ukupno_komentara;
         this.izdanje = izdanje;
-        this.autori = autori;
         this.id_izdavac = id_izdavac;
         this.id_zanr = id_zanr;
-
     }
 }
