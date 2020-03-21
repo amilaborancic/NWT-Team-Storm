@@ -14,8 +14,10 @@ public class Strip {
     private String naziv;
     private String opis;
     private String slika;
-    private float ukupni_rating;
-    private Integer ukupno_komentara;
+    @Column(name="ukupni_rating")
+    private float ukupniRating;
+    @Column(name="ukupno_komentara")
+    private Integer ukupnoKomentara;
     @Nullable
     private Integer izdanje;
 
@@ -24,12 +26,14 @@ public class Strip {
     private List<Autor> autori;
 
     //foreign keys
-    private Long id_zanr;
-    private Long id_izdavac;
+    @Column(name="id_zanr")
+    private Long idZanr;
+    @Column(name="id_izdavac")
+    private Long idIzdavac;
 
     //getters and setters
     public Long getId_zanr() {
-        return id_zanr;
+        return idZanr;
     }
     public Long getId() {
         return id;
@@ -41,10 +45,10 @@ public class Strip {
         return opis;
     }
     public float getUkupni_rating() {
-        return ukupni_rating;
+        return ukupniRating;
     }
     public Integer getUkupno_komentara() {
-        return ukupno_komentara;
+        return ukupnoKomentara;
     }
     public Integer getIzdanje() {
         return izdanje;
@@ -56,20 +60,20 @@ public class Strip {
         return autori;
     }
     public Long getId_izdavac() {
-        return id_izdavac;
+        return idIzdavac;
     }
     public void setAutori(List<Autor> autori) { this.autori = autori; }
 
     //konstruktor
     protected Strip() { }
-    public Strip(String naziv, String opis, String slika, float ukupni_rating, Integer ukupno_komentara, Integer izdanje, Long id_izdavac, Long id_zanr){
+    public Strip(String naziv, String opis, String slika, float ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr){
         this.naziv = naziv;
         this.opis = opis;
         this.slika = slika;
-        this.ukupni_rating = ukupni_rating;
-        this.ukupno_komentara = ukupno_komentara;
+        this.ukupniRating = ukupniRating;
+        this.ukupnoKomentara = ukupnoKomentara;
         this.izdanje = izdanje;
-        this.id_izdavac = id_izdavac;
-        this.id_zanr = id_zanr;
+        this.idIzdavac = idIzdavac;
+        this.idZanr = idZanr;
     }
 }

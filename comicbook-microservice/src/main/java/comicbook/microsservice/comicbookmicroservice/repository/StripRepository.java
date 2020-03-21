@@ -10,4 +10,7 @@ import java.util.List;
 public interface StripRepository extends JpaRepository<Strip, Long> {
     List<Strip> findByAutori_ImeContaining(String ime);
     List<Strip> findByAutori_PrezimeContaining(String prezime);
+    List<Strip> findByIdIzdavac(Long id);
+    int countByIdIzdavac(Long id); //count query po id-ju izdavaca
+    int countByAutori_Ime(String ime);
 }
