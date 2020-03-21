@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/izdavac")
@@ -20,7 +19,7 @@ public class IzdavacController {
     }
 
     @PostMapping(value="/add")
-    public UUID dodajIzdavaca(@RequestBody Izdavac izdavac){
+    public Integer dodajIzdavaca(@RequestBody Izdavac izdavac){
         izdavacRepository.save(izdavac);
         return izdavac.getId();
     }

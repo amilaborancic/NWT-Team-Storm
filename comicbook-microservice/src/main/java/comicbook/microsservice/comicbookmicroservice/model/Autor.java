@@ -2,38 +2,39 @@ package comicbook.microsservice.comicbookmicroservice.model;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="autor")
 public class Autor {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
     private String ime;
+    private String prezime;
 
-    //relationships
+    //veze
     @ManyToMany(mappedBy = "autori")
     private List<Strip> stripovi;
 
     //getters and setters
-
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
-
     public String getIme() {
         return ime;
     }
-
     public String getPrezime() {
         return prezime;
     }
-
     public List<Strip> getStripovi() {
         return stripovi;
     }
 
-    private String prezime;
+    //konstruktor
+    protected Autor(){}
+    public Autor(String ime, String prezime){
+        this.ime = ime;
+        this.prezime = prezime;
+    }
 
 }

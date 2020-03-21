@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value="/autor")
@@ -21,7 +20,7 @@ public class AutorController {
     }
 
     @PostMapping(value="/add")
-    public UUID dodajAutora(@RequestBody Autor autor){
+    public Integer dodajAutora(@RequestBody Autor autor){
         autorRepository.save(autor);
         return autor.getId();
     }

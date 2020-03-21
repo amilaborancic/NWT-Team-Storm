@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping(value="/zanr")
@@ -21,7 +20,7 @@ public class ZanrController {
     }
 
     @PostMapping(value="/add")
-    public UUID dodajZanr(@RequestBody Zanr zanr){
+    public Integer dodajZanr(@RequestBody Zanr zanr){
         zanrRepository.save(zanr);
         return zanr.getId();
     }

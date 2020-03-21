@@ -2,25 +2,22 @@ package comicbook.microsservice.comicbookmicroservice.model;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name = "zanr")
 public class Zanr {
     @Id
     @GeneratedValue
-    private UUID id;
+    private Integer id;
     private String naziv;
 
-    // VEZE
-
+    //veze
     @OneToMany
     @JoinColumn(name="id_zanr", referencedColumnName = "id")
     private List<Strip> stripovi;
 
     //getters and setters
-
-    public UUID getId() {
+    public Integer getId() {
         return id;
     }
     public String getNaziv() {
@@ -28,5 +25,11 @@ public class Zanr {
     }
     public List<Strip> getStripovi() {
         return stripovi;
+    }
+
+    //konstruktor
+    protected Zanr(){}
+    public Zanr(String naziv) {
+        this.naziv = naziv;
     }
 }
