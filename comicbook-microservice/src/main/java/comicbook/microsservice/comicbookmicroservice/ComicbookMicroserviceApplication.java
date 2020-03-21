@@ -87,6 +87,8 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		String slika_2 = "https://drive.google.com/open?id=16-T_6YxvuJBMTG4ySoDVEU9uRPXz3BtS";
 		List<Autor> autori_2 = new ArrayList<>();
 		autori_2.add(a3);
+		autori_2.add(a1);
+		autori_2.add(a2);
 
 		String opis_3 = "It's the climactic conclusion to \"American Soil.\" Donna Troy and Cassie Sandsmark are left to defend their hometown from persecution. In the shadow of their foes, and with their friends at their backs, we have the rise of the Wonder Girls!";
 		String slika_3 = "https://drive.google.com/open?id=1NoXo3oXwwSrcybpAwRoJdFQFeCowUyLA";
