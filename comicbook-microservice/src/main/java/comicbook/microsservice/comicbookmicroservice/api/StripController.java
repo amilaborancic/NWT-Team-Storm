@@ -56,6 +56,13 @@ public class StripController {
         return stripRepository.findByIdIzdavac(id).subList(indeksi.getFirst(), indeksi.getSecond());
     }
 
+    //svi stripovi jednog zanra sa paginacijom - SEARCH BY GENRE funkcionalnost
+    @GetMapping(value="/search-genre")
+    public List<Strip> stripoviPoZanru(@Param("id") Long id, @Param("brojStranice") int brojStranice){
+        int ukupnoStripova = stripRepository.countByIdZanr(id);
+        var indeksi = Paginacija(brojStranice, ukupnoStripova);
+        return stripRepository.findByIdZanr(id).subList(indeksi.getFirst(), indeksi.getSecond());
+    }
 
     //pomocna funkcija za racunanje paginacije
     private Pair<Integer, Integer> Paginacija(int brojStranice, int ukupnoStripova){
