@@ -9,8 +9,8 @@ import java.util.List;
 @Entity
 public class Strip {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String naziv;
     private String opis;
     private String slika;
@@ -24,14 +24,14 @@ public class Strip {
     private List<Autor> autori;
 
     //foreign keys
-    private Integer id_zanr;
-    private Integer id_izdavac;
+    private Long id_zanr;
+    private Long id_izdavac;
 
     //getters and setters
-    public Integer getId_zanr() {
+    public Long getId_zanr() {
         return id_zanr;
     }
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     public String getNaziv() {
@@ -55,13 +55,13 @@ public class Strip {
     public List<Autor> getAutori() {
         return autori;
     }
-    public Integer getId_izdavac() {
+    public Long getId_izdavac() {
         return id_izdavac;
     }
 
     //konstruktor
     protected Strip() { }
-    public Strip(String naziv, String opis, String slika, float ukupni_rating, Integer ukupno_komentara, Integer izdanje, List<Autor> autori, Integer id_izdavac, Integer id_zanr){
+    public Strip(String naziv, String opis, String slika, float ukupni_rating, Integer ukupno_komentara, Integer izdanje, List<Autor> autori, Long id_izdavac, Long id_zanr){
         this.naziv = naziv;
         this.opis = opis;
         this.slika = slika;

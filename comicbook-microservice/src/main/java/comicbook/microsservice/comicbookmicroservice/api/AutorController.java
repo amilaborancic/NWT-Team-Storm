@@ -20,7 +20,7 @@ public class AutorController {
     }
 
     @PostMapping(value="/add")
-    public Integer dodajAutora(@RequestBody Autor autor){
+    public Long dodajAutora(@RequestBody Autor autor){
         autorRepository.save(autor);
         return autor.getId();
     }

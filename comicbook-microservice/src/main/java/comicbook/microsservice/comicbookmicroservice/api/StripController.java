@@ -24,7 +24,7 @@ public class StripController {
     }
 
     @PostMapping(value="/add")
-    public Integer dodajStrip(@RequestBody Strip strip){
+    public Long dodajStrip(@RequestBody Strip strip){
         stripRepository.save(strip);
         return strip.getId();
     }

@@ -19,7 +19,7 @@ public class IzdavacController {
     }
 
     @PostMapping(value="/add")
-    public Integer dodajIzdavaca(@RequestBody Izdavac izdavac){
+    public Long dodajIzdavaca(@RequestBody Izdavac izdavac){
         izdavacRepository.save(izdavac);
         return izdavac.getId();
     }

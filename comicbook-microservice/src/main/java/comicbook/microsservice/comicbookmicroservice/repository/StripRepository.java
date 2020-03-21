@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface StripRepository extends JpaRepository<Strip, Integer> {
+public interface StripRepository extends JpaRepository<Strip, Long> {
 }

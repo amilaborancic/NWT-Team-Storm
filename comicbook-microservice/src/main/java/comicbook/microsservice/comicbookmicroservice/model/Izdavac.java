@@ -6,8 +6,8 @@ import java.util.List;
 @Entity
 public class Izdavac {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String naziv;
 
     //veze
@@ -16,7 +16,7 @@ public class Izdavac {
     private List<Strip> stripovi;
 
     //getteri i setteri
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     public String getNaziv() {

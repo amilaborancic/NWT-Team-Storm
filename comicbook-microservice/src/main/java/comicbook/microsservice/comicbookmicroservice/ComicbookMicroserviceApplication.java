@@ -66,8 +66,8 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		List<Autor> autori_1 = new ArrayList<Autor>();
 		autori_1.add(a1);
 		autori_1.add(a2);
-		Integer id_izdavac = izdavacRepository.findAll().get(0).getId();
-		Integer id_zanr = zanrRepository.findAll().get(0).getId();
+		Long id_izdavac = izdavacRepository.findAll().get(0).getId();
+		Long id_zanr = zanrRepository.findAll().get(0).getId();
 		Strip s1 = new Strip("Batman Detective Comics", opis_1, slika_1, 0, 0, 1000, autori_1, id_izdavac, id_zanr);
 		stripRepository.save(s1);
 

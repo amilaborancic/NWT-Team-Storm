@@ -20,7 +20,7 @@ public class ZanrController {
     }
 
     @PostMapping(value="/add")
-    public Integer dodajZanr(@RequestBody Zanr zanr){
+    public Long dodajZanr(@RequestBody Zanr zanr){
         zanrRepository.save(zanr);
         return zanr.getId();
     }

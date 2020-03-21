@@ -7,8 +7,8 @@ import java.util.List;
 @Table(name = "zanr")
 public class Zanr {
     @Id
-    @GeneratedValue
-    private Integer id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String naziv;
 
     //veze
@@ -17,7 +17,7 @@ public class Zanr {
     private List<Strip> stripovi;
 
     //getters and setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     public String getNaziv() {
