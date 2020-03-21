@@ -1,23 +1,20 @@
 package catalogue.microsservice.cataloguemicroservice.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name="katalog")
 public class Katalog {
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer id;
+    private Long id;
     private String naziv;
 
     //foreign keys
-    private Integer id_korisnik;
+    private Long id_korisnik;
 
     //getters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     public String getNaziv() {
@@ -25,7 +22,7 @@ public class Katalog {
     }
 
     //konstruktor
-    public Katalog(String naziv, Integer id_korisnik){
+    public Katalog(String naziv, Long id_korisnik){
         this.naziv = naziv;
         this.id_korisnik = id_korisnik;
     }

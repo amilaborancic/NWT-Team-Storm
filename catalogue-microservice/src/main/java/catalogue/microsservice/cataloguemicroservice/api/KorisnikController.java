@@ -18,7 +18,7 @@ public class KorisnikController {
     KorisnikRepository korisnikRepository;
 
     @GetMapping
-    public Optional<Korisnik> nadjiKorisnika(@RequestParam Integer id){
+    public Optional<Korisnik> nadjiKorisnika(@RequestParam Long id){
        return korisnikRepository.findById(id);
     }
 
@@ -28,7 +28,7 @@ public class KorisnikController {
     }
 
     @PostMapping(value="/add")
-    public Integer dodajKorisnika(@RequestBody Korisnik korisnik){
+    public Long dodajKorisnika(@RequestBody Korisnik korisnik){
         //privremeno
         //kasnije dodati logiku da se zove korisnik servis za id korisnika
         korisnikRepository.save(korisnik);
@@ -36,7 +36,7 @@ public class KorisnikController {
     }
 
     @PutMapping(value="/update")
-    public Integer dodajKatalogUListu(@RequestBody Katalog katalog, @Param("id_korisnik") Integer id_korisnik){
+    public Long dodajKatalogUListu(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
         var korisnik = korisnikRepository.getOne(id_korisnik);
         var katalozi = korisnik.getKatalozi();
         katalozi.add(katalog);

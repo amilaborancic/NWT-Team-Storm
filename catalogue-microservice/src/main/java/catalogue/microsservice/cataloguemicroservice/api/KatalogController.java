@@ -20,12 +20,12 @@ public class KatalogController {
 
     //svi katalozi za 1 usera
     @GetMapping(value="/all")
-    public List<Katalog> sviKatalozi(@Param("id") Integer id){
+    public List<Katalog> sviKatalozi(@Param("id") Long id){
         return korisnikRepository.getOne(id).getKatalozi();
     }
 
     @PostMapping(value="/create")
-    public Integer kreirajKatalog(@RequestBody Katalog katalog, @Param("id_korisnik") Integer id_korisnik){
+    public Long kreirajKatalog(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
         //dodavanje kataloga u bazu
         katalogRepository.save(katalog);
 

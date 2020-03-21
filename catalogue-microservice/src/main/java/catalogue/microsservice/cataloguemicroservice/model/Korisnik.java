@@ -1,16 +1,14 @@
 package catalogue.microsservice.cataloguemicroservice.model;
 
-import org.hibernate.annotations.Type;
-
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Table(name="korisnik")
 public class Korisnik {
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
-    private Integer id;
+    private Long id;
 
     //relationships
     @OneToMany
@@ -18,7 +16,7 @@ public class Korisnik {
     private List<Katalog> katalozi;
 
     //getters and setters
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
     public List<Katalog> getKatalozi() {
