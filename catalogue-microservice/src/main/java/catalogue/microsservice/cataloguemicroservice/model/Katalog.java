@@ -20,9 +20,15 @@ public class Katalog {
     public Integer getId() {
         return id;
     }
-
     public String getNaziv() {
         return naziv;
     }
+
+    //konstruktor
+    public Katalog(String naziv, Integer id_korisnik){
+        this.naziv = naziv;
+        this.id_korisnik = id_korisnik;
+    }
+    protected Katalog(){}
 
 }

@@ -21,11 +21,9 @@ import java.util.List;
 @EnableJpaRepositories(basePackages = "comicbook.microsservice.comicbookmicroservice.repository")
 @SpringBootApplication
 public class ComicbookMicroserviceApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(ComicbookMicroserviceApplication.class, args);
 	}
-
 }
 
 @Component

@@ -27,4 +27,6 @@ public class Korisnik {
     public void setKatalozi(List<Katalog> katalozi) {
         this.katalozi = katalozi;
     }
+
+    public Korisnik(){}
 }
