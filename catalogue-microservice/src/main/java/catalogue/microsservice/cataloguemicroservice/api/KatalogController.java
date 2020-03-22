@@ -1,5 +1,4 @@
 package catalogue.microsservice.cataloguemicroservice.api;
-
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
@@ -10,7 +9,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -18,8 +16,7 @@ import java.util.Optional;
 @RequestMapping("/katalog")
 public class KatalogController {
 
-    private int brojStripovaNaStranici = 5;
-    private int brojKatalogaNaStranici = 2;
+    private int brojKatalogaNaStranici = 5;
 
     @Autowired
     KatalogRepository katalogRepository;
@@ -69,5 +66,11 @@ public class KatalogController {
         stripoviUKatalogu.removeIf(strip->strip.getIdStrip() == id_strip);
         katalog.setStripovi(stripoviUKatalogu);
         katalogRepository.save(katalog);
+    }
+
+    //brisanje kataloga
+    @DeleteMapping(value="/delete-katalog")
+    public void obrisiKatalog(@Param("id_katalog") Long id_katalog){
+        katalogRepository.delete(katalogRepository.getOne(id_katalog));
     }
 }
