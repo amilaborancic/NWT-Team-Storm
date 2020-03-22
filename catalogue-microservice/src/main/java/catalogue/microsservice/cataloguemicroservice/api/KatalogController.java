@@ -5,6 +5,8 @@ import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.data.web.SpringDataWebProperties;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +21,17 @@ import java.util.List;
 public class KatalogController {
 
     private int brojStripovaNaStranici = 5;
+    private int brojKatalogaNaStranici = 2;
 
     @Autowired
     KatalogRepository katalogRepository;
     @Autowired
     KorisnikRepository korisnikRepository;
 
-    //svi katalozi za jednog usera
+    //svi katalozi za jednog usera sa paginacijom
     @GetMapping(value="/all")
-    public List<Katalog> sviKatalozi(@Param("id") Long id){
-        return korisnikRepository.getOne(id).getKatalozi();
+    public List<Katalog> sviKatalozi(@Param("id") Long id, @Param("brojStranice") int brojStranice){
+        return katalogRepository.findByIdKorisnik(id, PageRequest.of(brojStranice, brojKatalogaNaStranici));
     }
 
     //kreiranje kataloga za jednog usera
@@ -42,19 +45,10 @@ public class KatalogController {
     }
 
     //stripovi unutar jednog kataloga sa paginacijom
-    @GetMapping(value="/user-catalogue")
-    public List<Strip> stripoviUKatalogu(@Param("id") Long id){
-        return katalogRepository.getOne(id).getStripovi();
-    }
+   /* @GetMapping(value="/user-catalogue")
+    public List<Strip> stripoviUKatalogu(@Param("id") Long id, @Param("brojStranice") int brojStranice){
+        return katalogRepository.findById(id, PageRequest.of(brojStranice, brojStripovaNaStranici));
+    }*/
 
-
-    //pomocna funkcija za racunanje paginacije
-    private Pair<Integer, Integer> Paginacija(int brojStranice, int ukupnoStripova){
-        var ukupnoStranica = ceil((double)ukupnoStripova/(double)brojStripovaNaStranici);
-        var prvi_indeks = (brojStranice - 1)*brojStripovaNaStranici;
-        var zadnji_indeks = prvi_indeks + brojStripovaNaStranici;
-        if(brojStranice == ukupnoStranica || ukupnoStripova < brojStripovaNaStranici) zadnji_indeks = toIntExact(ukupnoStripova);
-        return Pair.of(prvi_indeks, zadnji_indeks);
-    }
 
 }

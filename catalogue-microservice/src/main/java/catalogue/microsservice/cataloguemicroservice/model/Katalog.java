@@ -15,7 +15,8 @@ public class Katalog {
     private String naziv;
 
     //foreign keys
-    private Long id_korisnik;
+    @Column(name="id_korisnik")
+    private Long idKorisnik;
 
     //veze
     @ManyToMany
@@ -27,14 +28,14 @@ public class Katalog {
     public String getNaziv() {
         return naziv;
     }
-    public Long getId_korisnik() { return id_korisnik; }
+    public Long getIdKorisnik() { return idKorisnik; }
     public List<Strip> getStripovi() { return stripovi; }
     public void setStripovi(List<Strip> stripovi) { this.stripovi = stripovi; }
 
     //konstruktori
-    public Katalog(String naziv, Long id_korisnik){
+    public Katalog(String naziv, Long idKorisnik){
         this.naziv = naziv;
-        this.id_korisnik = id_korisnik;
+        this.idKorisnik = idKorisnik;
         this.stripovi = new ArrayList<>();
     }
     protected Katalog(){}

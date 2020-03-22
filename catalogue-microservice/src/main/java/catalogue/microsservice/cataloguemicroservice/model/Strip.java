@@ -8,12 +8,12 @@ import java.util.List;
 public class Strip {
     @GeneratedValue
     @Id
-    private Long Id;
+    @Column(name="id")
+    private Long idStrip;
 
     @ManyToMany(mappedBy = "stripovi")
     private List<Katalog> katalozi;
-
-    public Long getId() { return Id; }
+    public Long getIdStrip() { return idStrip; }
     public List<Katalog> getKatalozi() { return katalozi; }
 
     public Strip(){}

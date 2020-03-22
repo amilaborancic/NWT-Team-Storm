@@ -36,8 +36,8 @@ public class KorisnikController {
     }
 
     @PutMapping(value="/update")
-    public Long dodajKatalogUListu(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
-        var korisnik = korisnikRepository.getOne(id_korisnik);
+    public Long dodajKatalogUListu(@RequestBody Katalog katalog, @Param("idKorisnik") Long idKorisnik){
+        var korisnik = korisnikRepository.getOne(idKorisnik);
         var katalozi = korisnik.getKatalozi();
         katalozi.add(katalog);
         korisnik.setKatalozi(katalozi);
