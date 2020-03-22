@@ -4,6 +4,7 @@ import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.StripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
@@ -25,11 +26,7 @@ public class StripController {
     //get sa paginacijom - svi stripovi
     @GetMapping(value="/all")
     public List<Strip> sviStripovi(@Param("brojStranice") int brojStranice){
-        int ukupnoStripova = toIntExact(stripRepository.count());
-        var indeksi = Paginacija(brojStranice, ukupnoStripova);
-        var prvi_indeks = indeksi.getFirst();
-        var zadnji_indeks = indeksi.getSecond();
-        return stripRepository.findAll().subList(prvi_indeks, zadnji_indeks);
+        return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
     }
 
     //jedan konkretan strip, parametar je ID
@@ -51,25 +48,19 @@ public class StripController {
     //svi stripovi jednog izdavaca sa paginacijom - SEARCH BY PUBLISHER funkcionalnost
     @GetMapping(value="/search-publisher")
     public List<Strip> stripoviPoIzdavacu(@Param("id") Long id, @Param("brojStranice") int brojStranice){
-        int ukupnoStripova = stripRepository.countByIdIzdavac(id);
-        var indeksi = Paginacija(brojStranice, ukupnoStripova);
-        return stripRepository.findByIdIzdavac(id).subList(indeksi.getFirst(), indeksi.getSecond());
+        return stripRepository.findByIdIzdavac(id, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     //svi stripovi jednog zanra sa paginacijom - SEARCH BY GENRE funkcionalnost
     @GetMapping(value="/search-genre")
     public List<Strip> stripoviPoZanru(@Param("id") Long id, @Param("brojStranice") int brojStranice){
-        int ukupnoStripova = stripRepository.countByIdZanr(id);
-        var indeksi = Paginacija(brojStranice, ukupnoStripova);
-        return stripRepository.findByIdZanr(id).subList(indeksi.getFirst(), indeksi.getSecond());
+        return stripRepository.findByIdZanr(id, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     //svi stripovi sa odredjenim nazivom - SEARCH BY TITLE funkcionalnost
     @GetMapping(value="/search-title")
     public List<Strip> stripoviPoNazivu(@Param("naziv") String naziv, @Param("brojStranice") int brojStranice){
-        int ukupnoStripova = stripRepository.countByNazivContaining(naziv);
-        var indeksi = Paginacija(brojStranice, ukupnoStripova);
-        return stripRepository.findByNazivContaining(naziv).subList(indeksi.getFirst(), indeksi.getSecond());
+        return stripRepository.findByNazivContaining(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     //pomocna funkcija za racunanje paginacije
