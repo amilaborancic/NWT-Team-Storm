@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/strip")
+@RequestMapping("/katalog")
 public class StripController {
 
     private int brojStripovaNaStranici = 5;
@@ -19,13 +19,8 @@ public class StripController {
     @Autowired
     StripRepository stripRepozitorij;
 
-    @GetMapping(value = "/")
-    public List<Strip> getAll(){
-        return stripRepozitorij.findAll();
-    }
-
     //stripovi u jednom katalogu sa paginacijom
-    @GetMapping(value="/from-catalogue/{id_katalog}")
+    @GetMapping(value="/iz-kataloga/{id_katalog}")
     public List<Long> sviIzJednogKataloga(@PathVariable("id_katalog") Long id_katalog, @Param("brojStranice") int brojStranice){
         List<Long> stripovi = new ArrayList<>();
         stripRepozitorij.findByKatalozi_Id(id_katalog, PageRequest.of(brojStranice, brojStripovaNaStranici)).forEach(strip->stripovi.add(strip.getIdStrip()));

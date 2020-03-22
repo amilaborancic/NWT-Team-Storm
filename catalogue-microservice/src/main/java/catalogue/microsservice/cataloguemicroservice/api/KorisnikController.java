@@ -11,23 +11,13 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/korisnik")
+@RequestMapping("/katalog")
 public class KorisnikController {
 
     @Autowired
     KorisnikRepository korisnikRepository;
 
-    @GetMapping
-    public Optional<Korisnik> nadjiKorisnika(@RequestParam Long id){
-       return korisnikRepository.findById(id);
-    }
-
-    @GetMapping(value="/all")
-    public List<Korisnik> sviKorisnici(){
-        return korisnikRepository.findAll();
-    }
-
-    @PostMapping(value="/add")
+    @PostMapping(value="/novi-korisnik")
     public Long dodajKorisnika(@RequestBody Korisnik korisnik){
         //privremeno
         //kasnije dodati logiku da se zove korisnik servis za id korisnika
@@ -36,8 +26,8 @@ public class KorisnikController {
     }
 
     @PutMapping(value="/update")
-    public Long dodajKatalogUListu(@RequestBody Katalog katalog, @Param("idKorisnik") Long idKorisnik){
-        var korisnik = korisnikRepository.getOne(idKorisnik);
+    public Long dodajKatalogUListu(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
+        var korisnik = korisnikRepository.getOne(id_korisnik);
         var katalozi = korisnik.getKatalozi();
         katalozi.add(katalog);
         korisnik.setKatalozi(katalozi);

@@ -26,23 +26,23 @@ public class KatalogController {
     StripRepository stripRepository;
 
     //svi katalozi za jednog usera sa paginacijom
-    @GetMapping(value="/all")
-    public List<Katalog> sviKatalozi(@Param("id") Long id, @Param("brojStranice") int brojStranice){
-        return katalogRepository.findByIdKorisnik(id, PageRequest.of(brojStranice, brojKatalogaNaStranici));
+    @GetMapping(value="/svi")
+    public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik, @Param("brojStranice") int brojStranice){
+        return katalogRepository.findByIdKorisnik(id_korisnik, PageRequest.of(brojStranice, brojKatalogaNaStranici));
     }
 
     //kreiranje kataloga za nekog usera
-    @PostMapping(value="/create")
+    @PostMapping(value="/novi")
     public Long kreirajKatalog(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
         katalogRepository.save(katalog);
         //povezivanje s korisnikom
         RestTemplate obj = new RestTemplate();
-        obj.put("http://localhost:8080/korisnik/update?id_korisnik="+id_korisnik, katalog);
+        obj.put("http://localhost:8080/katalog/update?id_korisnik="+id_korisnik, katalog);
         return katalog.getId();
     }
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
-    @PutMapping(value="/add-comic")
+    @PutMapping(value="/dodavanje-stripa")
     public void dodajStripUKatalog(@Param("id_strip") Long id_strip, @Param("id_katalog") Long id_katalog){
         Katalog katalog = katalogRepository.getOne(id_katalog);
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
@@ -53,13 +53,13 @@ public class KatalogController {
     }
 
     //jedan katalog
-    @GetMapping(value="/single")
+    @GetMapping(value="/jedan")
     public Optional<Katalog> getKatalog(@Param("id_katalog") Long id_katalog){
         return katalogRepository.findById(id_katalog);
     }
 
     //brisanje stripa iz kataloga
-    @DeleteMapping(value="/delete-strip")
+    @DeleteMapping(value="/brisanje-stripa")
     public void obrisiStrip(@Param("id_strip") Long id_strip, @Param("id_katalog") Long id_katalog){
         Katalog katalog = katalogRepository.getOne(id_katalog);
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
@@ -69,7 +69,7 @@ public class KatalogController {
     }
 
     //brisanje kataloga
-    @DeleteMapping(value="/delete-katalog")
+    @DeleteMapping(value="/brisanje-kataloga")
     public void obrisiKatalog(@Param("id_katalog") Long id_katalog){
         katalogRepository.delete(katalogRepository.getOne(id_katalog));
     }
