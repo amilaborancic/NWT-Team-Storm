@@ -115,12 +115,12 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		Long id_mirage = izdavacRepository.findAll().get(2).getId();
 		Long id_zanr = zanrRepository.findAll().get(0).getId();
 
-		Strip s1 = new Strip("Batman Detective Comics", opis_1, slika_1, 0, 0, 1000, id_marvel, id_zanr);
-		Strip s2 = new Strip("Iron Man The End", opis_2, slika_2, 0, 0, 1, id_marvel, id_zanr);
-		Strip s3 = new Strip("Bombshells United", opis_3, slika_3, 0, 0, 6, id_dc, id_zanr);
-		Strip s4 = new Strip("Birds of Prey Trouble in Mind", opis_4, slika_4, 0, 0, 1, id_dc, id_zanr);
-		Strip s5 = new Strip("Teenage Mutant Ninja Turtles Universe", opis_5, slika_5, 0, 0, 20, id_mirage, id_zanr);
-		Strip s6 = new Strip("Uncanny X-Men (2018-2019) Annual", opis_6, slika_6, 0, 0, 1, id_marvel, id_zanr);
+		Strip s1 = new Strip("Batman Detective Comics", opis_1, slika_1, 0.0, 0, 1000, id_marvel, id_zanr);
+		Strip s2 = new Strip("Iron Man The End", opis_2, slika_2, 0.0, 0, 1, id_marvel, id_zanr);
+		Strip s3 = new Strip("Bombshells United", opis_3, slika_3, 0.0, 0, 6, id_dc, id_zanr);
+		Strip s4 = new Strip("Birds of Prey Trouble in Mind", opis_4, slika_4, 0.0, 0, 1, id_dc, id_zanr);
+		Strip s5 = new Strip("Teenage Mutant Ninja Turtles Universe", opis_5, slika_5, 0.0, 0, 20, id_mirage, id_zanr);
+		Strip s6 = new Strip("Uncanny X-Men (2018-2019) Annual", opis_6, slika_6, 0.0, 0, 1, id_marvel, id_zanr);
 
 		stripRepository.save(s1);
 		stripRepository.save(s2);

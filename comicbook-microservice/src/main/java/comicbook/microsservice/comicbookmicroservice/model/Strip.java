@@ -3,6 +3,9 @@ package comicbook.microsservice.comicbookmicroservice.model;
 import com.sun.istack.Nullable;
 
 import javax.persistence.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Table(name="strip")
@@ -11,12 +14,18 @@ public class Strip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Naziv stripa je obavezan!")
     private String naziv;
     private String opis;
+    @NotBlank(message = "Strip mora imati naslovnicu!")
     private String slika;
     @Column(name="ukupni_rating")
-    private float ukupniRating;
+    @NotNull(message = "Ukupni rating ne smije biti null!")
+    @Min(value = 0L)
+    private Double ukupniRating;
     @Column(name="ukupno_komentara")
+    @Min(value = 0)
+    @NotNull(message = "Ne smije biti null")
     private Integer ukupnoKomentara;
     @Nullable
     private Integer izdanje;
@@ -28,13 +37,11 @@ public class Strip {
     //foreign keys
     @Column(name="id_zanr")
     private Long idZanr;
+
     @Column(name="id_izdavac")
     private Long idIzdavac;
 
     //getters and setters
-    public Long getId_zanr() {
-        return idZanr;
-    }
     public Long getId() {
         return id;
     }
@@ -44,10 +51,10 @@ public class Strip {
     public String getOpis() {
         return opis;
     }
-    public float getUkupni_rating() {
+    public Double getUkupniRating() {
         return ukupniRating;
     }
-    public Integer getUkupno_komentara() {
+    public Integer getUkupnoKomentara() {
         return ukupnoKomentara;
     }
     public Integer getIzdanje() {
@@ -59,14 +66,13 @@ public class Strip {
     public List<Autor> getAutori() {
         return autori;
     }
-    public Long getId_izdavac() {
-        return idIzdavac;
-    }
     public void setAutori(List<Autor> autori) { this.autori = autori; }
+    public Long getIdZanr() { return idZanr; }
+    public Long getIdIzdavac() { return idIzdavac; }
 
     //konstruktor
     protected Strip() { }
-    public Strip(String naziv, String opis, String slika, float ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr){
+    public Strip(String naziv, String opis, String slika, Double ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr){
         this.naziv = naziv;
         this.opis = opis;
         this.slika = slika;

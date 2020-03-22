@@ -1,6 +1,5 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
-import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.StripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,7 +8,8 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.data.util.Pair;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Math.ceil;
 import static java.lang.Math.toIntExact;
@@ -29,20 +29,19 @@ public class StripController {
         return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
     }
 
-    //jedan konkretan strip, parametar je ID
+    //jedan konkretan strip, parametar je id stripa
     @GetMapping()
-    public Optional<Strip> jedanStrip(@Param("id") Long id){
-        if(id != null) return stripRepository.findById(id);
+    public Optional<Strip> jedanStrip(@Param("id_strip") Long id_strip){
+        if(id_strip != null) return stripRepository.findById(id_strip);
         return null;
     }
 
-    //svi stripovi jednog autora - SEARCH BY AUTHOR funkcionalnost
+    //svi stripovi jednog autora sa paginacijom - SEARCH BY AUTHOR funkcionalnost
     @GetMapping(value="/search-author")
-    public List<Strip> stripoviPoAutoru(@RequestBody Autor autor){
-        Set<Strip> stripovi = new HashSet<>(); //koristimo set kako bi se uklonili duplikati
-        if(autor.getIme().length() > 2) stripovi.addAll(stripRepository.findByAutori_ImeContaining(autor.getIme()));
-        if(autor.getPrezime().length() > 3) stripovi.addAll(stripRepository.findByAutori_PrezimeContaining(autor.getPrezime()));
-        return new ArrayList<>(stripovi);
+    public List<Strip> stripoviPoAutoru(@Param("ime") String ime, @Param("prezime") String prezime, @Param("brojStranice") int brojStranice){
+        if(ime == null) ime = "";
+        if(prezime == null) prezime = "";
+        return stripRepository.findAllByAutori_ImeLikeOrAutori_PrezimeLike(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     //svi stripovi jednog izdavaca sa paginacijom - SEARCH BY PUBLISHER funkcionalnost

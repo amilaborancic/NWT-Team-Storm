@@ -1,6 +1,7 @@
 package comicbook.microsservice.comicbookmicroservice.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -9,6 +10,7 @@ public class Zanr {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Naziv zanra ne smije biti prazan!")
     private String naziv;
 
     //veze

@@ -1,6 +1,7 @@
 package comicbook.microsservice.comicbookmicroservice.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -8,6 +9,7 @@ public class Izdavac {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Naziv izdavaca je obavezan!")
     private String naziv;
 
     //veze

@@ -11,6 +11,7 @@ import java.util.List;
 public interface StripRepository extends JpaRepository<Strip, Long> {
     List<Strip> findByAutori_ImeContaining(String ime);
     List<Strip> findByAutori_PrezimeContaining(String prezime);
+    List<Strip> findAllByAutori_ImeLikeOrAutori_PrezimeLike(String ime, String prezime, Pageable pageable);
     List<Strip> findByIdIzdavac(Long id, Pageable pageable);
     List<Strip> findByIdZanr(Long id, Pageable pageable);
     List<Strip> findByNazivContaining(String naziv, Pageable pageable);

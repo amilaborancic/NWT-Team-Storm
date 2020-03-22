@@ -3,6 +3,7 @@ package comicbook.microsservice.comicbookmicroservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Entity
@@ -11,7 +12,9 @@ public class Autor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotBlank(message = "Ime je obavezno!")
     private String ime;
+    @NotBlank(message = "Prezime je obavezno!")
     private String prezime;
 
     //veze
