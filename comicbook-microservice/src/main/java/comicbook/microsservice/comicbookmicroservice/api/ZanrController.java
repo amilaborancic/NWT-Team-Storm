@@ -14,12 +14,12 @@ public class ZanrController {
     @Autowired
     ZanrRepository zanrRepository;
 
-    @GetMapping(value="/all")
+    @GetMapping(value="/svi")
     public List<Zanr> sviZanrovi(){
         return zanrRepository.findAll();
     }
 
-    @PostMapping(value="/add")
+    @PostMapping(value="/novi")
     public Long dodajZanr(@RequestBody Zanr zanr){
         zanrRepository.save(zanr);
         return zanr.getId();

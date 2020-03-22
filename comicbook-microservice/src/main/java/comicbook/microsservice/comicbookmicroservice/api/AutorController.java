@@ -14,12 +14,12 @@ public class AutorController {
     @Autowired
     AutorRepository autorRepository;
 
-    @GetMapping(value="/all")
+    @GetMapping(value="/svi")
     public List<Autor> sviAutori(){
         return autorRepository.findAll();
     }
 
-    @PostMapping(value="/add")
+    @PostMapping(value="/novi")
     public Long dodajAutora(@RequestBody Autor autor){
         autorRepository.save(autor);
         return autor.getId();

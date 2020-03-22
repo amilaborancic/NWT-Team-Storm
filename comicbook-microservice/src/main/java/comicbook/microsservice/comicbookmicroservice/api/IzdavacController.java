@@ -13,12 +13,12 @@ public class IzdavacController {
     @Autowired
     IzdavacRepository izdavacRepository;
 
-    @GetMapping(value="/all")
+    @GetMapping(value="/svi")
     public List<Izdavac> sviIzdavaci(){
         return izdavacRepository.findAll();
     }
 
-    @PostMapping(value="/add")
+    @PostMapping(value="/novi")
     public Long dodajIzdavaca(@RequestBody Izdavac izdavac){
         izdavacRepository.save(izdavac);
         return izdavac.getId();
