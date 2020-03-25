@@ -7,8 +7,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping(value="/strip")
@@ -37,7 +36,8 @@ public class StripController {
     public List<Strip> stripoviPoAutoru(@Param("ime") String ime, @Param("prezime") String prezime, @Param("brojStranice") int brojStranice){
         if(ime == null) ime = "-";
         if(prezime == null) prezime = "-";
-        return stripRepository.findAllByAutori_ImeContainsOrAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        Set<Strip> stripovi = new HashSet<Strip>(stripRepository.findAllByAutori_ImeContainsOrAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
+        return new ArrayList<Strip>(stripovi);
     }
 
     //svi stripovi jednog izdavaca sa paginacijom - SEARCH BY PUBLISHER funkcionalnost
@@ -55,7 +55,7 @@ public class StripController {
     //svi stripovi sa odredjenim nazivom - SEARCH BY TITLE funkcionalnost
     @GetMapping(value="/trazi-naziv")
     public List<Strip> stripoviPoNazivu(@Param("naziv") String naziv, @Param("brojStranice") int brojStranice){
-        return stripRepository.findByNazivContaining(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     @PostMapping(value="/noviStrip")
