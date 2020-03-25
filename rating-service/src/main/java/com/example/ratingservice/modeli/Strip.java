@@ -16,17 +16,15 @@ public class Strip {
 	
 	private String naziv;
 	private int ukupno_komentara;
-	private float ukupni_rating;
-	private String izdanje;
+	private double ukupni_rating;
 	
-	public Strip(String naziv, int ukupno_komentara, float ukupni_rating,String izdanje) {
+	public Strip(String naziv, int ukupno_komentara, float ukupni_rating) {
 		this.naziv = naziv;
 		this.ukupno_komentara = ukupno_komentara;
 		this.ukupni_rating = ukupni_rating;
-		this.izdanje = izdanje;
 	}
 	
-	protected Strip() {}
+	public Strip() {}
 	public Long getId() {
 		return id;
 	}
@@ -46,17 +44,11 @@ public class Strip {
 	public void setUkupno_komentara(int ukupno_komentara) {
 		this.ukupno_komentara = ukupno_komentara;
 	}
-	public float getUkupni_rating() {
+	public double getUkupni_rating() {
 		return ukupni_rating;
 	}
-	public void setUkupni_rating(float ukupni_rating) {
-		this.ukupni_rating = ukupni_rating;
+	public void setUkupni_rating(double d) {
+		this.ukupni_rating = d;
 	}
-	public String getIzdanje() {
-		return izdanje;
-	}
-	public void setIzdanje(String izdanje) {
-		this.izdanje = izdanje;
-	}	
 	
 }

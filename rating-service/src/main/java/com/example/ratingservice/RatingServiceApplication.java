@@ -5,6 +5,7 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
 
 import com.example.ratingservice.modeli.Korisnik;
@@ -37,10 +38,10 @@ class DemoCommandLineRunner implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		
 		//unosi u tabelu
-		Korisnik k1=new Korisnik("neko","nekic",0,0);
+		Korisnik k1=new Korisnik();
 		
-		Strip s1=new Strip("skriveno lice",0,0,"#1");
-		Strip s2=new Strip("magicni vjetar",0,0,"#1");
+		Strip s1=new Strip("skriveno lice",0,0);
+		Strip s2=new Strip("magicni vjetar",0,0);
 		
 		k1.setBroj_losih_reviewa(1);
 		k1.setUkupno_reviewa(2);
@@ -53,6 +54,7 @@ class DemoCommandLineRunner implements CommandLineRunner{
 		korisnikRepozitorij.save(k1);
 		ratingRepozitorij.save(new Rating(k1,s1,4, "super strip"));
 		ratingRepozitorij.save(new Rating(k1,s2,1, "nisam odusevljen"));
+	
 		
 	}
 	

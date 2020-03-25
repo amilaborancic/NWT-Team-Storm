@@ -8,7 +8,6 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-
 @Entity
 @Table(name="rating")
 public class Rating {
@@ -17,11 +16,11 @@ public class Rating {
 	private Long id;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="korisnik_id",nullable=false)
 	private Korisnik korisnik;
 	
 	@ManyToOne
-	@JoinColumn
+	@JoinColumn(name="strip_id",nullable=false)
 	private Strip strip;
 	
 	private int ocjena;
@@ -75,6 +74,5 @@ public class Rating {
 	public void setKomentar(String komentar) {
 		this.komentar = komentar;
 	}
-	
-		
+
 }
