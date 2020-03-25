@@ -8,8 +8,8 @@ import java.util.UUID;
 @Table(name="user")
 public class User {
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy=GenerationType.AUTO)
+    private Long id;
 
 
     private String ime;
@@ -19,7 +19,9 @@ public class User {
     private int broj_losih_reviewa;
     private int ukupno_reviewa;
 
-    public User(UUID id, String ime, String prezime, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
+    protected User(){}
+
+    public User(Long id, String ime, String prezime, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
         this.id = id;
         this.ime = ime;
         this.prezime = prezime;
@@ -29,7 +31,7 @@ public class User {
         this.ukupno_reviewa = ukupno_reviewa;
     }
 
-    public UUID getId() {
+    public Long getId() {
         return id;
     }
 
