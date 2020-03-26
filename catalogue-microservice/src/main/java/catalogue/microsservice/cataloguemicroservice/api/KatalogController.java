@@ -37,7 +37,7 @@ public class KatalogController {
         katalogRepository.save(katalog);
         //povezivanje s korisnikom
         RestTemplate obj = new RestTemplate();
-        //obj.put("http://localhost:8080/katalog/update?id_korisnik="+id_korisnik, katalog);
+        obj.put("http://localhost:8080/katalog/update?id_korisnik="+id_korisnik, katalog);
         return katalog.getId();
     }
 

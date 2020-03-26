@@ -21,7 +21,7 @@ import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @AutoConfigureMockMvc
 public class KorisnikControllerTest {
 	@Autowired 
