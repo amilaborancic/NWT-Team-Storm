@@ -34,9 +34,9 @@ public class StripController {
     //svi stripovi jednog autora sa paginacijom - SEARCH BY AUTHOR funkcionalnost
     @GetMapping(value="/trazi-autor")
     public List<Strip> stripoviPoAutoru(@Param("ime") String ime, @Param("prezime") String prezime, @Param("brojStranice") int brojStranice){
-        if(ime == null) ime = "-";
-        if(prezime == null) prezime = "-";
-        Set<Strip> stripovi = new HashSet<Strip>(stripRepository.findAllByAutori_ImeContainsOrAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
+        if(ime == null || ime == "") ime = "-";
+        if(prezime == null || prezime == "") prezime = "-";
+        Set<Strip> stripovi = new HashSet<Strip>(stripRepository.findAllByAutori_ImeContainsAndAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
         return new ArrayList<Strip>(stripovi);
     }
 
