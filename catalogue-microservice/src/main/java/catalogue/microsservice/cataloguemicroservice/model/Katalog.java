@@ -3,6 +3,9 @@ package catalogue.microsservice.cataloguemicroservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+
+import org.hamcrest.Matcher;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -38,6 +41,6 @@ public class Katalog {
         this.idKorisnik = idKorisnik;
         this.stripovi = new ArrayList<>();
     }
-    protected Katalog(){}
+    public Katalog(){}
 
 }

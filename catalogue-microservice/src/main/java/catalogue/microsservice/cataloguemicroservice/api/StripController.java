@@ -1,6 +1,5 @@
 package catalogue.microsservice.cataloguemicroservice.api;
 
-import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;

@@ -9,6 +9,7 @@ import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.stereotype.Component;
@@ -18,6 +19,8 @@ import java.util.List;
 
 @SpringBootApplication
 @EnableJpaRepositories(basePackages = "catalogue.microsservice.cataloguemicroservice")
+
+
 public class CatalogueMicroserviceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueMicroserviceApplication.class, args);

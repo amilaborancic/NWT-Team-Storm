@@ -11,7 +11,7 @@ public class Korisnik {
     private Long id;
 
     //relationships
-    @OneToMany
+    @OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name="id_korisnik", referencedColumnName = "id")
     private List<Katalog> katalozi;
 
