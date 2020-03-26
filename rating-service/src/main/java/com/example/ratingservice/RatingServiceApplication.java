@@ -14,7 +14,9 @@ import com.example.ratingservice.modeli.Strip;
 import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
 import com.example.ratingservice.repozitorij.RatingRepozitorij;
 import com.example.ratingservice.repozitorij.StripRepozitorij;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+@EnableSwagger2
 @SpringBootApplication
 @EnableAutoConfiguration
 public class RatingServiceApplication {
