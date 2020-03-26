@@ -78,7 +78,6 @@ public class RatingKontroler {
 		korisnik.setUkupno_reviewa(korisnik.getUkupno_reviewa()+1);
 		Rating rating=new Rating(korisnik,strip,ocjena,komentar);
 		ratingServis.save(rating);
-	
 	}
 	
 

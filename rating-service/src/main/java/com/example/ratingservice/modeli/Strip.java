@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.validation.constraints.PositiveOrZero;
 
 @Entity
 @Table(name="strip")
@@ -15,7 +16,9 @@ public class Strip {
 	private Long id;
 	
 	private String naziv;
+	@PositiveOrZero(message = "Broj komentara ne moze bit negativan.") 
 	private int ukupno_komentara;
+	@PositiveOrZero(message = "Ukupni rating ne moze bit negativna.") 
 	private double ukupni_rating;
 	
 	public Strip(String naziv, int ukupno_komentara, float ukupni_rating) {

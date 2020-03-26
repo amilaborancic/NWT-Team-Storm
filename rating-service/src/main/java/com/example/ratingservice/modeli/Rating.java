@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 
 @Entity
 @Table(name="rating")
@@ -23,6 +25,8 @@ public class Rating {
 	@JoinColumn(name="strip_id",nullable=false)
 	private Strip strip;
 	
+	@Min(value =1, message = "Ocjena moze bit u rasponu od 1-5.")
+	@Max(value =5, message = "Ocjena moze bit u rasponu od 1-5.")
 	private int ocjena;
 	private String komentar;
 	
