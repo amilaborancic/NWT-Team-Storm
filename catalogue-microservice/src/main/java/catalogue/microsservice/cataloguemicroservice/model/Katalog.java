@@ -1,6 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +11,7 @@ public class Katalog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
+    @NotBlank
     private String naziv;
 
     //foreign keys
