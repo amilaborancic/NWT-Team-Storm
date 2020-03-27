@@ -2,7 +2,8 @@ package user.usermicroservice.Models;
 
 
 import javax.persistence.*;
-import java.util.UUID;
+import javax.validation.constraints.NotBlank;
+
 
 @Entity
 @Table(name="user")
@@ -11,9 +12,10 @@ public class User {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
-
+    @NotBlank(message = "Ime je obavezno!")
     private String ime;
     private  String prezime;
+    @NotBlank(message = "Email je obavezan!")
     private  String email;
     private String sifra;
     private int broj_losih_reviewa;
