@@ -14,6 +14,14 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.Rating;
+import com.example.ratingservice.modeli.Strip;
+import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.RatingServis;
+import com.example.ratingservice.servisi.StripServis;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -23,7 +31,19 @@ public class RatingServisTest {
 	 
 	 @Autowired
 	 private MockMvc mockMvc;
-
+	 @Autowired
+	 KorisnikServis korisnikServis;
+	 @Autowired
+	 StripServis stripServis;
+	 @Autowired
+	 RatingServis ratingServis;
+	 public static String asJsonString(final Object obj) {
+			try {
+				return new ObjectMapper().writeValueAsString(obj);
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+		}
 	 @Test
 	 public void all() throws Exception {
 		 mockMvc.perform(MockMvcRequestBuilders
@@ -52,7 +72,7 @@ public class RatingServisTest {
 	      .accept(MediaType.APPLICATION_JSON))
 	      .andDo(print())
 	      .andExpect(status().isOk())
-	      .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+	      .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1));
 	 }
 	 
 	 @Test
@@ -63,19 +83,21 @@ public class RatingServisTest {
 	      .accept(MediaType.APPLICATION_JSON))
 	      .andDo(print())
 	      .andExpect(status().isOk())
-	      .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+	      .andExpect(MockMvcResultMatchers.jsonPath("$[0].id").value(1));
 	 }
 	 
 	
 	 @Test
 	 public void addRating () throws Exception {
 		 
-		 mockMvc.perform(post("/dodaj-rating").param("strip_id", "1")
-			      .param("korisnik_id", "1")
-		 		  .param("ocjena", "5")
-				  .param("komentar", "super je"))
-		 		  .andDo(print()).andExpect(status().isOk());
+		  Korisnik korisnik=korisnikServis.getOne(Long.valueOf(1));
+		  Strip strip=stripServis.getOne(Long.valueOf(2));
+		  Rating rating=new Rating(korisnik,strip,1,"lose");
 
+		mockMvc.perform(post("/dodaj-rating")
+				  .contentType(MediaType.APPLICATION_JSON)
+		 		  .content(asJsonString(rating)))
+				  .andExpect(status().isOk());
 	 }
 	 
 

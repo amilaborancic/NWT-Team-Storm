@@ -7,8 +7,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Proxy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="korisnik")
+@Proxy(lazy = false)
 public class Korisnik {
 	
 	@Id

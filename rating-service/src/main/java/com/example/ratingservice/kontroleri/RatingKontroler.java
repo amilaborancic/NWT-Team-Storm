@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -55,12 +56,18 @@ public class RatingKontroler {
 		
 	
 	//kreiranje novog ratinga
-	@RequestMapping(value="/dodaj-rating", method=RequestMethod.POST)
-	public void addRating(@RequestParam(value="strip_id") Long strip_id,@RequestParam(value="korisnik_id") Long user_id,@RequestParam(value="ocjena") Integer ocjena,@RequestParam(value="komentar") String komentar)
+	@RequestMapping(value="/dodaj-rating", method=RequestMethod.POST, consumes = "application/json")
+	public void addRating(@RequestBody Rating rating)
 	{
-		Korisnik korisnik=korisnikServis.getOne(user_id);
-		Strip strip=stripServis.getOne(strip_id);
-
+		Strip strip_stari=rating.getStrip();
+		Korisnik korisnik_stari=rating.getKorisnik();
+		
+		Rating novi_rating=new Rating();
+		Korisnik korisnik=korisnikServis.getOne(korisnik_stari.getId());
+		Strip strip=stripServis.getOne(strip_stari.getId());
+		
+		int ocjena=rating.getOcjena();
+		int ukupno_komentara=strip.getUkupno_komentara();
 		int br_losih_reviewa=korisnik.getBroj_losih_reviewa();
 		int ukupno_reviewa=korisnik.getUkupno_reviewa();
 		double procenat;
@@ -71,13 +78,22 @@ public class RatingKontroler {
 				 strip.setUkupni_rating((rating_stripa+Double.valueOf(ocjena))/2);
 			 }
 		}
+		
 		if(ocjena<4)	
-			korisnik.setBroj_losih_reviewa(korisnik.getBroj_losih_reviewa()+1);
+			korisnik.setBroj_losih_reviewa(br_losih_reviewa+1);
 				
-		strip.setUkupno_komentara(strip.getUkupno_komentara()+1);
-		korisnik.setUkupno_reviewa(korisnik.getUkupno_reviewa()+1);
-		Rating rating=new Rating(korisnik,strip,ocjena,komentar);
-		ratingServis.save(rating);
+		strip.setUkupno_komentara(ukupno_komentara+1);
+		korisnik.setUkupno_reviewa(ukupno_reviewa+1);
+
+		novi_rating.setKomentar(rating.getKomentar());
+		novi_rating.setOcjena(rating.getOcjena());
+		novi_rating.setKorisnik(korisnik);
+		novi_rating.setStrip(strip);
+		
+		
+		korisnikServis.save(korisnik);
+		stripServis.save(strip);
+		ratingServis.save(novi_rating);
 	}
 	
 

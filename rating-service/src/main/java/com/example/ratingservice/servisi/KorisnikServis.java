@@ -33,5 +33,9 @@ public class KorisnikServis {
 	public void save(Korisnik korisnik) {
 		korisnikRepozitorij.save(korisnik);
 	}
+	public void deleteById(Long id) {
+		korisnikRepozitorij.deleteById(id);
+		
+	}
 	
 }

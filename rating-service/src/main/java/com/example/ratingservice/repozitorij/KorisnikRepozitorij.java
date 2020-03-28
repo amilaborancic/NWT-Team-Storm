@@ -15,5 +15,5 @@ public interface KorisnikRepozitorij extends JpaRepository<Korisnik,Long> {
 	
 	List<Korisnik> findAll();
 	Optional<Korisnik> findById(Long id);
-	Korisnik getOne(Long id);
+	void deleteById(Long id);
 }

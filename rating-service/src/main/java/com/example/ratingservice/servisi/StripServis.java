@@ -30,5 +30,9 @@ public class StripServis {
 	public void save(Strip strip) {
 		stripRepozitorij.save(strip);
 	}
+	public void deleteById(Long id) {
+		stripRepozitorij.deleteById(id);
+	}
+
 	
 }

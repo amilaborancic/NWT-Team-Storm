@@ -10,19 +10,25 @@ import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 
+import org.hibernate.annotations.Proxy;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 @Entity
 @Table(name="rating")
+@Proxy(lazy = false)
 public class Rating {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-	
+
 	@ManyToOne
-	@JoinColumn(name="korisnik_id",nullable=false)
+	@JoinColumn(name="korisnik_id")
 	private Korisnik korisnik;
-	
+
 	@ManyToOne
-	@JoinColumn(name="strip_id",nullable=false)
+	@JoinColumn(name="strip_id")
 	private Strip strip;
 	
 	@Min(value =1, message = "Ocjena moze bit u rasponu od 1-5.")
@@ -37,7 +43,7 @@ public class Rating {
 		this.komentar = komentar;
 	}
 	
-	protected Rating() {}
+	public Rating() {}
 
 	public Long getId() {
 		return id;
@@ -78,5 +84,6 @@ public class Rating {
 	public void setKomentar(String komentar) {
 		this.komentar = komentar;
 	}
+	
 
 }

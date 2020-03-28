@@ -7,8 +7,11 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.PositiveOrZero;
 
+import org.hibernate.annotations.Proxy;
+
 @Entity
 @Table(name="strip")
+@Proxy(lazy = false)
 public class Strip {
 	
 	@Id
