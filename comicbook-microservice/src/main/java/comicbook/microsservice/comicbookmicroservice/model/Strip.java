@@ -72,7 +72,7 @@ public class Strip {
 
     //konstruktor
     protected Strip() { }
-    public Strip(String naziv, String opis, String slika, Double ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr){
+    public Strip(String naziv, String opis, String slika, Double ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr, List<Autor> autori){
         this.naziv = naziv;
         this.opis = opis;
         this.slika = slika;
@@ -81,5 +81,6 @@ public class Strip {
         this.izdanje = izdanje;
         this.idIzdavac = idIzdavac;
         this.idZanr = idZanr;
+        this.autori = autori;
     }
 }

@@ -1,7 +1,11 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
+import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
+import comicbook.microsservice.comicbookmicroservice.repository.AutorRepository;
+import comicbook.microsservice.comicbookmicroservice.repository.IzdavacRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.StripRepository;
+import comicbook.microsservice.comicbookmicroservice.repository.ZanrRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +21,12 @@ public class StripController {
 
     @Autowired
     StripRepository stripRepository;
+    @Autowired
+    ZanrRepository zanrRepository;
+    @Autowired
+    IzdavacRepository izdavacRepository;
+    @Autowired
+    AutorRepository autorRepository;
 
     //get sa paginacijom - svi stripovi
     @GetMapping(value="/svi")
@@ -26,9 +36,10 @@ public class StripController {
 
     //jedan konkretan strip, parametar je id stripa
     @GetMapping()
-    public Optional<Strip> jedanStrip(@Param("id_strip") Long id_strip){
-        if(id_strip != null) return stripRepository.findById(id_strip);
-        return null;
+    public Strip jedanStrip(@Param("id_strip") Long id_strip){
+        Optional<Strip> strip = stripRepository.findById(id_strip);
+        if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
+        return strip.get();
     }
 
     //svi stripovi jednog autora sa paginacijom - SEARCH BY AUTHOR funkcionalnost
@@ -60,6 +71,21 @@ public class StripController {
 
     @PostMapping(value="/noviStrip")
     public Long dodajStrip(@RequestBody Strip strip){
+        Long idIzdavac = strip.getIdIzdavac();
+        Long idZanr = strip.getIdZanr();
+        Double rating = strip.getUkupniRating();
+        Integer brojKom = strip.getUkupnoKomentara();
+        //validacija parametara za inicijalizaciju stripa
+        if(strip.getNaziv().equals("") || strip.getNaziv() == null) throw new ApiRequestException("Strip mora imati naziv!");
+        if(idIzdavac == null) throw new ApiRequestException("Strip mora imati izdavaca!");
+        if(idZanr == null) throw new ApiRequestException("Strip mora imati zanr!");
+        if(rating == null || rating < 0) throw new ApiRequestException("Strip mora imati nenegativan rating!");
+        if(strip.getSlika() == null) throw new ApiRequestException("Strip mora imati sliku!");
+        if(brojKom == null || brojKom < 0) throw new ApiRequestException("Strip mora imati nenegativan broj komentara!");
+        if(strip.getAutori() == null || strip.getAutori().size() == 0) throw new ApiRequestException("Strip mora imati autore!");
+        //provjera postoje li proslijedjeni zanr i izdavac
+        if(zanrRepository.findById(idZanr).isEmpty()) throw new ApiRequestException("Zanr sa id-jem " + idZanr + " ne postoji.");
+        if(izdavacRepository.findById(idIzdavac).isEmpty()) throw new ApiRequestException("Izdavac sa id-jem " + idZanr + " ne postoji.");
         stripRepository.save(strip);
         return strip.getId();
     }
