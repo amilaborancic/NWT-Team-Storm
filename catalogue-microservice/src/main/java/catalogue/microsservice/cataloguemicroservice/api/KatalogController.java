@@ -55,16 +55,17 @@ public class KatalogController {
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
         //provjera da li postoje i strip i katalog s ovim id-jem
-        Katalog katalog = katalogRepository.getOne(id_katalog);
+        Optional<Katalog> katalog = katalogRepository.findById(id_katalog);
         Optional<Strip> strip = stripRepository.findById(id_strip);
-        if(katalog.getId() == null) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
+        if(katalog.isEmpty()) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
         if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
-        List<Strip> stripoviUKatalogu = katalog.getStripovi();
+        Katalog katalogic = katalog.get();
+        List<Strip> stripoviUKatalogu = katalogic.getStripovi();
         //ako je taj strip vec u katalogu
         if(stripoviUKatalogu.stream().map(Strip::getIdStrip).anyMatch(id_strip::equals)) throw new ApiRequestException("Strip je vec dodan u katalog!");
         stripoviUKatalogu.add(stripRepository.getOne(id_strip));
-        katalog.setStripovi(stripoviUKatalogu);
-        katalogRepository.save(katalog);
+        katalogic.setStripovi(stripoviUKatalogu);
+        katalogRepository.save(katalogic);
     }
 
     //jedan katalog
@@ -79,12 +80,13 @@ public class KatalogController {
         Long id_katalog = body.get("id_katalog");
         Long id_strip = body.get("id_strip");
         //provjera da li postoji katalog
-        Katalog katalog = katalogRepository.getOne(id_katalog);
-        if(katalog.getId() == null) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
-        List<Strip> stripoviUKatalogu = katalog.getStripovi();
+        Optional<Katalog> katalog = katalogRepository.findById(id_katalog);
+        if(katalog.isEmpty()) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
+        Katalog katalogic = katalog.get();
+        List<Strip> stripoviUKatalogu = katalogic.getStripovi();
         stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
-        katalog.setStripovi(stripoviUKatalogu);
-        katalogRepository.save(katalog);
+        katalogic.setStripovi(stripoviUKatalogu);
+        katalogRepository.save(katalogic);
     }
 
     //brisanje kataloga
