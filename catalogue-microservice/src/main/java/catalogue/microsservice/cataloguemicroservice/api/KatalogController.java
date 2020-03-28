@@ -1,5 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.api;
+import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
+import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
@@ -47,8 +49,14 @@ public class KatalogController {
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
-    public Long kreirajKatalog(@RequestBody Katalog katalog)  {
-        System.out.println(katalog.getId());
+    public Long kreirajKatalog(@RequestBody Katalog katalog){
+        Long idKorisnik = katalog.getIdKorisnik();
+        String naziv = katalog.getNaziv();
+        //provjera postoji li user
+        Optional<Korisnik> korisnik = korisnikRepository.findById(idKorisnik);
+        if(korisnik.isEmpty()) throw new ApiRequestException("Korisnik sa id-jem " + idKorisnik + " ne postoji!");
+        //provjera da li je naziv prazan
+        if(naziv.equals("")) throw new ApiRequestException("Naziv kataloga ne smije biti prazan!");
         katalogRepository.save(katalog);
         RestTemplate obj = new RestTemplate();
         obj.put("http://localhost:8080/katalog/update", katalog);
@@ -58,6 +66,7 @@ public class KatalogController {
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
     public void dodajStripUKatalog(@Param("id_strip") Long id_strip, @Param("id_katalog") Long id_katalog){
+
         Katalog katalog = katalogRepository.getOne(id_katalog);
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
         if(stripoviUKatalogu.stream().map(Strip::getIdStrip).anyMatch(id_strip::equals)) return;
