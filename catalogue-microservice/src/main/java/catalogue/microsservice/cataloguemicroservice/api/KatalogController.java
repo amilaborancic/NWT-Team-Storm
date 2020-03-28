@@ -4,11 +4,25 @@ import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
+import com.fasterxml.jackson.core.ObjectCodec;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.util.JSONPObject;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+import springfox.documentation.spring.web.json.Json;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,11 +47,11 @@ public class KatalogController {
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
-    public Long kreirajKatalog(@RequestBody Katalog katalog, @Param("id_korisnik") Long id_korisnik){
+    public Long kreirajKatalog(@RequestBody Katalog katalog)  {
+        System.out.println(katalog.getId());
         katalogRepository.save(katalog);
-        //povezivanje s korisnikom
         RestTemplate obj = new RestTemplate();
-        obj.put("http://localhost:8080/katalog/update?id_korisnik="+id_korisnik, katalog);
+        obj.put("http://localhost:8080/katalog/update", katalog);
         return katalog.getId();
     }
 
