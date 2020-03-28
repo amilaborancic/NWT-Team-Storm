@@ -6,27 +6,13 @@ import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
-import com.fasterxml.jackson.core.ObjectCodec;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import springfox.documentation.spring.web.json.Json;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @RestController
 @RequestMapping("/katalog")
@@ -65,11 +51,17 @@ public class KatalogController {
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
-    public void dodajStripUKatalog(@Param("id_strip") Long id_strip, @Param("id_katalog") Long id_katalog){
-
+    public void dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
+        Long id_strip = requestBody.get("id_strip");
+        Long id_katalog = requestBody.get("id_katalog");
+        //provjera da li postoje i strip i katalog s ovim id-jem
         Katalog katalog = katalogRepository.getOne(id_katalog);
+        Optional<Strip> strip = stripRepository.findById(id_strip);
+        if(katalog.getId() == null) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
+        if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
-        if(stripoviUKatalogu.stream().map(Strip::getIdStrip).anyMatch(id_strip::equals)) return;
+        //ako je taj strip vec u katalogu
+        if(stripoviUKatalogu.stream().map(Strip::getIdStrip).anyMatch(id_strip::equals)) throw new ApiRequestException("Strip je vec dodan u katalog!");
         stripoviUKatalogu.add(stripRepository.getOne(id_strip));
         katalog.setStripovi(stripoviUKatalogu);
         katalogRepository.save(katalog);
@@ -83,10 +75,14 @@ public class KatalogController {
 
     //brisanje stripa iz kataloga
     @DeleteMapping(value="/brisanje-stripa")
-    public void obrisiStrip(@Param("id_strip") Long id_strip, @Param("id_katalog") Long id_katalog){
+    public void obrisiStrip(@RequestBody Map<String, Long> body){
+        Long id_katalog = body.get("id_katalog");
+        Long id_strip = body.get("id_strip");
+        //provjera da li postoji katalog
         Katalog katalog = katalogRepository.getOne(id_katalog);
+        if(katalog.getId() == null) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
-        stripoviUKatalogu.removeIf(strip->strip.getIdStrip() == id_strip);
+        stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
         katalog.setStripovi(stripoviUKatalogu);
         katalogRepository.save(katalog);
     }
