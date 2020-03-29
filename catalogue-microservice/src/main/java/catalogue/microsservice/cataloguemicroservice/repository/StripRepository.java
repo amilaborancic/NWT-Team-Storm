@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface StripRepository extends JpaRepository<Strip, Long> {
     List<Strip> findByKatalozi_Id(Long id, Pageable pageable);
+    Long countAllByKatalozi_Id(Long id);
+    boolean existsByIdStripAndKatalozi_Id(Long id_strip, Long id_katalog);
 }

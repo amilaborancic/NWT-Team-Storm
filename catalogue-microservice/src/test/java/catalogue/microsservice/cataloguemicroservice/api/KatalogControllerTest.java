@@ -1,4 +1,4 @@
-package catalogue.microsservice.cataloguemicroservice;
+package catalogue.microsservice.cataloguemicroservice.api;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

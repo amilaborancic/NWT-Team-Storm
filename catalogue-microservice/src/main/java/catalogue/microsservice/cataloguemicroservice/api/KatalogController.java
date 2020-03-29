@@ -42,7 +42,7 @@ public class KatalogController {
 
     //jedan katalog
     @GetMapping(value="/jedan")
-    public Optional<Katalog> getKatalog(@Param("id_katalog") Long id_katalog){
+    public Katalog getKatalog(@Param("id_katalog") Long id_katalog){
         return katalogService.getKatalog(id_katalog);
     }
 

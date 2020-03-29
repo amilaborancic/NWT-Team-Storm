@@ -6,6 +6,7 @@ import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
+import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -37,6 +38,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 	@Autowired
 	private StripRepository stripRepozitorij;
 
+
 	@Override
 	public void run(String... args) throws Exception {
 		Korisnik k1 = new Korisnik();
@@ -61,8 +63,8 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Katalog kat3 = new Katalog("Dummy za brisanje 1", korisnik_2.getId());
 		Katalog kat4 = new Katalog("Test", korisnik.getId());
 		//2 defaultna kataloga
-		Katalog kat_procitano_1 = new Katalog("Procitani", korisnik.getId());
-		Katalog kat_procitano_2 = new Katalog("Procitani", korisnik_2.getId());
+		Katalog kat_procitano_1 = new Katalog("Procitano", korisnik.getId());
+		Katalog kat_procitano_2 = new Katalog("Procitano", korisnik_2.getId());
 		Katalog kat_zelim_procitati_1 = new Katalog("Zelim procitati", korisnik.getId());
 		Katalog kat_zelim_procitati_2 = new Katalog("Zelim procitati", korisnik_2.getId());
 

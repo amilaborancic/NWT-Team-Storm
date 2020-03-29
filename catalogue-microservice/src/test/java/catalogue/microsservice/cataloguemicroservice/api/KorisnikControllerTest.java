@@ -1,4 +1,4 @@
-package catalogue.microsservice.cataloguemicroservice;
+package catalogue.microsservice.cataloguemicroservice.api;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.CoreMatchers.is;
