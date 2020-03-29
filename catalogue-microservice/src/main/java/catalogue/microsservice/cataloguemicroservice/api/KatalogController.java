@@ -1,13 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.api;
-import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
-import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
-import catalogue.microsservice.cataloguemicroservice.model.Strip;
-import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
-import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
-import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
+import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.repository.query.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
@@ -21,29 +15,18 @@ public class KatalogController {
     private int brojKatalogaNaStranici = 5;
 
     @Autowired
-    KatalogRepository katalogRepository;
-    @Autowired
-    KorisnikRepository korisnikRepository;
-    @Autowired
-    StripRepository stripRepository;
+    KatalogService katalogService;
 
     //svi katalozi za jednog usera sa paginacijom
     @GetMapping(value="/svi")
     public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik, @Param("brojStranice") int brojStranice){
-        return katalogRepository.findByIdKorisnik(id_korisnik, PageRequest.of(brojStranice, brojKatalogaNaStranici));
+        return katalogService.sviKatalozi(id_korisnik, brojStranice, brojKatalogaNaStranici);
     }
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
     public Long kreirajKatalog(@RequestBody Katalog katalog){
-        Long idKorisnik = katalog.getIdKorisnik();
-        String naziv = katalog.getNaziv();
-        //provjera postoji li user
-        Optional<Korisnik> korisnik = korisnikRepository.findById(idKorisnik);
-        if(korisnik.isEmpty()) throw new ApiRequestException("Korisnik sa id-jem " + idKorisnik + " ne postoji!");
-        //provjera da li je naziv prazan
-        if(naziv.equals("")) throw new ApiRequestException("Naziv kataloga ne smije biti prazan!");
-        katalogRepository.save(katalog);
+        katalogService.kreirajKatalog(katalog);
         RestTemplate obj = new RestTemplate();
         obj.put("http://localhost:8080/katalog/update", katalog);
         return katalog.getId();
@@ -54,24 +37,13 @@ public class KatalogController {
     public void dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
-        //provjera da li postoje i strip i katalog s ovim id-jem
-        Optional<Katalog> katalog = katalogRepository.findById(id_katalog);
-        Optional<Strip> strip = stripRepository.findById(id_strip);
-        if(katalog.isEmpty()) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
-        if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
-        Katalog katalogic = katalog.get();
-        List<Strip> stripoviUKatalogu = katalogic.getStripovi();
-        //ako je taj strip vec u katalogu
-        if(stripoviUKatalogu.stream().map(Strip::getIdStrip).anyMatch(id_strip::equals)) throw new ApiRequestException("Strip je vec dodan u katalog!");
-        stripoviUKatalogu.add(stripRepository.getOne(id_strip));
-        katalogic.setStripovi(stripoviUKatalogu);
-        katalogRepository.save(katalogic);
+        katalogService.dodajStripUKatalog(id_strip, id_katalog);
     }
 
     //jedan katalog
     @GetMapping(value="/jedan")
     public Optional<Katalog> getKatalog(@Param("id_katalog") Long id_katalog){
-        return katalogRepository.findById(id_katalog);
+        return katalogService.getKatalog(id_katalog);
     }
 
     //brisanje stripa iz kataloga
@@ -79,19 +51,12 @@ public class KatalogController {
     public void obrisiStrip(@RequestBody Map<String, Long> body){
         Long id_katalog = body.get("id_katalog");
         Long id_strip = body.get("id_strip");
-        //provjera da li postoji katalog
-        Optional<Katalog> katalog = katalogRepository.findById(id_katalog);
-        if(katalog.isEmpty()) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
-        Katalog katalogic = katalog.get();
-        List<Strip> stripoviUKatalogu = katalogic.getStripovi();
-        stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
-        katalogic.setStripovi(stripoviUKatalogu);
-        katalogRepository.save(katalogic);
+       katalogService.obrisiStrip(id_strip, id_katalog);
     }
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
     public void obrisiKatalog(@Param("id_katalog") Long id_katalog){
-        katalogRepository.delete(katalogRepository.getOne(id_katalog));
+        katalogService.obrisiKatalog(id_katalog);
     }
 }
