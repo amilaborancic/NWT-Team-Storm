@@ -15,7 +15,6 @@ class ComicbookMicroserviceApplicationTests {
 
 	@Test
 	void contextLoads() {
-		//mockMvc.perform(MockMvcRequestBuilders.)
 	}
 
 }

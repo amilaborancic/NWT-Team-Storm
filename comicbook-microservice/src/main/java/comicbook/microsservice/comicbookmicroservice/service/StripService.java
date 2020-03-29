@@ -23,15 +23,16 @@ public class StripService {
     @Autowired
     AutorRepository autorRepository;
 
-
     public List<Strip> sviStripovi(int brojStranice, int brojStripovaNaStranici){
         return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
     }
+
     public Strip jedanStrip(Long id_strip){
         Optional<Strip> strip = stripRepository.findById(id_strip);
         if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         return strip.get();
     }
+
     public List<Strip> stripoviPoAutoru(String ime, String prezime, int brojStranice, int brojStripovaNaStranici){
         if(ime == null || ime == "") ime = "-";
         if(prezime == null || prezime == "") prezime = "-";
@@ -39,13 +40,18 @@ public class StripService {
         stripovi.addAll(stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
         return new ArrayList<Strip>(stripovi);
     }
+
     public List<Strip> stripoviPoIzdavacu(Long id_izdavac, int brojStranice, int brojStripovaNaStranici){
         return stripRepository.findByIdIzdavac(id_izdavac, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
+
     public List<Strip> stripoviPoZanru(Long id_zanr, int brojStranice, int brojStripovaNaStranici){
         return stripRepository.findByIdZanr(id_zanr, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
+
     public List<Strip> stripoviPoNazivu(String naziv, int brojStranice, int brojStripovaNaStranici){
+        if(naziv == null) throw new ApiRequestException("Naziv mora biti poslan!");
+        if(naziv.length() < 3) throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
         return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
