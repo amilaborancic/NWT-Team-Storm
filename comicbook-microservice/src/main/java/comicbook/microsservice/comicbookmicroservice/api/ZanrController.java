@@ -1,8 +1,7 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
-import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.model.Zanr;
-import comicbook.microsservice.comicbookmicroservice.repository.ZanrRepository;
+import comicbook.microsservice.comicbookmicroservice.service.ZanrService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,17 +12,15 @@ import java.util.List;
 public class ZanrController {
 
     @Autowired
-    ZanrRepository zanrRepository;
+    ZanrService zanrService;
 
     @GetMapping(value="/svi")
     public List<Zanr> sviZanrovi(){
-        return zanrRepository.findAll();
+        return zanrService.sviZanrovi();
     }
 
     @PostMapping(value="/novi")
     public Long dodajZanr(@RequestBody Zanr zanr){
-        if(zanr.getNaziv().equals("") || zanr.getNaziv() == null) throw new ApiRequestException("Naziv zanra ne smije biti prazan!");
-        zanrRepository.save(zanr);
-        return zanr.getId();
+        return zanrService.dodajZanr(zanr);
     }
 }

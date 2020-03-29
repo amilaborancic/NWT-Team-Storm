@@ -1,8 +1,7 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
-import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.model.Izdavac;
-import comicbook.microsservice.comicbookmicroservice.repository.IzdavacRepository;
+import comicbook.microsservice.comicbookmicroservice.service.IzdavacService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,17 +11,15 @@ import java.util.List;
 @RequestMapping("/izdavac")
 public class IzdavacController {
     @Autowired
-    IzdavacRepository izdavacRepository;
+    IzdavacService izdavacService;
 
     @GetMapping(value="/svi")
     public List<Izdavac> sviIzdavaci(){
-        return izdavacRepository.findAll();
+        return izdavacService.sviIzdavaci();
     }
 
     @PostMapping(value="/novi")
     public Long dodajIzdavaca(@RequestBody Izdavac izdavac){
-        if(izdavac.getNaziv().equals("") || izdavac.getNaziv() == null) throw new ApiRequestException("Naziv izdavaca ne smije biti prazan!");
-        izdavacRepository.save(izdavac);
-        return izdavac.getId();
+        return izdavacService.dodajIzdavaca(izdavac);
     }
 }

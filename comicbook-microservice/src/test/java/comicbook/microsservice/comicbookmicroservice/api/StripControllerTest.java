@@ -1,5 +1,6 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
+import comicbook.microsservice.comicbookmicroservice.service.AutorService;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,8 @@ class StripControllerTest {
 
     @Autowired
     private MockMvc MockMVC;
+    @Autowired
+    private AutorService autorService;
 
     @Test
     void sviStripovi() throws Exception {
@@ -88,16 +91,6 @@ class StripControllerTest {
                 .andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(jsonPath("$", hasSize(0)));
     }
-/*
-    @Test
-    void dodajStrip() throws Exception {
-        Strip novi = new Strip("Test", "Testni opis", "svdvdds", 0.0, 0, null, 1L, 1L);
-        Gson gson = new Gson();
-        String json = gson.toJson(novi);
 
-        MockMVC.perform(MockMvcRequestBuilders.post("/strip/noviStrip")
-                .contentType(MediaType.APPLICATION_JSON).content(json))
-                .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(MockMvcResultMatchers.content().string("7"));
-    }*/
+
 }
