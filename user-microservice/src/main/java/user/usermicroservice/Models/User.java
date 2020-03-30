@@ -2,7 +2,9 @@ package user.usermicroservice.Models;
 
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 
 @Entity
@@ -15,18 +17,23 @@ public class User {
     @NotBlank(message = "Ime je obavezno!")
     private String ime;
     private  String prezime;
-    @NotBlank(message = "Email je obavezan!")
+    @NotBlank(message = "Username je obavezan!")
+    @Size(min = 1, max = 15, message = "Username mora imati između 1 i 15 karaktera")
+    private String userName;
+    @Email(message = "Email mora biti validan")
     private  String email;
+    @NotBlank(message = "Sifra je obavezna!")
     private String sifra;
     private int broj_losih_reviewa;
     private int ukupno_reviewa;
 
     protected User(){}
 
-    public User(Long id, String ime, String prezime, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
+    public User(Long id, String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
         this.id = id;
         this.ime = ime;
         this.prezime = prezime;
+        this.userName = userName;
         this.email = email;
         this.sifra = sifra;
         this.broj_losih_reviewa = broj_losih_reviewa;
@@ -44,6 +51,8 @@ public class User {
     public String getPrezime() {
         return prezime;
     }
+
+    public String getUserName(){return userName;}
 
     public String getEmail() {
         return email;
