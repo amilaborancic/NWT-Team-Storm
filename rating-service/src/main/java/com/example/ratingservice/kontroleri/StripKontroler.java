@@ -27,8 +27,8 @@ public class StripKontroler {
 		
 	//vraca info za neki strip
 		@RequestMapping(value="/strip/{id}", method=RequestMethod.GET)
-		public Optional<Strip> stripById(@PathVariable Long id) {
-			return stripServis.findById(id);
+		public Strip stripById(@PathVariable Long id) {
+			return stripServis.getOne(id);
 		}	
 		
 	//dodaje strip novi na osnovu imena

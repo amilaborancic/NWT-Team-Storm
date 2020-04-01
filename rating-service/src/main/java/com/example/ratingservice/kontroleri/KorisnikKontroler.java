@@ -27,15 +27,14 @@ public class KorisnikKontroler {
 	
 	//dodaje novog korisnika
 	@RequestMapping(value="/dodaj-korisnika", method=RequestMethod.GET)
-	public String addUser() {
+	public void addUser() {
 		Korisnik korisnik=new Korisnik();
 		korisnikServis.save(korisnik);
-		return "Novi korisnik je dodan";
 	}
 	//vraca podatke o korisniku sa nekim id-om
 		@RequestMapping(value="/korisnik/{id}", method=RequestMethod.GET)
-		public Optional<Korisnik> userById(@PathVariable Long id) {
-			return korisnikServis.findById(id);
+		public Korisnik userById(@PathVariable Long id) {
+			return korisnikServis.getOne(id);
 		}
 	
 }

@@ -27,7 +27,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
-public class RatingServisTest {
+public class RatingKontrolerTest {
 	 
 	 @Autowired
 	 private MockMvc mockMvc;

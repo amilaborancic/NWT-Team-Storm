@@ -16,4 +16,5 @@ public interface StripRepozitorij extends JpaRepository<Strip,Long> {
 	Strip getOne(Long id);
 	List<Strip> findAll();
 	void deleteById(Long id);
+	Strip findByNaziv(String naziv);
 }

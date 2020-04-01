@@ -19,9 +19,9 @@ public class Strip {
 	private Long id;
 	
 	private String naziv;
-	@PositiveOrZero(message = "Broj komentara ne moze bit negativan.") 
+	@PositiveOrZero
 	private int ukupno_komentara;
-	@PositiveOrZero(message = "Ukupni rating ne moze bit negativna.") 
+	@PositiveOrZero 
 	private double ukupni_rating;
 	
 	public Strip(String naziv, int ukupno_komentara, float ukupni_rating) {

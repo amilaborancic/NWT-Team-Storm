@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
+import com.example.ratingservice.exception.ApiRequestException;
 import com.example.ratingservice.modeli.Korisnik;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
@@ -30,25 +32,35 @@ public class RatingServis {
 		return ratingRepozitorij.findAll();
 	}
 	
-	public Optional<Rating> findById(Long id) {
-		return ratingRepozitorij.findById(id);
+	public Rating getOne(Long id) {
+		if(ratingRepozitorij.findById(id).isPresent()) {
+			return ratingRepozitorij.getOne(id);
+		}
+		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	public List<Rating> findByKorisnik(Long id) {
-		List<Rating> all_ratings=ratingRepozitorij.findAll();
-		List<Rating> ratings_by_user=new ArrayList<Rating>();
 		
+		if(korisnikRepozitorij.findById(id).isPresent()) {
+			List<Rating> all_ratings=ratingRepozitorij.findAll();
+			List<Rating> ratings_by_user=new ArrayList<Rating>();
+			
 		for (Rating r:all_ratings) {
 			if(r.getKorisnik().getId()==id) {
 				ratings_by_user.add(r);
 			}
 		}
 		return ratings_by_user;
+		}
+		
+		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	public List<Rating> findByStrip(Long id) {
-		List<Rating> all_ratings=ratingRepozitorij.findAll();
-		List<Rating> ratings_by_strip=new ArrayList<Rating>();
+		
+		if(stripRepozitorij.findById(id).isPresent()) {
+			List<Rating> all_ratings=ratingRepozitorij.findAll();
+			List<Rating> ratings_by_strip=new ArrayList<Rating>();
 		
 		for (Rating r:all_ratings) {
 			if(r.getStrip().getId()==id) {
@@ -56,18 +68,57 @@ public class RatingServis {
 			}
 		}
 		return ratings_by_strip;
+		}
+		
+		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	
 	public void save(Rating rating) {
+		
+		Strip strip_stari=rating.getStrip();
+		Korisnik korisnik_stari=rating.getKorisnik();
+		if(korisnikRepozitorij.findById(rating.getKorisnik().getId()).isPresent()) {
+			throw new ApiRequestException("Korisnik ne postoji!");
+		}
+		
+		if(stripRepozitorij.findById(rating.getStrip().getId()).isPresent()) {
+			throw new ApiRequestException("Strip ne postoji!");
+		}
+		
+		Rating novi_rating=new Rating();
+		Korisnik korisnik=korisnikRepozitorij.getOne(korisnik_stari.getId());
+		Strip strip=stripRepozitorij.getOne(strip_stari.getId());
+		
+		int ocjena=rating.getOcjena();
+		int ukupno_komentara=strip.getUkupno_komentara();
+		int br_losih_reviewa=korisnik.getBroj_losih_reviewa();
+		int ukupno_reviewa=korisnik.getUkupno_reviewa();
+		double procenat;
+		if(ukupno_reviewa!=0) {
+			 procenat=((ukupno_reviewa-br_losih_reviewa)/ukupno_reviewa)*100;
+			 if(procenat>=40 && procenat<=60) {
+				 double rating_stripa=strip.getUkupni_rating();
+				 strip.setUkupni_rating((rating_stripa+Double.valueOf(ocjena))/2);
+			 }
+		}
+		
+		if(ocjena<4)	
+			korisnik.setBroj_losih_reviewa(br_losih_reviewa+1);
+				
+		strip.setUkupno_komentara(ukupno_komentara+1);
+		korisnik.setUkupno_reviewa(ukupno_reviewa+1);
+		
+		novi_rating.setKomentar(rating.getKomentar());
+		novi_rating.setOcjena(rating.getOcjena());
+		novi_rating.setKorisnik(korisnik);
+		novi_rating.setStrip(strip);
+		
+		
+		korisnikRepozitorij.save(korisnik);
+		stripRepozitorij.save(strip);
 		ratingRepozitorij.save(rating);
 	}
 	
-	public Rating addRating(Long user_id, Long strip_id, Integer ocjena, String komentar){
-		Korisnik korisnik=korisnikRepozitorij.getOne(user_id);
-		Strip strip=stripRepozitorij.getOne(strip_id);
-		Rating rating=ratingRepozitorij.save(new Rating(korisnik,strip,ocjena,komentar));
-		return rating;
-	}
 	
 }

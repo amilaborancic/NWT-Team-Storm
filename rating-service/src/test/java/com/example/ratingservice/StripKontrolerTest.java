@@ -1,3 +1,4 @@
+
 package com.example.ratingservice;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -12,44 +13,44 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
+
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @AutoConfigureMockMvc
 
-public class KorisnikServisTest {
+public class StripKontrolerTest {
 
 	 @Autowired
 	 private MockMvc mockMvc;
-	 
+	
 	 @Test
 	 public void all() throws Exception {
 		 mockMvc.perform(MockMvcRequestBuilders
-		  .get("/korisnici")
+		  .get("/stripovi")
 	      .accept(MediaType.APPLICATION_JSON))
 	      .andDo(print())
 	      .andExpect(status().isOk());
 	 }
 	 
 	 @Test
-	 public void userById () throws Exception {
+	 public void stripById () throws Exception {
 
 		mockMvc.perform( MockMvcRequestBuilders
-	      .get("/korisnik/{id}", 1)
+	      .get("/strip/{id}", 1)
 	      .accept(MediaType.APPLICATION_JSON))
 	      .andDo(print())
 	      .andExpect(status().isOk())
 	      .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
 	 }
-	 
+	
 	 @Test
 	 public void save() throws Exception {
 		 mockMvc.perform(MockMvcRequestBuilders
-		  .get("/dodaj-korisnika")
+		  .get("/dodaj-strip/nesto")
 	      .accept(MediaType.APPLICATION_JSON))
 	      .andDo(print())
 	      .andExpect(status().isOk());
 	 }
 	 
-	 
-	 
+
 }

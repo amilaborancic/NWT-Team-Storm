@@ -9,6 +9,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.Proxy;
 
@@ -31,9 +32,11 @@ public class Rating {
 	@JoinColumn(name="strip_id")
 	private Strip strip;
 	
-	@Min(value =1, message = "Ocjena moze bit u rasponu od 1-5.")
-	@Max(value =5, message = "Ocjena moze bit u rasponu od 1-5.")
+	@Min(value =1)
+	@Max(value =5)
+	@NotNull
 	private int ocjena;
+	@NotNull
 	private String komentar;
 	
 	public Rating(Korisnik korisnik, Strip strip, int ocjena, String komentar) {

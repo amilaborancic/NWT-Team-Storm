@@ -16,5 +16,6 @@ public interface RatingRepozitorij extends JpaRepository<Rating,Long> {
 	List<Rating> findAll();
 	Optional<Rating> findById(Long id);
 	Optional<Rating> findByKorisnik(Optional<Korisnik> korisnik);
+	Rating getOne(Long id);
 
 }
