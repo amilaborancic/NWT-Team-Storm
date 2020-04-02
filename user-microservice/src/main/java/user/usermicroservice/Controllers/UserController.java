@@ -36,11 +36,7 @@ public class UserController {
         return userServis.findUserByName(name);
     }
 
-    @RequestMapping(method = RequestMethod.POST, value = "/sign-in")
-        public Long signIn(@RequestBody String userName){
-            return userServis.findUserByName(userName);
 
-    }
 
 
 

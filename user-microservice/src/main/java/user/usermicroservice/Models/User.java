@@ -29,8 +29,8 @@ public class User {
 
     protected User(){}
 
-    public User(Long id, String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
-        this.id = id;
+    public User( String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
+
         this.ime = ime;
         this.prezime = prezime;
         this.userName = userName;
