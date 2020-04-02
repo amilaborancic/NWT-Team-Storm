@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.Servisi.UserServis;
+import user.usermicroservice.exception.ApiRequestException;
 
 import java.util.Optional;
 
@@ -27,6 +28,12 @@ public class UserController {
 
     @RequestMapping(method = RequestMethod.POST, value ="/sign-up")
     public void signUp(@RequestBody User user){
+
+        if(user.getIme().equals("")) throw new ApiRequestException("Ime je obavezno!");
+        if(user.getUserName().equals("")) throw new ApiRequestException("Username je obavezan!");
+        if(user.getEmail().equals("")) throw new ApiRequestException("Email mora biti valjan!");
+        if(userServis.postojiEmail(user.getEmail())) throw new ApiRequestException("User sa "+ user.getEmail()+ " već postoji!");
+        if(user.getSifra().equals("")) throw new ApiRequestException("Sifra mora biti unesena!");
         userServis.addNewUser(user);
 
     }

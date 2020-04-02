@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
+import user.usermicroservice.exception.ApiRequestException;
 
 import java.util.Optional;
 
@@ -16,7 +17,11 @@ public class UserServis {
     UserRepository userRepository;
 
     public Optional<User> findUserById( Long id){
-        return userRepository.findById(id);
+
+        Optional <User> user = userRepository.findById(id);
+        if(user.isEmpty()) throw new ApiRequestException("User sa id-jem " + id + " ne postoji!");
+
+        return user;
     }
 
 
