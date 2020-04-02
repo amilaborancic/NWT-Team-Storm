@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
@@ -17,6 +19,7 @@ import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
 import com.example.ratingservice.repozitorij.RatingRepozitorij;
 import com.example.ratingservice.repozitorij.StripRepozitorij;
 
+@Transactional
 @Service
 public class RatingServis {
 	
@@ -78,15 +81,15 @@ public class RatingServis {
 		
 		Strip strip_stari=rating.getStrip();
 		Korisnik korisnik_stari=rating.getKorisnik();
-		if(korisnikRepozitorij.findById(rating.getKorisnik().getId()).isPresent()) {
+		if(!korisnikRepozitorij.findById(rating.getKorisnik().getId()).isPresent()) {
 			throw new ApiRequestException("Korisnik ne postoji!");
 		}
 		
-		if(stripRepozitorij.findById(rating.getStrip().getId()).isPresent()) {
+		if(!stripRepozitorij.findById(rating.getStrip().getId()).isPresent()) {
 			throw new ApiRequestException("Strip ne postoji!");
 		}
 		
-		Rating novi_rating=new Rating();
+
 		Korisnik korisnik=korisnikRepozitorij.getOne(korisnik_stari.getId());
 		Strip strip=stripRepozitorij.getOne(strip_stari.getId());
 		
@@ -108,11 +111,6 @@ public class RatingServis {
 				
 		strip.setUkupno_komentara(ukupno_komentara+1);
 		korisnik.setUkupno_reviewa(ukupno_reviewa+1);
-		
-		novi_rating.setKomentar(rating.getKomentar());
-		novi_rating.setOcjena(rating.getOcjena());
-		novi_rating.setKorisnik(korisnik);
-		novi_rating.setStrip(strip);
 		
 		
 		korisnikRepozitorij.save(korisnik);

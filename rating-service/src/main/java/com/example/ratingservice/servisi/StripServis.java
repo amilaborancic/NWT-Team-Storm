@@ -2,21 +2,31 @@ package com.example.ratingservice.servisi;
 
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.ratingservice.exception.ApiRequestException;
 import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
+import com.example.ratingservice.repozitorij.RatingRepozitorij;
 import com.example.ratingservice.repozitorij.StripRepozitorij;
-
-
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+@Transactional
 @Service
 public class StripServis {
 	
 	@Autowired
 	private StripRepozitorij stripRepozitorij;
+	
+	@Autowired
+	private RatingRepozitorij ratingRepozitorij;
+	
 	
 	public Strip getOne(Long id) {
 		
@@ -32,17 +42,10 @@ public class StripServis {
 		stripRepozitorij.save(strip);
 	}
 	
-	public void deleteById(Long id) {
-		
-		if(stripRepozitorij.findById(id).isPresent()){
-			stripRepozitorij.deleteById(id);
-		}
-		
-		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
-	}
-	
-	public Iterable<Strip> findAll() {
+	public List<Strip> findAll() {
 		return stripRepozitorij.findAll();
 	}
+	
+	
 	
 }
