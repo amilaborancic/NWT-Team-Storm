@@ -28,7 +28,9 @@ public class UserServis {
         return userRepository.findByUserName(name).getId();
     }
 
-
+    public boolean postojiEmail(String email){
+        return userRepository.existsByEmail(email);
+    }
 
 
 
