@@ -46,7 +46,6 @@ class DemoCommandLineRunner implements CommandLineRunner {
 	@Autowired
 	private StripRepository stripRepozitorij;
 
-
 	@Override
 	public void run(String... args) throws Exception {
 

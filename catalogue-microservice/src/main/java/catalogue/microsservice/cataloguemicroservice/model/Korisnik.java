@@ -6,7 +6,6 @@ import java.util.List;
 @Entity
 @Table(name="korisnik")
 public class Korisnik {
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Long id;
 

@@ -34,6 +34,4 @@ public class UserServis {
     }
     public List<User> svi(){ return userRepository.findAll(); }
 
-
-
 }

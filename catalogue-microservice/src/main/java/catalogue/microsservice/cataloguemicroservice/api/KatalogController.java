@@ -1,12 +1,15 @@
 package catalogue.microsservice.cataloguemicroservice.api;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
+import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
+import java.util.List;
 
 @RestController
 @RequestMapping("/katalog")
@@ -16,6 +19,8 @@ public class KatalogController {
 
     @Autowired
     KatalogService katalogService;
+    @Autowired
+    KorisnikService korisnikService;
 
     //svi katalozi za jednog usera sa paginacijom
     @GetMapping(value="/svi")
@@ -24,11 +29,17 @@ public class KatalogController {
     }
 
     //kreiranje kataloga za nekog usera
-    @PostMapping(value="/novi")
+    @PostMapping(value="/novi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Long kreirajKatalog(@RequestBody Katalog katalog){
         katalogService.kreirajKatalog(katalog);
         RestTemplate obj = new RestTemplate();
-        obj.put("http://localhost:8082/katalog/update", katalog);
+        //headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<Katalog> entity = new HttpEntity<>(katalog, headers);
+        //put req
+        ResponseEntity<Long> response = obj.exchange("http://localhost:8082/katalog/update", HttpMethod.PUT, entity, Long.class);
         return katalog.getId();
     }
 
