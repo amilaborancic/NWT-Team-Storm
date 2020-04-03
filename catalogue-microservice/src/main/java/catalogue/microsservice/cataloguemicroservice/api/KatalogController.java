@@ -28,7 +28,7 @@ public class KatalogController {
     public Long kreirajKatalog(@RequestBody Katalog katalog){
         katalogService.kreirajKatalog(katalog);
         RestTemplate obj = new RestTemplate();
-        obj.put("http://localhost:8080/katalog/update", katalog);
+        obj.put("http://localhost:8082/katalog/update", katalog);
         return katalog.getId();
     }
 

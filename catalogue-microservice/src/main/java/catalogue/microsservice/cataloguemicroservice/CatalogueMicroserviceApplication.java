@@ -7,6 +7,10 @@ import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepositor
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
 import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,7 +18,9 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 import java.util.ArrayList;
@@ -43,10 +49,17 @@ class DemoCommandLineRunner implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		Korisnik k1 = new Korisnik();
-		Korisnik k2 = new Korisnik();
-		korisnikRepozitorij.save(k1);
-		korisnikRepozitorij.save(k2);
+
+        //korisnike dobavljamo od user servisa
+        RestTemplate korisnici = new RestTemplate();
+        String resourceURL = "http://localhost:8080/svi/useri";
+        ResponseEntity<String> response = korisnici.getForEntity(resourceURL, String.class);
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode root = mapper.readTree(response.getBody());
+		root.forEach(korisnik->{
+			Korisnik k = new Korisnik(korisnik.path("id").asLong());
+			korisnikRepozitorij.save(k);
+		});
 
 		Strip s1 = new Strip();
 		Strip s2 = new Strip();

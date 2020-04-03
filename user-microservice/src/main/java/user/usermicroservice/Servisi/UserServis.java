@@ -8,6 +8,7 @@ import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.exception.ApiRequestException;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -17,26 +18,21 @@ public class UserServis {
     UserRepository userRepository;
 
     public Optional<User> findUserById( Long id){
-
         Optional <User> user = userRepository.findById(id);
         if(user.isEmpty()) throw new ApiRequestException("User sa id-jem " + id + " ne postoji!");
-
         return user;
     }
-
 
     public void addNewUser(User user){
         userRepository.save(user);
     }
-
     public Long findUserByName(String name){
         return userRepository.findByUserName(name).getId();
     }
-
     public boolean postojiEmail(String email){
         return userRepository.existsByEmail(email);
     }
-
+    public List<User> svi(){ return userRepository.findAll(); }
 
 
 

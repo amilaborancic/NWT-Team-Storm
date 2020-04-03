@@ -2,12 +2,8 @@ package catalogue.microsservice.cataloguemicroservice.service;
 
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
-import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
-import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
-import catalogue.microsservice.cataloguemicroservice.repository.StripRepository;
-import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
