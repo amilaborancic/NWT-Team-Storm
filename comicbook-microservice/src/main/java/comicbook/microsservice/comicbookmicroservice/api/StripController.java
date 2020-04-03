@@ -58,5 +58,10 @@ public class StripController {
         return stripService.dodajStrip(strip);
     }
 
+    @GetMapping(value="/count")
+    public Long brojStripovaUBazi(){return stripService.brojStripovaUBazi();}
+
+    @GetMapping(value="/brojNaStranici")
+    public int brojNaStranici(){return this.brojStripovaNaStranici;}
 
 }

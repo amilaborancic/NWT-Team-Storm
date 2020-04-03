@@ -133,18 +133,5 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		stripRepository.save(s5);
 		stripRepository.save(s6);
 
-		/*s1.setAutori(autori_1);
-		s2.setAutori(autori_2);
-		s3.setAutori(autori_3);
-		s4.setAutori(autori_4);
-		s5.setAutori(autori_5);
-		s6.setAutori(autori_6);
-
-		stripRepository.save(s1);
-		stripRepository.save(s2);
-		stripRepository.save(s3);
-		stripRepository.save(s4);
-		stripRepository.save(s5);
-		stripRepository.save(s6);*/
 	}
 }

@@ -74,4 +74,8 @@ public class StripService {
         stripRepository.save(strip);
         return strip.getId();
     }
+
+    public Long brojStripovaUBazi(){
+        return stripRepository.count();
+    }
 }

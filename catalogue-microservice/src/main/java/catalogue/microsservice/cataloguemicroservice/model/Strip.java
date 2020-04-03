@@ -6,7 +6,6 @@ import java.util.List;
 @Entity
 @Table(name="strip")
 public class Strip {
-    @GeneratedValue
     @Id
     @Column(name="id")
     private Long idStrip;
@@ -16,5 +15,8 @@ public class Strip {
     public Long getIdStrip() { return idStrip; }
     public List<Katalog> getKatalozi() { return katalozi; }
 
+    public Strip(Long idStrip){
+        this.idStrip = idStrip;
+    }
     public Strip(){}
 }

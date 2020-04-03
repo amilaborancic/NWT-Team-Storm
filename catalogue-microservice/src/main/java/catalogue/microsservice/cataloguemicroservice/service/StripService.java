@@ -31,4 +31,6 @@ public class StripService {
     public boolean postojiUKatalogu(Long id_strip, Long id_katalog) {
         return stripRepozitorij.existsByIdStripAndKatalozi_Id(id_strip, id_katalog);
     }
+
+    public List<Strip> stripovi(){ return stripRepozitorij.findAll();}
 }

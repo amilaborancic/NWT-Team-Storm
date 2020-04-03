@@ -1,5 +1,6 @@
 package catalogue.microsservice.cataloguemicroservice.api;
 
+import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.service.StripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -21,6 +22,10 @@ public class StripController {
     public List<Long> sviIzJednogKataloga(@PathVariable("id_katalog") Long id_katalog, @Param("brojStranice") int brojStranice){
         return stripService.sviIzJednogKataloga(id_katalog, brojStranice, brojStripovaNaStranici);
     }
+
+    //svi stripovi - samo za testiranje
+    @GetMapping(value="/svistripovi")
+    public List<Strip> sviStripovi(){return stripService.stripovi();}
 
 
 
