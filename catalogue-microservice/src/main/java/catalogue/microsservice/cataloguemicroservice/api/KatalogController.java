@@ -44,7 +44,7 @@ public class KatalogController {
     }
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
-    @PutMapping(value="/dodavanje-stripa")
+    @PutMapping(value="/dodavanje-stripa", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public void dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
@@ -67,7 +67,7 @@ public class KatalogController {
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
-    public void obrisiKatalog(@Param("id_katalog") Long id_katalog){
-        katalogService.obrisiKatalog(id_katalog);
+    public String obrisiKatalog(@Param("id_katalog") Long id_katalog){
+        return katalogService.obrisiKatalog(id_katalog);
     }
 }

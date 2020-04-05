@@ -23,6 +23,7 @@ public class StripService {
     }
 
     public Strip jedanStrip(Long id_strip){
+
         Optional<Strip> strip = stripRepozitorij.findById(id_strip);
         if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         return strip.get();

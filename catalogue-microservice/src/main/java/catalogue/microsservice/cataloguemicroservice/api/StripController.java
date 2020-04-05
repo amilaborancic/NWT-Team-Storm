@@ -27,6 +27,4 @@ public class StripController {
     @GetMapping(value="/svistripovi")
     public List<Strip> sviStripovi(){return stripService.stripovi();}
 
-
-
 }

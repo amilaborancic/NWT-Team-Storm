@@ -57,7 +57,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		//NE BRISATI OVO!!
 
         //korisnike dobavljamo od user servisa
-		/*
+
         RestTemplate korisnici = new RestTemplate();
         String resourceURL = "http://localhost:8080/svi/useri";
         ResponseEntity<String> response = korisnici.getForEntity(resourceURL, String.class);
@@ -66,24 +66,25 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		root.forEach(korisnik->{
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
-		});*/
+		});
 
-		Korisnik k1 = new Korisnik((long) 1);
+		/*Korisnik k1 = new Korisnik((long) 1);
 		Korisnik k2 = new Korisnik((long) 2);
 		korisnikRepozitorij.save(k1);
-		korisnikRepozitorij.save(k2);
+		korisnikRepozitorij.save(k2);*/
 
-		/*Strip s1 = new Strip();
-		Strip s2 = new Strip();
-		Strip s3 = new Strip();
-		Strip s4 = new Strip();
+		Strip s1 = new Strip((long) 1);
+		Strip s2 = new Strip((long) 2);
+		Strip s3 = new Strip((long) 3);
+		Strip s4 = new Strip((long) 4);
 
 		stripRepozitorij.save(s1);
 		stripRepozitorij.save(s2);
 		stripRepozitorij.save(s3);
-		stripRepozitorij.save(s4);*/
+		stripRepozitorij.save(s4);
 
 		/*stripove dobijamo iz strip servisa*/
+		/*
 		RestTemplate stripoviIzStripServisa = new RestTemplate();
 		String urlUkupnoStripova = "http://localhost:8083/strip/count";
 		String urlBrojNaStranici = "http://localhost:8083/strip/brojNaStranici";
@@ -104,7 +105,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			});
 			i++;
 		}
-
+*/
 
 		Korisnik korisnik = korisnikRepozitorij.findAll().get(0);
 		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(1);

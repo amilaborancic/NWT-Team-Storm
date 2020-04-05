@@ -64,4 +64,5 @@ public class StripController {
     @GetMapping(value="/brojNaStranici")
     public int brojNaStranici(){return this.brojStripovaNaStranici;}
 
+
 }
