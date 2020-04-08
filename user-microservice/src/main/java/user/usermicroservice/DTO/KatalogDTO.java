@@ -1,6 +1,5 @@
 package user.usermicroservice.DTO;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class KatalogDTO {
@@ -26,4 +25,5 @@ public class KatalogDTO {
         this.naziv = naziv;
         this.idKorisnik = idKorisnik;
     }
+
 }

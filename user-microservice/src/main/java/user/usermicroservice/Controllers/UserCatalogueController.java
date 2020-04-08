@@ -5,11 +5,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
+import user.usermicroservice.DTO.KatalogDeleteDTO;
 import user.usermicroservice.Servisi.UserServis;
 
-import java.nio.charset.Charset;
 import java.util.Collections;
-import java.util.Map;
 
 
 @RestController
@@ -33,14 +32,13 @@ public class UserCatalogueController {
     }
 
     @DeleteMapping(value="/delete-katalog", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String obrisiKorisnikovKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise){
+    public String obrisiKorisnikovKatalog(@RequestBody KatalogDeleteDTO katalogKojiSeBrise){
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<HttpHeaders> entity = new HttpEntity<>(headers);
-        //izvucemo id kataloga koji se brise iz body
-        Long id_kataloga = katalogKojiSeBrise.get("id_katalog");
-        ResponseEntity<String> response = restTemplate.exchange("http://catalogue-service/katalog/brisanje-kataloga?id_katalog="+id_kataloga, HttpMethod.DELETE, entity, String.class);
+
+        HttpEntity<KatalogDeleteDTO> entity = new HttpEntity<>(katalogKojiSeBrise, headers);
+        ResponseEntity<String> response = restTemplate.exchange("http://catalogue-service/katalog/brisanje-kataloga", HttpMethod.DELETE, entity, String.class);
         return response.getBody();
     }
 

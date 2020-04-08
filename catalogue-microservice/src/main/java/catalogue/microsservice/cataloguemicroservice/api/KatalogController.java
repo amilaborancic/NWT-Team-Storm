@@ -70,7 +70,8 @@ public class KatalogController {
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
-    public String obrisiKatalog(@Param("id_katalog") Long id_katalog){
+    public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise){
+        Long id_katalog = katalogKojiSeBrise.get("idKatalog");
         return katalogService.obrisiKatalog(id_katalog);
     }
 }

@@ -10,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import user.usermicroservice.DTO.KatalogDTO;
+import user.usermicroservice.DTO.KatalogDeleteDTO;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -44,7 +46,11 @@ class UserCatalogueControllerTest {
     }
 
     @Test
-    void obrisiKorisnikovKatalog() {
-
+    void obrisiKorisnikovKatalog() throws Exception {
+        KatalogDeleteDTO katalogKojiSeBrise = new KatalogDeleteDTO((long) 1, (long) 2);
+        mockMvc.perform(delete("/katalog/delete-katalog")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(katalogKojiSeBrise)))
+                .andDo(print()).andExpect(status().isOk());
     }
 }
