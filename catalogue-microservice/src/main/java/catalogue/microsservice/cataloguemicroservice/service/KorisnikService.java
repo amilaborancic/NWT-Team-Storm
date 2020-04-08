@@ -3,14 +3,10 @@ package catalogue.microsservice.cataloguemicroservice.service;
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
-import catalogue.microsservice.cataloguemicroservice.repository.KatalogRepository;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 @Service

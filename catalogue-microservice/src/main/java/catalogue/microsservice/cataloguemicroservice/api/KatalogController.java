@@ -2,6 +2,7 @@ package catalogue.microsservice.cataloguemicroservice.api;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.*;
@@ -22,6 +23,9 @@ public class KatalogController {
     @Autowired
     KorisnikService korisnikService;
 
+    @Autowired
+    RestTemplate restTemplate;
+
     //svi katalozi za jednog usera sa paginacijom
     @GetMapping(value="/svi")
     public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik, @Param("brojStranice") int brojStranice){
@@ -32,19 +36,18 @@ public class KatalogController {
     @PostMapping(value="/novi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Long kreirajKatalog(@RequestBody Katalog katalog){
         katalogService.kreirajKatalog(katalog);
-        RestTemplate obj = new RestTemplate();
         //headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<Katalog> entity = new HttpEntity<>(katalog, headers);
         //put req
-        ResponseEntity<Long> response = obj.exchange("http://localhost:8082/katalog/update", HttpMethod.PUT, entity, Long.class);
+        ResponseEntity<Long> response = restTemplate.exchange("http://catalogue-service/korisnik/update", HttpMethod.PUT, entity, Long.class);
         return katalog.getId();
     }
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
-    @PutMapping(value="/dodavanje-stripa", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value="/dodavanje-stripa")
     public void dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");

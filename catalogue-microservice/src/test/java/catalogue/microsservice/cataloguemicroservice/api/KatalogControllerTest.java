@@ -13,12 +13,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -69,10 +71,14 @@ public class KatalogControllerTest {
 
 	@Test
 	public void obrisiStrip() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.delete("/katalog/brisanje-stripa/?id_strip=1&id_katalog=2"))
+		Map<String, Long> stripKojiSeBrise = new HashMap<>();
+		stripKojiSeBrise.put("id_strip", (long) 1);
+		stripKojiSeBrise.put("id_katalog", (long) 2);
+		mockMvc.perform(MockMvcRequestBuilders.delete("/katalog/brisanje-stripa")
+		.content(asJsonString(stripKojiSeBrise)))
 				.andExpect((status().isOk()));
 	}
-
+/*
 	@Test
 	public void kreirajKatalog() throws Exception{
 		mockMvc.perform(post("/katalog/novi")
@@ -80,7 +86,8 @@ public class KatalogControllerTest {
 				.contentType(MediaType.APPLICATION_JSON)
 				.content(asJsonString(new Katalog())))
 				.andExpect(status().isOk());
-	}
+	}*/
+
 }
 	
 
