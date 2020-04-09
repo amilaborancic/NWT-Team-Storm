@@ -81,7 +81,7 @@ public class StripService {
     }
     
     public void azurirajStrip(StripRatingInfo stripRatingInfo) {
-		Strip strip_iz_baze=stripRepository.getOne(stripRatingInfo.getId());
+    	Strip strip_iz_baze=stripRepository.getOne(stripRatingInfo.getId());
     	strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
     	strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
     	stripRepository.save(strip_iz_baze);
