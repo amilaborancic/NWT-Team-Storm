@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 import com.example.ratingservice.servisi.StripServis;
 @RestController
 public class StripKontroler {
@@ -32,12 +32,11 @@ public class StripKontroler {
 		}	
 		
 	//dodaje strip novi na osnovu imena
-		@RequestMapping(value="/dodaj-strip/{naziv}", method=RequestMethod.GET)
+		@RequestMapping(value="/dodaj-strip", method=RequestMethod.GET)
 		public String addStrip(@PathVariable String naziv) {
 			Strip strip=new Strip();
-			strip.setNaziv(naziv);
 			stripServis.save(strip);
-			return "Novi strip je dodan sa nazivom "+strip.getNaziv();
+			return "Novi strip je dodan";
 		}	
 							
 		

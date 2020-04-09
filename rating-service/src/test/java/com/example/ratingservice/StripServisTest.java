@@ -18,10 +18,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 
@@ -41,7 +41,8 @@ public class StripServisTest {
 		Strip strip=stripServis.getOne(Long.valueOf(1));
 		assertThat(strip.getId()).isEqualTo(1);
 	}
-	
+
+	/* ponovo
 	@Test
 	public void save()throws Exception {
 		
@@ -50,7 +51,7 @@ public class StripServisTest {
 		stripServis.save(strip);
 		assertThat(stripServis.getOne(strip.getId()).getNaziv()).isEqualTo("lalalalala");
 	}
-	
+	*/
 
 	@Test
 	public void findAll()throws Exception {

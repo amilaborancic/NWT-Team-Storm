@@ -1,6 +1,6 @@
 package com.example.ratingservice;
 
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
 import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
@@ -10,8 +10,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
+
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @EnableSwagger2
@@ -22,6 +26,15 @@ public class RatingServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RatingServiceApplication.class, args);
 	}
+	
+
+	@LoadBalanced
+	@Bean
+	public RestTemplate getRestTemplate() {
+		return new RestTemplate();
+	}
+	
+	
 }
 
 @Component
@@ -38,15 +51,15 @@ class DemoCommandLineRunner implements CommandLineRunner{
 	public void run(String... args) throws Exception {
 		
 		//unosi u tabelu
-		Korisnik k1=new Korisnik();
+		User k1=new User();
 		
-		Strip s1=new Strip("skriveno lice",0,0);
-		Strip s2=new Strip("magicni vjetar",0,0);
+		Strip s1=new Strip();
+		Strip s2=new Strip();
 		
 		k1.setBroj_losih_reviewa(0);
 		k1.setUkupno_reviewa(1);
 		
-		s1.setUkupno_komentara(1);
+		s1.setUkupnoKomentara(1);
 		
 		stripRepozitorij.save(s1);
 		stripRepozitorij.save(s2);

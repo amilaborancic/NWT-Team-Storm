@@ -10,30 +10,30 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 
 @RestController
-public class KorisnikKontroler {
+public class UserKontroler {
 	@Autowired
-	private KorisnikServis korisnikServis;
+	private UserServis korisnikServis;
 	
 	//vraca sve korisnike
 	@RequestMapping(value="/korisnici", method=RequestMethod.GET)
-	public List<Korisnik> all() {
-		return (List<Korisnik>) korisnikServis.findAll();
+	public List<User> all() {
+		return (List<User>) korisnikServis.findAll();
     }
 	
 	//dodaje novog korisnika
 	@RequestMapping(value="/dodaj-korisnika", method=RequestMethod.GET)
 	public void addUser() {
-		Korisnik korisnik=new Korisnik();
+		User korisnik=new User();
 		korisnikServis.save(korisnik);
 	}
 	//vraca podatke o korisniku sa nekim id-om
 		@RequestMapping(value="/korisnik/{id}", method=RequestMethod.GET)
-		public Korisnik userById(@PathVariable Long id) {
+		public User userById(@PathVariable Long id) {
 			return korisnikServis.getOne(id);
 		}
 	

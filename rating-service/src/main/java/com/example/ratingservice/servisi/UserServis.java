@@ -13,14 +13,14 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
 import com.example.ratingservice.repozitorij.RatingRepozitorij;
 
 @Transactional
 @Service
-public class KorisnikServis {
+public class UserServis {
 	
 	@Autowired
 	private KorisnikRepozitorij korisnikRepozitorij;
@@ -28,7 +28,7 @@ public class KorisnikServis {
 	@Autowired
 	private RatingRepozitorij ratingRepozitorij;
 	
-	public Korisnik getOne(Long id) {
+	public User getOne(Long id) {
 		
 		if(korisnikRepozitorij.findById(id).isPresent()) {
 			return korisnikRepozitorij.getOne(id);
@@ -37,11 +37,11 @@ public class KorisnikServis {
 		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronađen!");	
 	}
 	
-	public List<Korisnik> findAll() {
+	public List<User> findAll() {
 		return korisnikRepozitorij.findAll();
 	}
 	
-	public void save(Korisnik korisnik) {
+	public void save(User korisnik) {
 		korisnikRepozitorij.save(korisnik);
 	}
 	

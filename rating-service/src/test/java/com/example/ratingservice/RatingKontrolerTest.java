@@ -14,10 +14,10 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,7 +32,7 @@ public class RatingKontrolerTest {
 	 @Autowired
 	 private MockMvc mockMvc;
 	 @Autowired
-	 KorisnikServis korisnikServis;
+	 UserServis korisnikServis;
 	 @Autowired
 	 StripServis stripServis;
 	 @Autowired
@@ -90,7 +90,7 @@ public class RatingKontrolerTest {
 	 @Test
 	 public void addRating () throws Exception {
 		 
-		  Korisnik korisnik=korisnikServis.getOne(Long.valueOf(1));
+		  User korisnik=korisnikServis.getOne(Long.valueOf(1));
 		  Strip strip=stripServis.getOne(Long.valueOf(2));
 		  Rating rating=new Rating(korisnik,strip,1,"lose");
 

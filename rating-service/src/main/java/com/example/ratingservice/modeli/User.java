@@ -14,7 +14,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name="korisnik")
 @Proxy(lazy = false)
-public class Korisnik {
+public class User {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,12 +23,12 @@ public class Korisnik {
 	private int broj_losih_reviewa;
 	private int ukupno_reviewa;
 	
-	public Korisnik(int broj_losih_reviewa, int ukupno_reviewa) {
+	public User(int broj_losih_reviewa, int ukupno_reviewa) {
 
 		this.broj_losih_reviewa = broj_losih_reviewa;
 		this.ukupno_reviewa = ukupno_reviewa;
 	}
-	public Korisnik() {}
+	public User() {}
 
 	public Long getId() {
 		return id;

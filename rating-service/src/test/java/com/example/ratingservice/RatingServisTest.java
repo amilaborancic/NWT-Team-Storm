@@ -20,7 +20,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.example.ratingservice.exception.ApiRequestException;
 import com.example.ratingservice.modeli.Rating;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 
@@ -33,7 +33,7 @@ public class RatingServisTest {
 	StripServis stripServis;
 	
 	@Autowired
-	KorisnikServis korisnikServis;
+	UserServis korisnikServis;
 	
 	@Autowired
 	RatingServis ratingServis;

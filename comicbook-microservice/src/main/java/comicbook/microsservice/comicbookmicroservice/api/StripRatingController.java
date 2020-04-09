@@ -27,7 +27,6 @@ public class StripRatingController {
 	@Autowired
 	RestTemplate restTemplate;
 	
-	//za rating treba
     @PutMapping(value="/strip/update-rating")
     public void azurirajStrip(@RequestBody StripRatingInfo stripRatingInfo){
     	stripService.azurirajStrip(stripRatingInfo);

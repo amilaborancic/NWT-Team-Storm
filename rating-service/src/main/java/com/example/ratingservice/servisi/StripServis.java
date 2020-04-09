@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
 import com.example.ratingservice.repozitorij.RatingRepozitorij;
@@ -29,13 +29,8 @@ public class StripServis {
 	
 	
 	public Strip getOne(Long id) {
-		
-		if(stripRepozitorij.findById(id).isPresent()) {
-			return stripRepozitorij.getOne(id);
-		}
-		
-		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
-		
+		return stripRepozitorij.getOne(id);
+		//throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	public void save(Strip strip) {

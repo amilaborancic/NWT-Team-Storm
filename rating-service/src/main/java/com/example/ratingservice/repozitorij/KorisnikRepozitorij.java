@@ -7,13 +7,13 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 
 @Repository
-public interface KorisnikRepozitorij extends JpaRepository<Korisnik,Long> {
+public interface KorisnikRepozitorij extends JpaRepository<User,Long> {
 	
-	List<Korisnik> findAll();
-	Optional<Korisnik> findById(Long id);
+	List<User> findAll();
+	Optional<User> findById(Long id);
 	void deleteById(Long id);
 }

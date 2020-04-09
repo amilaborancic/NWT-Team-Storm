@@ -18,10 +18,10 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.Korisnik;
+import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.servisi.KorisnikServis;
+import com.example.ratingservice.servisi.UserServis;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 
@@ -32,13 +32,13 @@ import com.example.ratingservice.servisi.StripServis;
 public class KorisnikServisTest {
 
 	@Autowired
-	KorisnikServis korisnikServis;
+	UserServis korisnikServis;
 	@Autowired
 	RatingServis ratingServis;
 	
 	@Test
 	public void getOne() throws Exception{
-		Korisnik korisnik=korisnikServis.getOne(Long.valueOf(1));
+		User korisnik=korisnikServis.getOne(Long.valueOf(1));
 		assertThat(korisnik.getId()).isEqualTo(1);
 	}
 	
@@ -53,7 +53,7 @@ public class KorisnikServisTest {
 	public void save()throws Exception {
 		
 		int vel1=korisnikServis.findAll().size();
-		Korisnik korisnik=new Korisnik();
+		User korisnik=new User();
 		korisnikServis.save(korisnik);
 		int vel2=korisnikServis.findAll().size();
 		assertThat(vel1).isNotEqualTo(vel2);
@@ -61,7 +61,7 @@ public class KorisnikServisTest {
 	
 	@Test(expected = ApiRequestException.class)
 	public void getOneExc() throws Exception{
-		 Korisnik k=korisnikServis.getOne(Long.valueOf(999));
+		 User k=korisnikServis.getOne(Long.valueOf(999));
 	}
 	
 	

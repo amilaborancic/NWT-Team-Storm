@@ -27,10 +27,12 @@ public class Rating {
 	private Long id;
 
 	@ManyToOne
+	@JsonProperty(value = "korisnik")
 	@JoinColumn(name="korisnik_id")
-	private Korisnik korisnik;
+	private User korisnik;
 
 	@ManyToOne
+	@JsonProperty(value = "strip")
 	@JoinColumn(name="strip_id")
 	private Strip strip;
 	
@@ -41,7 +43,7 @@ public class Rating {
 	@NotNull
 	private String komentar;
 	
-	public Rating(Korisnik korisnik, Strip strip, int ocjena, String komentar) {
+	public Rating(User korisnik, Strip strip, int ocjena, String komentar) {
 		this.korisnik = korisnik;
 		this.strip = strip;
 		this.ocjena = ocjena;
@@ -58,11 +60,11 @@ public class Rating {
 		this.id = id;
 	}
 
-	public Korisnik getKorisnik() {
+	public User getKorisnik() {
 		return korisnik;
 	}
 
-	public void setKorisnik(Korisnik korisnik) {
+	public void setKorisnik(User korisnik) {
 		this.korisnik = korisnik;
 	}
 
