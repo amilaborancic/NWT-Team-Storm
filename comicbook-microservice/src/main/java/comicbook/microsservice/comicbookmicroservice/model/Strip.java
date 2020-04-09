@@ -20,12 +20,8 @@ public class Strip {
     @NotBlank(message = "Strip mora imati naslovnicu!")
     private String slika;
     @Column(name="ukupni_rating")
-    @NotNull(message = "Ukupni rating ne smije biti null!")
-    @Min(value = 0L)
     private Double ukupniRating;
     @Column(name="ukupno_komentara")
-    @Min(value = 0)
-    @NotNull(message = "Ne smije biti null")
     private Integer ukupnoKomentara;
     @Nullable
     private Integer izdanje;
@@ -71,7 +67,7 @@ public class Strip {
     public Long getIdIzdavac() { return idIzdavac; }
 
     //konstruktor
-    protected Strip() { }
+    public Strip() { }
     public Strip(String naziv, String opis, String slika, Double ukupniRating, Integer ukupnoKomentara, Integer izdanje, Long idIzdavac, Long idZanr, List<Autor> autori){
         this.naziv = naziv;
         this.opis = opis;
@@ -82,5 +78,12 @@ public class Strip {
         this.idIzdavac = idIzdavac;
         this.idZanr = idZanr;
         this.autori = autori;
+    }
+    public void setUkupniRating(Double ukupniRating) {
+    	this.ukupniRating=ukupniRating;
+    }
+    
+    public void setUkupnoKomentara(Integer ukupnoKomentara) {
+    	this.ukupnoKomentara=ukupnoKomentara;
     }
 }

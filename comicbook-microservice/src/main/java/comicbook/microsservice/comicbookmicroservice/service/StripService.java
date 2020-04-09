@@ -1,5 +1,6 @@
 package comicbook.microsservice.comicbookmicroservice.service;
 
+import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.AutorRepository;
@@ -64,9 +65,9 @@ public class StripService {
         if(strip.getNaziv().equals("") || strip.getNaziv() == null) throw new ApiRequestException("Strip mora imati naziv!");
         if(idIzdavac == null) throw new ApiRequestException("Strip mora imati izdavaca!");
         if(idZanr == null) throw new ApiRequestException("Strip mora imati zanr!");
-        if(rating == null || rating < 0) throw new ApiRequestException("Strip mora imati nenegativan rating!");
+        if(rating < 0) throw new ApiRequestException("Strip mora imati pozitivan rating!");
         if(strip.getSlika() == null) throw new ApiRequestException("Strip mora imati sliku!");
-        if(brojKom == null || brojKom < 0) throw new ApiRequestException("Strip mora imati nenegativan broj komentara!");
+        if(brojKom < 0) throw new ApiRequestException("Strip mora imati pozitivan broj komentara!");
         if(strip.getAutori() == null || strip.getAutori().size() == 0) throw new ApiRequestException("Strip mora imati autore!");
         //provjera postoje li proslijedjeni zanr i izdavac
         if(zanrRepository.findById(idZanr).isEmpty()) throw new ApiRequestException("Zanr sa id-jem " + idZanr + " ne postoji.");
@@ -78,4 +79,14 @@ public class StripService {
     public Long brojStripovaUBazi(){
         return stripRepository.count();
     }
+    
+    public void azurirajStrip(StripRatingInfo stripRatingInfo) {
+		Strip strip_iz_baze=stripRepository.getOne(stripRatingInfo.getId());
+    	strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
+    	strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
+    	stripRepository.save(strip_iz_baze);
+	}
+    
+    
+    
 }
