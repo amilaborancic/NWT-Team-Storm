@@ -23,20 +23,22 @@ import comicbook.microsservice.comicbookmicroservice.service.StripService;
 public class StripRatingController {
 
 	@Autowired
-    StripService stripService;
+	StripService stripService;
 	@Autowired
 	RestTemplate restTemplate;
-	
-    @PutMapping(value="/strip/update-rating")
-    public void azurirajStrip(@RequestBody StripRatingInfo stripRatingInfo){
-    	stripService.azurirajStrip(stripRatingInfo);
-    }
-    
-    @GetMapping(value="strip/komentari/{id}")
-    public ResponseEntity<Map<String, String>> komentariStripa(@PathVariable Long id) {
-		ResponseEntity<Map<String,String>> komentari_stripa=restTemplate.exchange("http://rating-service/komentari-stripa/"+id.toString(), HttpMethod.GET,null,new ParameterizedTypeReference<Map<String,String>>(){});
+
+	@PutMapping(value = "/strip/update-rating")
+	public void azurirajStrip(@RequestBody StripRatingInfo stripRatingInfo) {
+		stripService.azurirajStrip(stripRatingInfo);
+	}
+
+	@GetMapping(value = "strip/komentari/{id}")
+	public ResponseEntity<Map<String, String>> komentariStripa(@PathVariable Long id) {
+		ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
+				"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
+				new ParameterizedTypeReference<Map<String, String>>() {
+				});
 		return komentari_stripa;
-    }
-    
-	
+	}
+
 }
