@@ -18,13 +18,6 @@ public class Strip {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	private Integer ukupnoKomentara;
-	private Double ukupniRating;
-	
-	public Strip(Integer ukupnoKomentara, Double ukupniRating) {
-		this.ukupnoKomentara = ukupnoKomentara;
-		this.ukupniRating = ukupniRating;
-	}
 	
 	public Strip() {}
 	public Long getId() {
@@ -33,19 +26,5 @@ public class Strip {
 	public void setId(Long id) {
 		this.id = id;
 	}
-
-	 public void setUkupniRating(Double ukupniRating) {
-	    	this.ukupniRating=ukupniRating;
-	    }
-	    
-	 public void setUkupnoKomentara(Integer ukupnoKomentara) {
-	    	this.ukupnoKomentara=ukupnoKomentara;
-	 }
-	 public Double getUkupniRating() {
-	        return ukupniRating;
-	 }
-	 public Integer getUkupnoKomentara() {
-	        return ukupnoKomentara;
-	 }
 	
 }

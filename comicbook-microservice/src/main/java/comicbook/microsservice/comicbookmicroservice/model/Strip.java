@@ -16,6 +16,7 @@ public class Strip {
     private Long id;
     @NotBlank(message = "Naziv stripa je obavezan!")
     private String naziv;
+    @Column(length = 3000) 
     private String opis;
     @NotBlank(message = "Strip mora imati naslovnicu!")
     private String slika;

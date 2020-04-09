@@ -56,11 +56,6 @@ class DemoCommandLineRunner implements CommandLineRunner{
 		Strip s1=new Strip();
 		Strip s2=new Strip();
 		
-		k1.setBroj_losih_reviewa(0);
-		k1.setUkupno_reviewa(1);
-		
-		s1.setUkupnoKomentara(1);
-		
 		stripRepozitorij.save(s1);
 		stripRepozitorij.save(s2);
 		korisnikRepozitorij.save(k1);

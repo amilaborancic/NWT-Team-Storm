@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.example.ratingservice.DTO.KorisnikInfoRating;
+import com.example.ratingservice.DTO.StripInfoRating;
 import com.example.ratingservice.exception.ApiRequestException;
 import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
@@ -152,9 +154,8 @@ public class RatingKontroler {
 		} else {
 			strip = new Strip();
 			strip.setId(strip_id);// da bude isti id kao u strip servisu
+			stripServis.save(strip);
 		}
-		strip.setUkupniRating(ukupni_rating);
-		strip.setUkupnoKomentara(ukupno_komentara);
 		// korisnik azuriranje
 		User korisnik;
 		if (korisnikServis.getOne(korisnik_id) != null)
@@ -162,21 +163,22 @@ public class RatingKontroler {
 		else {
 			korisnik = new User();
 			korisnik.setId(korisnik_id);
+			korisnikServis.save(korisnik);
 		}
-		korisnik.setBroj_losih_reviewa(broj_losih_reviewa);
-		korisnik.setUkupno_reviewa(ukupno_reviewa);
+		KorisnikInfoRating korisnik_r = new KorisnikInfoRating(korisnik_id, broj_losih_reviewa, ukupno_reviewa);
+		StripInfoRating strip_r = new StripInfoRating(strip_id, ukupno_komentara, ukupni_rating);
 
 		// update strip
 		url = "http://comicbook-service/strip/update-rating";
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<Strip> requestEntity = new HttpEntity<Strip>(strip, headers);
+		HttpEntity<StripInfoRating> requestEntity = new HttpEntity<StripInfoRating>(strip_r, headers);
 		restTemplate.put(url, requestEntity);
 		// update korisnik
 		url = "http://user-service/user/update-rating";
 		headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<User> requestBody = new HttpEntity<User>(korisnik, headers);
+		HttpEntity<KorisnikInfoRating> requestBody = new HttpEntity<KorisnikInfoRating>(korisnik_r, headers);
 		restTemplate.put(url, requestBody);
 		stripServis.save(strip);
 		korisnikServis.save(korisnik);
