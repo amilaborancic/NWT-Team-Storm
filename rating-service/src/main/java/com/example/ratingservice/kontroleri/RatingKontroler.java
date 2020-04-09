@@ -130,7 +130,7 @@ public class RatingKontroler {
 		//podaci o korisniku
 		Long korisnik_id=Long.valueOf(root.path("id").toString());
 		Integer broj_losih_reviewa=Integer.valueOf(root.path("broj_losih_reviewa").toString());
-		Integer ukupno_reviewa=Integer.valueOf(root.path("ukupno_reviewa").toString());
+        Integer ukupno_reviewa=Integer.valueOf(root.path("ukupno_reviewa").toString());
 
 		//logika za rating
 		if(ukupno_reviewa!=0) {

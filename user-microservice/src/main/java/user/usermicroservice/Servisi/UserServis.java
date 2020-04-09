@@ -4,6 +4,8 @@ package user.usermicroservice.Servisi;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
+
+import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.exception.ApiRequestException;
@@ -33,5 +35,12 @@ public class UserServis {
         return userRepository.existsByEmail(email);
     }
     public List<User> svi(){ return userRepository.findAll(); }
+
+	public void updateUser(UserRatingDTO userRatingInfo) {
+		User korisnik_iz_baze=userRepository.getOne(userRatingInfo.getId());
+		korisnik_iz_baze.setBroj_losih_reviewa(userRatingInfo.getBroj_losih_reviewa());
+		korisnik_iz_baze.setUkupno_reviewa(userRatingInfo.getUkupno_reviewa());
+		userRepository.save(korisnik_iz_baze);
+	}
 
 }

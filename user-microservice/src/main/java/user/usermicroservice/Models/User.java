@@ -69,4 +69,16 @@ public class User {
     public int getUkupno_reviewa() {
         return ukupno_reviewa;
     }
+
+	public void setBroj_losih_reviewa(int broj_losih_reviewa) {
+		this.broj_losih_reviewa=broj_losih_reviewa;
+		
+	}
+
+	public void setUkupno_reviewa(int ukupno_reviewa ) {
+		this.ukupno_reviewa=ukupno_reviewa;
+	}
+    
+  
+    
 }

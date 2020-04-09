@@ -25,6 +25,13 @@ public class UserController {
     public String sayHi(){
         return "HIIII";
     }
+    
+    //novo
+    @RequestMapping("/username/{id}")
+    public String getUsername(@PathVariable Long id) {
+    	return userServis.findUserById(id).get().getUserName();
+    }
+    
 
     @RequestMapping(method = RequestMethod.POST, value ="/sign-up")
     public void signUp(@RequestBody User user){
