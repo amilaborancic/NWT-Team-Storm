@@ -34,11 +34,7 @@ public class StripRatingController {
 
 	@GetMapping(value = "strip/komentari/{id}")
 	public ResponseEntity<Map<String, String>> komentariStripa(@PathVariable Long id) {
-		ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
-				"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
-				new ParameterizedTypeReference<Map<String, String>>() {
-				});
-		return komentari_stripa;
+		return stripService.komentariStripa(id);
 	}
 
 }

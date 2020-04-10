@@ -8,8 +8,12 @@ import comicbook.microsservice.comicbookmicroservice.repository.IzdavacRepositor
 import comicbook.microsservice.comicbookmicroservice.repository.StripRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.ZanrRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -23,6 +27,8 @@ public class StripService {
     IzdavacRepository izdavacRepository;
     @Autowired
     AutorRepository autorRepository;
+    @Autowired
+	RestTemplate restTemplate;
 
     public List<Strip> sviStripovi(int brojStranice, int brojStripovaNaStranici){
         return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
@@ -90,5 +96,13 @@ public class StripService {
     public List<Strip> sviStripoviPoId(List<Long> idStripova){
         return stripRepository.findAllByIdIn(idStripova);
     }
-    
+
+	public ResponseEntity<Map<String, String>> komentariStripa(Long id) {
+		ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
+				"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
+				new ParameterizedTypeReference<Map<String, String>>() {
+				});
+		return komentari_stripa;
+	}
+
 }

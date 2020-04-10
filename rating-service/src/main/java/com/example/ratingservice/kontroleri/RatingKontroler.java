@@ -33,8 +33,7 @@ public class RatingKontroler {
 	private UserServis korisnikServis;
 	@Autowired
 	private StripServis stripServis;
-	@Autowired
-	private RestTemplate restTemplate;
+	
 
 	// vraca sve ratinge
 	@RequestMapping(value = "/ratings", method = RequestMethod.GET)
@@ -59,18 +58,7 @@ public class RatingKontroler {
 	public Map<String, String> commentsByStrip(@PathVariable Long id) {
 
 		if (stripServis.getOne(id) != null) {
-			List<Rating> all_ratings = ratingServis.findAll();
-			Map<String, String> korisnik_komentar = new HashMap<String, String>();
-
-			for (Rating r : all_ratings) {
-				if (r.getStrip().getId() == id) {
-					ResponseEntity<String> username = restTemplate.exchange(
-							"http://user-service/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
-							String.class);
-					korisnik_komentar.put(r.getKomentar(), username.getBody());
-				}
-			}
-			return korisnik_komentar;
+			return ratingServis.commentsByStrip(id);
 		}
 		throw new ApiRequestException("Strip nije pronadjen");
 	}
@@ -98,79 +86,9 @@ public class RatingKontroler {
 				exc += e.getPropertyPath() + " " + e.getMessage() + "\n";
 			}
 			throw new Exception("Unos za rating je neispravan: " + exc.toString());
-		}
-
-		// strip-rating, stripservis vraca ima li trazenog stripa
-		String url = "http://comicbook-service/strip?id_strip=" + rating.getStrip().getId();
-		ResponseEntity<String> response_strip = restTemplate.getForEntity(url, String.class);
-		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(response_strip.getBody());
-		// podaci o stripu
-		Double ukupni_rating = Double.valueOf(root.path("ukupniRating").toString());
-		Long strip_id = Long.valueOf(root.path("id").toString());
-		Integer ukupno_komentara = Integer.valueOf(root.path("ukupnoKomentara").toString());
-
-		// user-rating
-		url = "http://user-service/user/" + rating.getKorisnik().getId();
-		ResponseEntity<String> response_korisnik = restTemplate.getForEntity(url, String.class);
-		mapper = new ObjectMapper();
-		root = mapper.readTree(response_korisnik.getBody());
-		// podaci o korisniku
-		Long korisnik_id = Long.valueOf(root.path("id").toString());
-		Integer broj_losih_reviewa = Integer.valueOf(root.path("broj_losih_reviewa").toString());
-		Integer ukupno_reviewa = Integer.valueOf(root.path("ukupno_reviewa").toString());
-
-		// logika za rating
-		if (ukupno_reviewa != 0) {
-			double procenat = ((ukupno_reviewa - broj_losih_reviewa) / ukupno_reviewa) * 100;
-			if (procenat >= 40 && procenat <= 60) {
-				ukupni_rating = (ukupni_rating + Double.valueOf(rating.getOcjena())) / 2;
-			}
-		}
-		if (rating.getOcjena() < 4)
-			broj_losih_reviewa++;
-		ukupno_komentara++;
-		ukupno_reviewa++;
-
-		// strip azuriranje
-		Strip strip;
-		if (stripServis.getOne(strip_id) != null) {
-			strip = stripServis.getOne(strip_id);
-		} else {
-			strip = new Strip();
-			strip.setId(strip_id);// da bude isti id kao u strip servisu
-			stripServis.save(strip);
-		}
-		// korisnik azuriranje
-		User korisnik;
-		if (korisnikServis.getOne(korisnik_id) != null)
-			korisnik = korisnikServis.getOne(korisnik_id);
-		else {
-			korisnik = new User();
-			korisnik.setId(korisnik_id);
-			korisnikServis.save(korisnik);
-		}
-		KorisnikInfoRating korisnik_r = new KorisnikInfoRating(korisnik_id, broj_losih_reviewa, ukupno_reviewa);
-		StripInfoRating strip_r = new StripInfoRating(strip_id, ukupno_komentara, ukupni_rating);
-
-		// update strip
-		url = "http://comicbook-service/strip/update-rating";
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<StripInfoRating> requestEntity = new HttpEntity<StripInfoRating>(strip_r, headers);
-		restTemplate.put(url, requestEntity);
-		// update korisnik
-		url = "http://user-service/user/update-rating";
-		headers = new HttpHeaders();
-		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
-		HttpEntity<KorisnikInfoRating> requestBody = new HttpEntity<KorisnikInfoRating>(korisnik_r, headers);
-		restTemplate.put(url, requestBody);
-		stripServis.save(strip);
-		korisnikServis.save(korisnik);
-		rating.setKorisnik(korisnik);
-		rating.setStrip(strip);
-		ratingServis.save(rating);
-
+		}	
+		
+		ratingServis.addRating(rating);
 	}
 
 }
