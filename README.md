@@ -1,9 +1,9 @@
 # NWT-Team-Storm
 
 ## Potrebno za pokretanje projekta
-Java verzija 13
-MySql baza
-XAMPP control panel
+Java verzija 13</br>
+MySql baza</br>
+XAMPP control panel</br>
 IntelliJ IDE (poželjno ali nije neophodno)
 
 ## Konfiguracija
