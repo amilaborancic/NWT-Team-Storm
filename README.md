@@ -17,6 +17,9 @@ IntelliJ IDE (poželjno ali nije neophodno)
 2. Nakon toga, potrebno je pokrenuti Eureka server. Desni klik na eureka folder u repozitoriju - open as IntelliJ IDEA project - klik na play dugme u gornjem desnom ćošku.
 3. Nakon što je eureka pokrenuta, na isti način se pokreće svaki od mikroservisa - otvori se kao projekat u IDE po želji i pokrene. Ukoliko želite da istestirate komunikaciju između dva ili više servisa, potrebno je da na isti način pokrenete sve servise koji učestvuju u komunikaciji, inače će doći do greške.
 
+## Molba kod bodovanja
+Vidjeli smo na c2 da je jedan od kriterija za bodovanje broj komita i redovna sedmična aktivnost praćena na GitHubu. Samo želimo da napomenemo da je kolega Ahmed završio Bachelor na AiE pa iz tog razloga njegovih komita nema mnogo. Ostali članovi tima (Amila i Mahira) znaju koliko se je kolega zalagao za projekat i pokušavao da nadoknadi predznanje koje mu je trebalo (rad s bazama, rad sa gitom, osnove oko http zahtjeva i slično). Radio je svake sedmice i to potvrđujemo, i samo bismo htjeli kao tim da zamolimo da se njegov manji broj komita ne shvati kao nerad, nego jednostavno nedostatak predznanja o ovoj oblasti.
+
 ## Pokretanje testova
 
 <ins>Testovi koji testiraju komunikaciju dva ili više servisa</ins></br>
@@ -30,7 +33,9 @@ kreirajKatalog metoda (Katalog mikroservis, KatalogControllerTest)
 2. Pokrenuti Katalog mikroservis.
 3. Pokrenuti testnu metodu kreirajKatalog (ili sve testove odjednom za KatalogController klasu).
 
-
+<ins>Ostali testovi</ins></br>
+1. Pokrenuti Eureka server.
+2. Pokrenuti željeni test klikom na play dugme pokraj testne metode/klase.
 
 ## POSTMAN kolekcije
 POSTMAN kolekcije možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom.</br>
