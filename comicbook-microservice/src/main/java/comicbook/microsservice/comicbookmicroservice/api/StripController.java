@@ -58,7 +58,6 @@ public class StripController {
     //svi stripovi ciji je id poslan kao request body
     @PostMapping(value="/sviPoId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
-        System.out.println("dosli u strip servis");
         return stripService.sviStripoviPoId(idStripova.getIdStripova());
     }
 

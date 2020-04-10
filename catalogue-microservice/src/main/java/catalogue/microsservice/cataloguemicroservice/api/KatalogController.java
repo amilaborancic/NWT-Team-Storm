@@ -2,6 +2,7 @@ package catalogue.microsservice.cataloguemicroservice.api;
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
+import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
 import com.netflix.discovery.converters.Auto;
@@ -44,10 +45,11 @@ public class KatalogController {
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
-    public void dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
+    public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
         katalogService.dodajStripUKatalog(id_strip, id_katalog);
+        return "Strip je uspješno dodan u katalog!";
     }
 
     //jedan katalog
@@ -58,10 +60,11 @@ public class KatalogController {
 
     //brisanje stripa iz kataloga
     @DeleteMapping(value="/brisanje-stripa")
-    public void obrisiStrip(@RequestBody Map<String, Long> body){
+    public String obrisiStrip(@RequestBody Map<String, Long> body){
         Long id_katalog = body.get("id_katalog");
         Long id_strip = body.get("id_strip");
-        katalogService.obrisiStrip(id_strip, id_katalog);
+        if(katalogService.obrisiStrip(id_strip, id_katalog)) return "Strip je uspješno obrisan iz kataloga!";
+        return "Strip sa id-jem " + id_strip + " se ne nalazi u katalogu!";
     }
 
     //brisanje kataloga

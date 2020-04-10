@@ -60,13 +60,17 @@ public class KatalogService {
         //provjera da li postoji katalog
         Katalog katalogic = getKatalog(id_katalog);
         List<Strip> stripoviUKatalogu = katalogic.getStripovi();
+        int brojStripovaUKatalogu = stripoviUKatalogu.size();
         stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
+        if(stripoviUKatalogu.size() == brojStripovaUKatalogu) return false;
         katalogic.setStripovi(stripoviUKatalogu);
         katalogRepository.save(katalogic);
         return true;
     }
 
     public String obrisiKatalog(Long id_katalog){
+        //provjera postoji li katalog
+        Katalog kat = getKatalog(id_katalog);
         katalogRepository.delete(katalogRepository.getOne(id_katalog));
         return("Katalog je uspjesno obrisan!");
     }
