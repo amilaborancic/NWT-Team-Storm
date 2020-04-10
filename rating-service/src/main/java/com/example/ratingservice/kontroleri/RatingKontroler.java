@@ -1,43 +1,28 @@
 package com.example.ratingservice.kontroleri;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import javax.validation.ConstraintViolation;
-import javax.validation.Valid;
-import org.springframework.validation.Errors;
-import org.springframework.validation.ObjectError;
-import org.json.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
-
 import com.example.ratingservice.DTO.KorisnikInfoRating;
 import com.example.ratingservice.DTO.StripInfoRating;
 import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
+import com.example.ratingservice.modeli.User;
+import com.example.ratingservice.servisi.RatingServis;
+import com.example.ratingservice.servisi.StripServis;
 import com.example.ratingservice.servisi.UserServis;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.example.ratingservice.servisi.RatingServis;
-import com.example.ratingservice.servisi.StripServis;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.*;
+import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 @RestController
