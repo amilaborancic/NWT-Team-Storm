@@ -2,6 +2,7 @@ package catalogue.microsservice.cataloguemicroservice.api;
 
 import catalogue.microsservice.cataloguemicroservice.DTO.StripDTO;
 import catalogue.microsservice.cataloguemicroservice.DTO.StripIdsDTO;
+import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import catalogue.microsservice.cataloguemicroservice.service.StripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -19,13 +20,16 @@ public class StripController {
 
     @Autowired
     StripService stripService;
-
     @Autowired
     RestTemplate restTemplate;
+    @Autowired
+    KatalogService katalogService;
 
     //stripovi u jednom katalogu sa paginacijom
     @GetMapping(value="/iz-kataloga/{id_katalog}")
     public List<StripDTO> sviIzJednogKataloga(@PathVariable("id_katalog") Long id_katalog, @Param("brojStranice") int brojStranice){
+        //provjera postoji li katalog
+        katalogService.getKatalog(id_katalog);
         List<Long> idjevi = stripService.sviIzJednogKataloga(id_katalog, brojStranice, brojStripovaNaStranici);
         //postavimo headers
         HttpHeaders headers = new HttpHeaders();
