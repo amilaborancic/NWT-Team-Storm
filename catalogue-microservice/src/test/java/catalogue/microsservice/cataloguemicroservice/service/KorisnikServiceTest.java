@@ -24,8 +24,8 @@ class KorisnikServiceTest {
 
     @Test
     void dodajKorisnika() {
-        //sve ok
-        assertThat(korisnikService.dodajKorisnika(new Korisnik())).isEqualTo(3);
+        //ocekujemo da dobijemo id novododanog korisnika
+        assertThat(korisnikService.dodajKorisnika(new Korisnik((long) 20))).isEqualTo(20);
     }
 
     @Test

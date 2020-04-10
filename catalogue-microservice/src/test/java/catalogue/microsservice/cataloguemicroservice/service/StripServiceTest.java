@@ -1,6 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.service;
 
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
+import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,17 @@ class StripServiceTest {
 
     @Test
     void sviIzJednogKataloga() {
+        //katalog s id-jem nula nema stripova
+        //katalog s id-jem 3 ima pet stripova
         assertThat(stripService.sviIzJednogKataloga((long) 1, 0, 5)).size().isEqualTo(0);
-        assertThat(stripService.sviIzJednogKataloga((long) 3, 0, 5)).size().isEqualTo(4);
+        assertThat(stripService.sviIzJednogKataloga((long) 3, 0, 5)).size().isEqualTo(5);
+        //pogresan id kataloga
+        ApiRequestException nemaKataloga = assertThrows(
+                ApiRequestException.class,
+                ()->stripService.sviIzJednogKataloga((long) 123, 0, 5),
+                "Trebalo bi baciti izuzetak"
+        );
+        assertThat(nemaKataloga.getMessage().contains("ne postoji"));
     }
 
     @Test
@@ -34,7 +44,6 @@ class StripServiceTest {
                 "Trebalo bi baciti"
         );
         assertThat(nemaStripa.getMessage().contains("ne postoji"));
-
     }
 
     @Test

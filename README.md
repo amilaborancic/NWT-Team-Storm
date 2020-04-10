@@ -17,9 +17,22 @@ IntelliJ IDE (poželjno ali nije neophodno)
 2. Nakon toga, potrebno je pokrenuti Eureka server. Desni klik na eureka folder u repozitoriju - open as IntelliJ IDEA project - klik na play dugme u gornjem desnom ćošku.
 3. Nakon što je eureka pokrenuta, na isti način se pokreće svaki od mikroservisa - otvori se kao projekat u IDE po želji i pokrene. Ukoliko želite da istestirate komunikaciju između dva ili više servisa, potrebno je da na isti način pokrenete sve servise koji učestvuju u komunikaciji, inače će doći do greške.
 
+## Pokretanje testova
+
+<ins>Testovi koji testiraju komunikaciju dva ili više servisa</ins>
+sviIzJednogKataloga metoda (Katalog mikroservis)
+1. Pokrenuti Eureka server.
+2. Pokrenuti Strip mikroservis.
+3. Pokrenuti testnu metodu sviIzJednogKataloga koja treba da vrati sve stripove koji se nalaze u nekom katalogu.
+
+kreirajKatalog metoda (Katalog mikroservis)
+1. Pokrenuti Eureka server.
+2. Pokrenuti Katalog mikroservis.
+3. Pokrenuti testnu metodu kreirajKatalog (ili sve testove odjednom za KatalogController klasu).
+
 ## POSTMAN kolekcije
 POSTMAN kolekcije možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom. 
-User:
-Katalog: 
-Strip:
-Rating: 
+User:</br>
+Katalog:</br>
+Strip:</br>
+Rating:</br>

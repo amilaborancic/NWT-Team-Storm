@@ -1,11 +1,16 @@
 package user.usermicroservice.Controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.*;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
-import user.usermicroservice.DTO.KatalogDeleteDTO;
 import user.usermicroservice.Servisi.UserServis;
 
 import java.util.Collections;
@@ -20,6 +25,7 @@ public class UserCatalogueController {
     @Autowired
     RestTemplate restTemplate;
 
+    //ostalo od amile, delete later
     @PutMapping(value="/create-katalog", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Long kreirajKatalogKorisniku(@RequestBody KatalogDTO noviKatalog){
         HttpHeaders headers = new HttpHeaders();
@@ -31,15 +37,5 @@ public class UserCatalogueController {
         return response.getBody();
     }
 
-    @DeleteMapping(value="/delete-katalog", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String obrisiKorisnikovKatalog(@RequestBody KatalogDeleteDTO katalogKojiSeBrise){
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        HttpEntity<KatalogDeleteDTO> entity = new HttpEntity<>(katalogKojiSeBrise, headers);
-        ResponseEntity<String> response = restTemplate.exchange("http://catalogue-service/katalog/brisanje-kataloga", HttpMethod.DELETE, entity, String.class);
-        return response.getBody();
-    }
 
 }

@@ -28,7 +28,7 @@ class KatalogServiceTest {
     @Test
     void sviKatalozi() {
         //sve okej
-        assertThat(katalogService.sviKatalozi((long) 1, 0, 5)).size().isEqualTo(5);
+        assertThat(katalogService.sviKatalozi((long) 1, 0, 5)).size().isEqualTo(3);
         //nepostojeci korisnik
         ApiRequestException nemaUsera = assertThrows(
                 ApiRequestException.class,
@@ -41,7 +41,7 @@ class KatalogServiceTest {
     @Test
     void kreirajKatalog() {
         //sve okej
-        assertThat(katalogService.kreirajKatalog(new Katalog("Testni katalog", (long) 2))).isEqualTo(9);
+        assertThat(katalogService.kreirajKatalog(new Katalog("Testni katalog", (long) 2))).isEqualTo(5);
         //ne postoji korisnik
         ApiRequestException nemaUsera = assertThrows(
                 ApiRequestException.class,

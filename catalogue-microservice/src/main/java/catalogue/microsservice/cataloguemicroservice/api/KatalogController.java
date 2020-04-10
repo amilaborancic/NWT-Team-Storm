@@ -1,5 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.api;
+import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
+import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
 import com.netflix.discovery.converters.Auto;
@@ -33,16 +35,10 @@ public class KatalogController {
     }
 
     //kreiranje kataloga za nekog usera
-    @PostMapping(value="/novi", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value="/novi")
     public Long kreirajKatalog(@RequestBody Katalog katalog){
         katalogService.kreirajKatalog(katalog);
-        //headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<Katalog> entity = new HttpEntity<>(katalog, headers);
-        //put req
-        ResponseEntity<Long> response = restTemplate.exchange("http://catalogue-service/korisnik/update", HttpMethod.PUT, entity, Long.class);
+        restTemplate.put("http://catalogue-service/korisnik/update", katalog);
         return katalog.getId();
     }
 
@@ -65,7 +61,7 @@ public class KatalogController {
     public void obrisiStrip(@RequestBody Map<String, Long> body){
         Long id_katalog = body.get("id_katalog");
         Long id_strip = body.get("id_strip");
-       katalogService.obrisiStrip(id_strip, id_katalog);
+        katalogService.obrisiStrip(id_strip, id_katalog);
     }
 
     //brisanje kataloga

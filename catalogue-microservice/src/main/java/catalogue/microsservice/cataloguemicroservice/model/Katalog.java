@@ -44,6 +44,7 @@ public class Katalog {
         this.idKorisnik = idKorisnik;
         this.stripovi = new ArrayList<>();
     }
-    public Katalog(){ }
+    public Katalog(){
+    }
 
 }

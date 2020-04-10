@@ -59,8 +59,6 @@ public class StripController {
     @PostMapping(value="/sviPoId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
         System.out.println("dosli u strip servis");
-        //System.out.println(idStripova.get("idStripova"));
-        //List<Long> idjevi = idStripova.getIdStripova();
         return stripService.sviStripoviPoId(idStripova.getIdStripova());
     }
 

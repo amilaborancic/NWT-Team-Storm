@@ -15,15 +15,18 @@ import java.util.Optional;
 public class StripService {
     @Autowired
     StripRepository stripRepozitorij;
+    @Autowired
+    KatalogService katalogService;
 
     public List<Long> sviIzJednogKataloga(Long id_katalog, int brojStranice, int brojStripovaNaStranici){
         List<Long> stripovi = new ArrayList<>();
+        //provjera postoji li katalog s proslijedjenim id-jem
+        katalogService.getKatalog(id_katalog);
         stripRepozitorij.findByKatalozi_Id(id_katalog, PageRequest.of(brojStranice, brojStripovaNaStranici)).forEach(strip->stripovi.add(strip.getIdStrip()));
         return stripovi;
     }
 
     public Strip jedanStrip(Long id_strip){
-
         Optional<Strip> strip = stripRepozitorij.findById(id_strip);
         if(strip.isEmpty()) throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         return strip.get();
@@ -33,5 +36,4 @@ public class StripService {
         return stripRepozitorij.existsByIdStripAndKatalozi_Id(id_strip, id_katalog);
     }
 
-    public List<Strip> stripovi(){ return stripRepozitorij.findAll();}
 }
