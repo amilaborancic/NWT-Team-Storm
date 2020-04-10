@@ -1,9 +1,11 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
+import comicbook.microsservice.comicbookmicroservice.DTO.StripIdList;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.service.StripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -53,6 +55,16 @@ public class StripController {
         return stripService.stripoviPoNazivu(naziv, brojStranice, brojStripovaNaStranici);
     }
 
+    //svi stripovi ciji je id poslan kao request body
+    @PostMapping(value="/sviPoId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
+        System.out.println("dosli u strip servis");
+        //System.out.println(idStripova.get("idStripova"));
+        //List<Long> idjevi = idStripova.getIdStripova();
+        return stripService.sviStripoviPoId(idStripova.getIdStripova());
+    }
+
+    //pomocni endpointi
     @PostMapping(value="/noviStrip")
     public Long dodajStrip(@RequestBody Strip strip){
         return stripService.dodajStrip(strip);

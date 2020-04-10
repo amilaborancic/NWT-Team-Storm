@@ -87,6 +87,8 @@ public class StripService {
     	stripRepository.save(strip_iz_baze);
 	}
     
-    
+    public List<Strip> sviStripoviPoId(List<Long> idStripova){
+        return stripRepository.findAllByIdIn(idStripova);
+    }
     
 }

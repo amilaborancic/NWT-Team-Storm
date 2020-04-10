@@ -14,4 +14,5 @@ public interface StripRepository extends JpaRepository<Strip, Long> {
     List<Strip> findByNazivContains(String naziv, Pageable pageable);
     List<Strip> findAllByAutori_ImeContains(String ime, Pageable pageable);
     List<Strip> findAllByAutori_PrezimeContains(String ime, Pageable pageable);
+    List<Strip> findAllByIdIn(List<Long> idStripova);
 }

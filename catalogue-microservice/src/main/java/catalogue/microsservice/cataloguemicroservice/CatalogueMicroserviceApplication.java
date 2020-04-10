@@ -24,11 +24,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
 import static java.lang.StrictMath.ceil;
 import static java.lang.StrictMath.round;
 
@@ -43,7 +41,6 @@ public class CatalogueMicroserviceApplication {
 	public RestTemplate getRestTemplate(){
 		return new RestTemplate();
 	}
-
 	public static void main(String[] args) {
 		SpringApplication.run(CatalogueMicroserviceApplication.class, args);
 	}
@@ -65,7 +62,6 @@ class DemoCommandLineRunner implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		//NE BRISATI OVO!!
-
         //korisnike dobavljamo od user servisa
        /* String resourceURL = "http://user-service/svi/useri";
         ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
@@ -85,11 +81,16 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Strip s2 = new Strip((long) 2);
 		Strip s3 = new Strip((long) 3);
 		Strip s4 = new Strip((long) 4);
+		Strip s5 = new Strip((long) 5);
+		Strip s6 = new Strip((long) 6);
+
 
 		stripRepozitorij.save(s1);
 		stripRepozitorij.save(s2);
 		stripRepozitorij.save(s3);
 		stripRepozitorij.save(s4);
+		stripRepozitorij.save(s5);
+		stripRepozitorij.save(s6);
 
 		/*stripove dobijamo iz strip servisa*/
 		/*
@@ -118,22 +119,13 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(1);
 		Katalog kat1 = new Katalog("Prvi katalog", korisnik.getId());
 		Katalog kat2 = new Katalog("Drugi katalog", korisnik.getId());
-		Katalog kat3 = new Katalog("Dummy za brisanje 1", korisnik_2.getId());
+		Katalog kat3 = new Katalog("Dummy za brisanje", korisnik_2.getId());
 		Katalog kat4 = new Katalog("Test", korisnik.getId());
-		//2 defaultna kataloga
-		Katalog kat_procitano_1 = new Katalog("Procitano", korisnik.getId());
-		Katalog kat_procitano_2 = new Katalog("Procitano", korisnik_2.getId());
-		Katalog kat_zelim_procitati_1 = new Katalog("Zelim procitati", korisnik.getId());
-		Katalog kat_zelim_procitati_2 = new Katalog("Zelim procitati", korisnik_2.getId());
 
 		katalogRepositorij.save(kat1);
 		katalogRepositorij.save(kat2);
 		katalogRepositorij.save(kat3);
 		katalogRepositorij.save(kat4);
-		katalogRepositorij.save(kat_procitano_1);
-		katalogRepositorij.save(kat_procitano_2);
-		katalogRepositorij.save(kat_zelim_procitati_1);
-		katalogRepositorij.save(kat_zelim_procitati_2);
 
 		//dodavanje stripova
 		List<Strip> stripovi = new ArrayList<>();
@@ -141,6 +133,8 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		stripovi.add(s2);
 		stripovi.add(s3);
 		stripovi.add(s4);
+		stripovi.add(s5);
+		stripovi.add(s6);
 		kat3.setStripovi(stripovi);
 
 		katalogRepositorij.save(kat3);
