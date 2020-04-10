@@ -19,13 +19,13 @@ IntelliJ IDE (poželjno ali nije neophodno)
 
 ## Pokretanje testova
 
-<ins>Testovi koji testiraju komunikaciju dva ili više servisa</ins>
-sviIzJednogKataloga metoda (Katalog mikroservis, KatalogControllerTest)
+<ins>Testovi koji testiraju komunikaciju dva ili više servisa</ins></br>
+sviIzJednogKataloga metoda (Katalog mikroservis, StripControllerTest)
 1. Pokrenuti Eureka server.
 2. Pokrenuti Strip mikroservis.
 3. Pokrenuti testnu metodu sviIzJednogKataloga koja treba da vrati sve stripove koji se nalaze u nekom katalogu.
 
-kreirajKatalog metoda (Katalog mikroservis, StripControllerTest)
+kreirajKatalog metoda (Katalog mikroservis, KatalogControllerTest)
 1. Pokrenuti Eureka server.
 2. Pokrenuti Katalog mikroservis.
 3. Pokrenuti testnu metodu kreirajKatalog (ili sve testove odjednom za KatalogController klasu).
@@ -33,7 +33,7 @@ kreirajKatalog metoda (Katalog mikroservis, StripControllerTest)
 
 
 ## POSTMAN kolekcije
-POSTMAN kolekcije možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom. 
+POSTMAN kolekcije možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom.</br>
 User:</br>
 Katalog:</br>
 Strip:</br>

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class StripServiceTest {
 
     @Autowired
@@ -57,13 +59,14 @@ class StripServiceTest {
         assertThat(stripService.stripoviPoAutoru("", "Ben", 0, 5)).size().isEqualTo(1);
 
         //kada se unese ime, a prezime je prazno
-        assertThat(stripService.stripoviPoAutoru("Scott", null, 0, 5)).size().isEqualTo(2);
-
-        //kada se unese prezime, a ime je prazno
-        assertThat(stripService.stripoviPoAutoru(null, "Sny", 0, 5)).size().isEqualTo(2);
+        assertThat(stripService.stripoviPoAutoru("Scott", null, 0, 5)).size().isEqualTo(0);
 
         //kada su i ime i prezime prazni
         assertThat(stripService.stripoviPoAutoru(null, null, 0, 5)).size().isEqualTo(0);
+
+        //kada se unese prezime, a ime je prazno
+        assertThat(stripService.stripoviPoAutoru(null, "Sny", 0, 5)).size().isEqualTo(0);
+
     }
 
     @Test
@@ -82,8 +85,8 @@ class StripServiceTest {
         Long id_horor = (long) 2;
         Long id_avantura = (long) 3;
         assertThat(stripService.stripoviPoZanru(id_akcija, 0, 5)).size().isEqualTo(5);
-        assertThat(stripService.stripoviPoZanru(id_horor, 0, 5)).size().isEqualTo(0);
-        assertThat(stripService.stripoviPoZanru(id_avantura, 0, 5)).size().isEqualTo(0);
+        assertThat(stripService.stripoviPoZanru(id_horor, 0, 5)).isEmpty();
+        assertThat(stripService.stripoviPoZanru(id_avantura, 0, 5)).isEmpty();
 
     }
 

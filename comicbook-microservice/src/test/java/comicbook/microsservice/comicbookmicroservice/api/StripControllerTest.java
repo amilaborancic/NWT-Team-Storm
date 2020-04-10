@@ -15,7 +15,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @AutoConfigureMockMvc
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class StripControllerTest {
 
     @Autowired
@@ -50,13 +50,13 @@ class StripControllerTest {
                 .param("id_izdavac", "2")
                 .param("brojStranice", "0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$", hasSize(2)));
+                .andExpect(jsonPath("$", hasSize(3)));
 
         MockMVC.perform(MockMvcRequestBuilders.get("/strip/trazi-izdavac")
                 .param("id_izdavac", "1")
                 .param("brojStranice", "0"))
                 .andExpect(MockMvcResultMatchers.status().isOk())
-                .andExpect(jsonPath("$", hasSize(3)));
+                .andExpect(jsonPath("$", hasSize(2)));
 
         MockMVC.perform(MockMvcRequestBuilders.get("/strip/trazi-izdavac")
                 .param("id_izdavac", "3")

@@ -41,11 +41,14 @@ public class StripService {
     }
 
     public List<Strip> stripoviPoAutoru(String ime, String prezime, int brojStranice, int brojStripovaNaStranici){
-        if(ime == null || ime == "") ime = "-";
-        if(prezime == null || prezime == "") prezime = "-";
-        Set<Strip> stripovi = new HashSet<Strip>(stripRepository.findAllByAutori_ImeContains(ime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
-        stripovi.addAll(stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
-        return new ArrayList<Strip>(stripovi);
+        Set<Strip> stripovi = new HashSet<Strip>();
+        //if(ime != null && !ime.equals("")) stripovi.addAll((stripRepository.findAllByAutori_ImeContains(ime, PageRequest.of(brojStranice, brojStripovaNaStranici))));
+        //if(prezime != null && !prezime.equals("")) stripovi.addAll(stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici)));
+        if(ime == null || prezime == null || ime.equals("") && prezime.equals("")) return new ArrayList<>();
+        else if(ime.equals("")) return stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        else if(prezime.equals("")) return stripRepository.findAllByAutori_ImeContains(ime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findAllByAutori_ImeContainsAndAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+
     }
 
     public List<Strip> stripoviPoIzdavacu(Long id_izdavac, int brojStranice, int brojStripovaNaStranici){
