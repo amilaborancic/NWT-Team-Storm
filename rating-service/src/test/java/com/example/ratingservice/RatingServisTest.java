@@ -50,7 +50,7 @@ public class RatingServisTest {
 		assertThat(ratingServis.findAll().size()).isNotEqualTo(0);
 	}
 	
-	/*
+
 	@Test
 	public void getOne()throws Exception {
 		assertThat(ratingServis.getOne(Long.valueOf(1)).getId()).isEqualTo(Long.valueOf(1));
@@ -73,7 +73,6 @@ public class RatingServisTest {
 		ratingServis.save(rating);
 		assertThat(ratingServis.getOne(rating.getId()).getOcjena()).isEqualTo(2);
 	}
-	*/
 
 	@Test
 	public void addRating() throws Exception{
