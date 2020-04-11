@@ -49,4 +49,8 @@ public class UserServis {
 		userRepository.save(korisnik_iz_baze);
 	}
 
+	public Long brojKorisnikaUBazi() {
+		return userRepository.count();
+	}
+
 }

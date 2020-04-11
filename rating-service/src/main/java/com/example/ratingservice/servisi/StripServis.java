@@ -29,8 +29,9 @@ public class StripServis {
 	
 	
 	public Strip getOne(Long id) {
-		return stripRepozitorij.getOne(id);
-		//throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
+		if(stripRepozitorij.findById(id).isPresent())
+			return stripRepozitorij.getOne(id);
+		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	public void save(Strip strip) {
@@ -40,7 +41,11 @@ public class StripServis {
 	public List<Strip> findAll() {
 		return stripRepozitorij.findAll();
 	}
-	
-	
-	
+
+	public Optional<Strip> findById(Long id) {
+		return stripRepozitorij.findById(id);
+	}
+
+
+		
 }

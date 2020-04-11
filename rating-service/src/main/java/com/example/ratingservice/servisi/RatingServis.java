@@ -53,7 +53,7 @@ public class RatingServis {
 	}
 	
 	public Rating getOne(Long id) {
-		if(korisnikRepozitorij.findById(id).isPresent()) 
+		if(ratingRepozitorij.findById(id).isPresent()) 
 			return ratingRepozitorij.getOne(id);
 		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronađen!");
 	}
@@ -99,6 +99,22 @@ public class RatingServis {
 	
 	public void addRating(Rating rating) throws JsonMappingException, JsonProcessingException {
 
+		// provjera
+		if (rating.getOcjena() < 1 || rating.getOcjena() > 5)
+			throw new ApiRequestException("Ocjena mora bit u rasponu od 1 do 5!");
+
+		if (rating.getKorisnik() == null || rating.getStrip() == null)
+			throw new ApiRequestException("Nepotpun zahtjev!");
+		// dodano zbog exceptiona
+		ResponseEntity<Long> korisnici = restTemplate.getForEntity("http://user-service/user/count", Long.class);
+		ResponseEntity<Long> stripovi = restTemplate.getForEntity("http://comicbook-service/strip/count", Long.class);
+
+		// provjera
+		if (rating.getKorisnik().getId() > korisnici.getBody() || rating.getKorisnik().getId() < 0)
+			throw new ApiRequestException("Id korisnika je pogrešan!");
+		if (rating.getStrip().getId() > stripovi.getBody() || rating.getStrip().getId() < 0)
+			throw new ApiRequestException("Id stripa je pogrešan!");
+
 		// strip-rating, stripservis vraca ima li trazenog stripa
 		String url = "http://comicbook-service/strip?id_strip=" + rating.getStrip().getId();
 		ResponseEntity<String> response_strip = restTemplate.getForEntity(url, String.class);
@@ -119,6 +135,13 @@ public class RatingServis {
 		Integer broj_losih_reviewa = Integer.valueOf(root.path("broj_losih_reviewa").toString());
 		Integer ukupno_reviewa = Integer.valueOf(root.path("ukupno_reviewa").toString());
 
+		// provjera
+		List<Rating> rating_lista = ratingRepozitorij.findAll();
+		for (Rating r : rating_lista) {
+			if (r.getKorisnik().getId() == korisnik_id && r.getStrip().getId() == strip_id)
+				throw new ApiRequestException("Korisnik je već ostavio rating na dati strip.");
+		}
+
 		// logika za rating
 		if (ukupno_reviewa != 0) {
 			double procenat = ((ukupno_reviewa - broj_losih_reviewa) / ukupno_reviewa) * 100;
@@ -133,7 +156,7 @@ public class RatingServis {
 
 		// strip azuriranje
 		Strip strip;
-		if (stripRepozitorij.getOne(strip_id) != null) {
+		if (stripRepozitorij.findById(strip_id).get() != null) {
 			strip = stripRepozitorij.getOne(strip_id);
 		} else {
 			strip = new Strip();
@@ -142,7 +165,7 @@ public class RatingServis {
 		}
 		// korisnik azuriranje
 		User korisnik;
-		if (korisnikRepozitorij.getOne(korisnik_id) != null)
+		if (korisnikRepozitorij.findById(korisnik_id).get() != null)
 			korisnik = korisnikRepozitorij.getOne(korisnik_id);
 		else {
 			korisnik = new User();
@@ -174,19 +197,18 @@ public class RatingServis {
 	public Map<String, String> commentsByStrip(Long id) {
 		List<Rating> all_ratings = ratingRepozitorij.findAll();
 		Map<String, String> korisnik_komentar = new HashMap<String, String>();
-
-		for (Rating r : all_ratings) {
-			if (r.getStrip().getId() == id) {
-				ResponseEntity<String> username = restTemplate.exchange(
-						"http://user-service/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
-						String.class);
-				korisnik_komentar.put(username.getBody(),r.getKomentar());
+		if (stripRepozitorij.findById(id).isPresent()) {
+			for (Rating r : all_ratings) {
+				if (r.getStrip().getId() == id) {
+					ResponseEntity<String> username = restTemplate.exchange(
+							"http://user-service/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
+							String.class);
+					korisnik_komentar.put(username.getBody(), r.getKomentar());
+				}
 			}
-		}
-		
-		return korisnik_komentar;
-
+			return korisnik_komentar;
+		} else
+			throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronađen!");
 	}
-	
 	
 }

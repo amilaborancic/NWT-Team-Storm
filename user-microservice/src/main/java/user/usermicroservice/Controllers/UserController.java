@@ -31,6 +31,9 @@ public class UserController {
     public String getUsername(@PathVariable Long id) {
     	return userServis.findUserById(id).get().getUserName();
     }
+    //novo
+    @GetMapping(value="/user/count")
+    public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
     
 
     @RequestMapping(method = RequestMethod.POST, value ="/sign-up")

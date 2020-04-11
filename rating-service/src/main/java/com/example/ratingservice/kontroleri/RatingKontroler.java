@@ -8,6 +8,8 @@ import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 import com.example.ratingservice.servisi.UserServis;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +18,6 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-
 import javax.validation.ConstraintViolation;
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -33,7 +34,6 @@ public class RatingKontroler {
 	private UserServis korisnikServis;
 	@Autowired
 	private StripServis stripServis;
-	
 
 	// vraca sve ratinge
 	@RequestMapping(value = "/ratings", method = RequestMethod.GET)
@@ -71,23 +71,7 @@ public class RatingKontroler {
 
 	// kreiranje novog ratinga
 	@RequestMapping(value = "/dodaj-rating", method = RequestMethod.POST, consumes = "application/json")
-	public void addRating(@RequestBody @Valid Rating rating, Errors errors) throws Exception {
-
-		// VALIDACIJA
-		// errori u body-u
-		if (errors.hasErrors()) {
-			List<ConstraintViolation<?>> violations = new ArrayList<>();
-			for (ObjectError e : errors.getAllErrors()) {
-				violations.add(e.unwrap(ConstraintViolation.class));
-			}
-			String exc = "";
-			// za svaki input
-			for (ConstraintViolation<?> e : violations) {
-				exc += e.getPropertyPath() + " " + e.getMessage() + "\n";
-			}
-			throw new Exception("Unos za rating je neispravan: " + exc.toString());
-		}	
-		
+	public void addRating(@RequestBody @Valid Rating rating) throws Exception {
 		ratingServis.addRating(rating);
 	}
 
