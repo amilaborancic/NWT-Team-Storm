@@ -6,7 +6,10 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.fasterxml.jackson.databind.JsonNode;
+
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.aspectj.lang.annotation.Before;
@@ -82,6 +85,14 @@ public class RatingServisTest {
 		assertThat(ratingServis.getOne(rating.getId()).getKomentar()).isEqualTo("los strip");
 		assertThat(ratingServis.getOne(rating.getId()).getKorisnik().getId()).isEqualTo(Long.valueOf(1));
 		assertThat(ratingServis.getOne(rating.getId()).getStrip().getId()).isEqualTo(Long.valueOf(2));
+	}
+	
+	@Test
+	public void commentsByStrip() {
+		Map<String, String> user_komentar=ratingServis.commentsByStrip(Long.valueOf(2));
+		Map<String, String> test_mapa = new HashMap<String, String>();
+		test_mapa.put("Amila",  "super strip");
+		assertThat(user_komentar.equals(test_mapa));
 	}
 	
 

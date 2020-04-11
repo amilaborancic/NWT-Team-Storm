@@ -100,10 +100,11 @@ public class RatingKontrolerTest {
 				  .andExpect(status().isOk());
 	 }
 	 
-	 
-	 
-	 
-	 
-	 
+	@Test
+	public void komentariStripa() throws Exception {
+		mockMvc.perform(MockMvcRequestBuilders.get("/komentari-stripa/{id}", 2)
+			   .accept(MediaType.APPLICATION_JSON))
+			   .andDo(print()).andExpect(status().isOk());
+	}
 
 }

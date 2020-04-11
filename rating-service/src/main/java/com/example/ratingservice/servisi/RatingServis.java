@@ -53,8 +53,9 @@ public class RatingServis {
 	}
 	
 	public Rating getOne(Long id) {
-		return ratingRepozitorij.getOne(id);
-	//throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronađen!");
+		if(korisnikRepozitorij.findById(id).isPresent()) 
+			return ratingRepozitorij.getOne(id);
+		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronađen!");
 	}
 	
 	public List<Rating> findByKorisnik(Long id) {
