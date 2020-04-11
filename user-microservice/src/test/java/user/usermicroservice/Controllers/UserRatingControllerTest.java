@@ -1,4 +1,4 @@
-package user.usermicroservice;
+package user.usermicroservice.Controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Test;

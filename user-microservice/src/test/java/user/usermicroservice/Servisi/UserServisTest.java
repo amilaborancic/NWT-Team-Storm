@@ -1,4 +1,4 @@
-package user.usermicroservice;
+package user.usermicroservice.Servisi;
 
 
 import org.junit.Test;
