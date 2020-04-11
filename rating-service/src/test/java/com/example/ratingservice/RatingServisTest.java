@@ -1,4 +1,4 @@
-package com.example.ratingservice;
+﻿package com.example.ratingservice;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -51,7 +51,7 @@ public class RatingServisTest {
 	
 	@Autowired
 	RestTemplate restTemplate;
-/*	
+	
 	@Test
 	public void findAll() throws Exception{
 		assertThat(ratingServis.findAll().size()).isNotEqualTo(0);
@@ -80,7 +80,7 @@ public class RatingServisTest {
 		ratingServis.save(rating);
 		assertThat(ratingServis.getOne(rating.getId()).getOcjena()).isEqualTo(2);
 	}
-*//*
+
 	@Test
 	public void addRating() throws Exception{
 		Rating rating=new Rating(korisnikServis.getOne(Long.valueOf(1)),stripServis.getOne(Long.valueOf(2)),2,"los strip");
@@ -90,7 +90,7 @@ public class RatingServisTest {
 		assertThat(ratingServis.getOne(rating.getId()).getKorisnik().getId()).isEqualTo(Long.valueOf(1));
 		assertThat(ratingServis.getOne(rating.getId()).getStrip().getId()).isEqualTo(Long.valueOf(2));
 	}
-	*/
+	
 	@Test
 	public void addRatingInvalidKorisnik() throws Exception{
 		User korisnik=new User();
