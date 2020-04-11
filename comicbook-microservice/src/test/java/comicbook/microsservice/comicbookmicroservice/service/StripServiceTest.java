@@ -1,5 +1,6 @@
 package comicbook.microsservice.comicbookmicroservice.service;
 
+import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
@@ -7,18 +8,21 @@ import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 class StripServiceTest {
 
@@ -132,4 +136,22 @@ class StripServiceTest {
         );
         assertTrue(nemaNaziva.getMessage().contains("mora imati naziv"));
     }
+    
+	@Test
+	public void azurirajStrip() {
+		Strip strip = stripService.jedanStrip(Long.valueOf(1));
+		Integer komentari = strip.getUkupnoKomentara();
+		StripRatingInfo sr_info = new StripRatingInfo(strip.getId(), komentari + 1, strip.getUkupniRating());
+		stripService.azurirajStrip(sr_info);
+		assertThat(stripService.jedanStrip(strip.getId()).getUkupnoKomentara()).isEqualTo(sr_info.getUkupnoKomentara());
+	}
+
+	@Test
+	public void komentariStripa() {
+		ResponseEntity<Map<String, String>> useri_komentari = stripService.komentariStripa(Long.valueOf(1));
+		Map<String, String> test_mapa = new HashMap<String, String>();
+		test_mapa.put("Amila", "super strip");
+		assertThat(useri_komentari.getBody().equals(test_mapa));
+	}
+    
 }

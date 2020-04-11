@@ -179,9 +179,10 @@ public class RatingServis {
 				ResponseEntity<String> username = restTemplate.exchange(
 						"http://user-service/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
 						String.class);
-				korisnik_komentar.put(r.getKomentar(), username.getBody());
+				korisnik_komentar.put(username.getBody(),r.getKomentar());
 			}
 		}
+		
 		return korisnik_komentar;
 
 	}

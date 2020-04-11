@@ -6,10 +6,14 @@ import javax.persistence.*;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+
+import org.hibernate.annotations.Proxy;
+
 import java.util.List;
 
 @Table(name="strip")
 @Entity
+@Proxy(lazy = false)
 public class Strip {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

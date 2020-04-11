@@ -25,7 +25,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class RatingKontrolerTest {
 	 
@@ -99,6 +99,11 @@ public class RatingKontrolerTest {
 		 		  .content(asJsonString(rating)))
 				  .andExpect(status().isOk());
 	 }
+	 
+	 
+	 
+	 
+	 
 	 
 
 }

@@ -1,4 +1,4 @@
-package user.usermicroservice.Models;
+﻿package user.usermicroservice.Models;
 
 
 import javax.persistence.*;
@@ -8,6 +8,7 @@ import javax.validation.constraints.Size;
 
 
 @Entity
+@Proxy(lazy = false)
 @Table(name="user")
 public class User {
     @Id
