@@ -89,23 +89,30 @@ public class StripService {
         return stripRepository.count();
     }
     
-    public void azurirajStrip(StripRatingInfo stripRatingInfo) {
-    	Strip strip_iz_baze=stripRepository.getOne(stripRatingInfo.getId());
-    	strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
-    	strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
-    	stripRepository.save(strip_iz_baze);
+	public void azurirajStrip(StripRatingInfo stripRatingInfo) {
+		if (stripRepository.findById(stripRatingInfo.getId()).isPresent()) {
+			Strip strip_iz_baze = stripRepository.getOne(stripRatingInfo.getId());
+			strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
+			strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
+			stripRepository.save(strip_iz_baze);
+		} else
+			throw new ApiRequestException("Strip sa id-jem " + stripRatingInfo.getId().toString() + " ne postoji.");
+
 	}
-    
-    public List<Strip> sviStripoviPoId(List<Long> idStripova){
-        return stripRepository.findAllByIdIn(idStripova);
-    }
+
+	public List<Strip> sviStripoviPoId(List<Long> idStripova) {
+		return stripRepository.findAllByIdIn(idStripova);
+	}
 
 	public ResponseEntity<Map<String, String>> komentariStripa(Long id) {
-		ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
-				"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
-				new ParameterizedTypeReference<Map<String, String>>() {
-				});
-		return komentari_stripa;
+		if (stripRepository.findById(id).isPresent()) {
+			ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
+					"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
+					new ParameterizedTypeReference<Map<String, String>>() {
+					});
+			return komentari_stripa;
+		}
+		throw new ApiRequestException("Strip sa id-jem " + id.toString() + " ne postoji.");
 	}
 
 }

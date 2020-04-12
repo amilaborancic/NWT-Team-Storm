@@ -43,10 +43,13 @@ public class UserServis {
 	}
 
 	public void updateUser(UserRatingDTO userRatingInfo) {
-		User korisnik_iz_baze = userRepository.getOne(userRatingInfo.getId());
-		korisnik_iz_baze.setBroj_losih_reviewa(userRatingInfo.getBroj_losih_reviewa());
-		korisnik_iz_baze.setUkupno_reviewa(userRatingInfo.getUkupno_reviewa());
-		userRepository.save(korisnik_iz_baze);
+		if(userRepository.findById(userRatingInfo.getId()).isPresent()) {
+			User korisnik_iz_baze = userRepository.getOne(userRatingInfo.getId());
+			korisnik_iz_baze.setBroj_losih_reviewa(userRatingInfo.getBroj_losih_reviewa());
+			korisnik_iz_baze.setUkupno_reviewa(userRatingInfo.getUkupno_reviewa());
+			userRepository.save(korisnik_iz_baze);
+		}
+		else throw new ApiRequestException("User sa id-jem " + userRatingInfo.getId().toString() + " ne postoji!");
 	}
 
 	public Long brojKorisnikaUBazi() {

@@ -1,10 +1,15 @@
 package comicbook.microsservice.comicbookmicroservice.service;
 
-import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
-import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
-import comicbook.microsservice.comicbookmicroservice.model.Autor;
-import comicbook.microsservice.comicbookmicroservice.model.Strip;
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,19 +17,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
+import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
+import comicbook.microsservice.comicbookmicroservice.model.Autor;
+import comicbook.microsservice.comicbookmicroservice.model.Strip;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
-class StripServiceTest {
+public class StripServiceTest {
 
     @Autowired
     StripService stripService;
@@ -32,14 +33,14 @@ class StripServiceTest {
     AutorService autorService;
 
     @Test
-    void sviStripovi() {
+    public void sviStripovi() {
         assertThat(stripService.sviStripovi(0, 5)).size().isEqualTo(5);
         assertThat(stripService.sviStripovi(1, 5)).size().isEqualTo(1);
         assertThat(stripService.sviStripovi(2,5)).size().isEqualTo(0);
     }
 
     @Test
-    void jedanStrip() {
+    public void jedanStrip() {
         //test za exception
         ApiRequestException thrown = assertThrows(
                 ApiRequestException.class,
@@ -52,7 +53,7 @@ class StripServiceTest {
     }
 
     @Test
-    void stripoviPoAutoru() {
+    public void stripoviPoAutoru() {
         //kada se unesu i ime i prezime
         assertThat(stripService.stripoviPoAutoru("Stan", "Lee", 0, 5)).size().isEqualTo(2);
 
@@ -74,7 +75,7 @@ class StripServiceTest {
     }
 
     @Test
-    void stripoviPoIzdavacu() {
+    public void stripoviPoIzdavacu() {
         Long id_marvel = (long) 1;
         Long id_dc = (long) 2;
         Long id_mirage = (long) 3;
@@ -84,7 +85,7 @@ class StripServiceTest {
     }
 
     @Test
-    void stripoviPoZanru() {
+    public void stripoviPoZanru() {
         Long id_akcija = (long) 1;
         Long id_horor = (long) 2;
         Long id_avantura = (long) 3;
@@ -95,7 +96,7 @@ class StripServiceTest {
     }
 
     @Test
-    void stripoviPoNazivu() {
+    public void stripoviPoNazivu() {
         //kada je naziv prazan
         ApiRequestException bacenIzuzetak = assertThrows(
                 ApiRequestException.class,
@@ -117,7 +118,7 @@ class StripServiceTest {
     }
 
     @Test
-    void dodajStrip() {
+    public void dodajStrip() {
         List<Autor> autori = autorService.sviAutori().subList(0,2);
         Strip novi = new Strip("Test", "testni strip", "slikica", 0.0, 0, null, (long) 1, (long) 2, autori);
         assertThat(stripService.dodajStrip(novi)).isEqualTo((long) 7);
@@ -153,5 +154,24 @@ class StripServiceTest {
 		test_mapa.put("Amila", "super strip");
 		assertThat(useri_komentari.getBody().equals(test_mapa));
 	}
+	
+	@Test
+	public void azurirajStripException() {
+		StripRatingInfo sr_info = new StripRatingInfo(Long.valueOf(9999),0,Double.valueOf(0));
+		Exception exception = assertThrows(ApiRequestException.class, () -> stripService.azurirajStrip(sr_info));
+		assertTrue(exception.getMessage().contains("ne postoji"));
+	}
+	
+	@Test
+	public void komentariStripaException() {
+		Exception exception = assertThrows(ApiRequestException.class, () -> stripService.komentariStripa(Long.valueOf(999999)));
+		assertTrue(exception.getMessage().contains("ne postoji"));
+	}
+	
+	
+	
+	
+	
+	
     
 }

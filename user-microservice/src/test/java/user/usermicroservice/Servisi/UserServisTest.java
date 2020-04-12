@@ -1,18 +1,20 @@
 package user.usermicroservice.Servisi;
 
-
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
 import java.util.Optional;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Servisi.UserServis;
+import user.usermicroservice.exception.ApiRequestException;
 
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -44,5 +46,13 @@ public class UserServisTest {
 		assertThat(userServis.findUserById(Long.valueOf(1)).get().getUkupno_reviewa())
 				.isEqualTo(ur.getUkupno_reviewa());
 	}
+	
+	@Test
+	public void updateUserException() {
+		Exception exception = assertThrows(ApiRequestException.class, () -> userServis.updateUser(new UserRatingDTO(Long.valueOf(9999),0,0)));
+		assertTrue(exception.getMessage().contains("ne postoji"));
+	}
+	
+	
     
 }
