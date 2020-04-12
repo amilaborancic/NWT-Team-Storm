@@ -1,0 +1,214 @@
+{
+	"info": {
+		"_postman_id": "553869e1-2136-4a1a-b355-e6e8e8f55593",
+		"name": "CatalogueMicroservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Katalozi",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/katalog/svi?id_korisnik=4&brojStranice=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"svi"
+							],
+							"query": [
+								{
+									"key": "id_korisnik",
+									"value": "4"
+								},
+								{
+									"key": "brojStranice",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "createNew",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"naziv\":\"eff\",\n\t\"idKorisnik\":2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/katalog/novi",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"novi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addComic",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id_strip\":1,\n\t\"id_katalog\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/katalog/dodavanje-stripa",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"dodavanje-stripa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Single",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/katalog/jedan?id_katalog=123",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"jedan"
+							],
+							"query": [
+								{
+									"key": "id_katalog",
+									"value": "123"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteStrip",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"id_strip\":1,\n\t\"id_katalog\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/katalog/brisanje-stripa",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"brisanje-stripa"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "deleteKatalog",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"idKatalog\":13,\n\t\"idKorisnik\":1\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8082/katalog/brisanje-kataloga",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"brisanje-kataloga"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Stripovi",
+			"item": [
+				{
+					"name": "getAllFromCatalogue",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8082/katalog/iz-kataloga/3?brojStranice=1",
+							"host": [
+								"localhost"
+							],
+							"port": "8082",
+							"path": [
+								"katalog",
+								"iz-kataloga",
+								"3"
+							],
+							"query": [
+								{
+									"key": "brojStranice",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

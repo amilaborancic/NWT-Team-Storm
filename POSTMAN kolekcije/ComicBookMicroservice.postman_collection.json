@@ -1,0 +1,454 @@
+{
+	"info": {
+		"_postman_id": "0a50d0db-57ea-4c42-a8a5-55a0efd123c3",
+		"name": "ComicBookMicroservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Zanrovi",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/zanr/svi",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"zanr",
+								"svi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"naziv\":\"SciFi\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/zanr/novi",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"zanr",
+								"novi"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Stripovi",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/svi?brojStranice=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"svi"
+							],
+							"query": [
+								{
+									"key": "brojStranice",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addNew",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"naziv\":\"The Avengers\",\n\t\"opis\": \"The Avengers began as a group of extraordinary individuals who were assembled to defeat Loki and his Chitauri army in New York City. Since then, the team has expanded its roster and faced a host of new threats, while dealing with their own turmoil.\",\n\t\"slika\":\"vdvdd\",\n\t\"ukupniRating\":1,\n\t\"ukupnoKomentara\":0,\n\t\"izdanje\":null,\n\t\"idIzdavac\": \"1132\",\n\t\"idZanr\":\"1\",\n\t\"autori\": [{\"id\":4}, {\"id\":5}]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/strip/noviStrip",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"noviStrip"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchById",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip?id_strip=723",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip"
+							],
+							"query": [
+								{
+									"key": "id_strip",
+									"value": "723"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchByAuthorName",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/strip/trazi-autor?brojStranice=0&ime=Scott",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"trazi-autor"
+							],
+							"query": [
+								{
+									"key": "prezime",
+									"value": "Ben",
+									"disabled": true
+								},
+								{
+									"key": "brojStranice",
+									"value": "0"
+								},
+								{
+									"key": "ime",
+									"value": "Scott"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchByPublisher",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/trazi-izdavac?id_izdavac=1&brojStranice=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"trazi-izdavac"
+							],
+							"query": [
+								{
+									"key": "id_izdavac",
+									"value": "1"
+								},
+								{
+									"key": "brojStranice",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchByGenre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/trazi-zanr?id_zanr=1&brojStranice=0",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"trazi-zanr"
+							],
+							"query": [
+								{
+									"key": "id_zanr",
+									"value": "1"
+								},
+								{
+									"key": "brojStranice",
+									"value": "0"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "searchByTitle",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/trazi-naziv?brojStranice=0&naziv=iron",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"trazi-naziv"
+							],
+							"query": [
+								{
+									"key": "brojStranice",
+									"value": "0"
+								},
+								{
+									"key": "naziv",
+									"value": "iron"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/count",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "brojNaStranici",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/strip/brojNaStranici",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"brojNaStranici"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stripoviPoId",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"idStripova\": [1, 2, 3, 4]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/strip/sviPoId",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"strip",
+								"sviPoId"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Autori",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8080/autor/svi",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"autor",
+								"svi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addNew",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"ime\":\"Neko\",\n\t\"prezime\": \"Nekic\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/autor/novi",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"autor",
+								"novi"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Izdavaci",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8083/izdavac/svi",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"izdavac",
+								"svi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "addNew",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"naziv\":\"Dark Horse Comics\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8083/izdavac/novi",
+							"host": [
+								"localhost"
+							],
+							"port": "8083",
+							"path": [
+								"izdavac",
+								"novi"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}

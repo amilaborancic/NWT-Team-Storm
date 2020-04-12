@@ -1,0 +1,246 @@
+{
+	"info": {
+		"_postman_id": "f381aee7-6cba-4bd3-bcd6-fba9137847ba",
+		"name": "RatingMicroservice",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Rating",
+			"item": [
+				{
+					"name": "getAll",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/rating/svi",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"svi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ratingPoid",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/rating/112",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"112"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ratingKorisnika",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/rating/korisnika/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"korisnika",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "komentariNaStripu",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/rating/komentari-stripa/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"komentari-stripa",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "ratingZaStrip",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/rating/stripa/123",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"stripa",
+								"123"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dodajRating",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"korisnik\": {\n\t\t\"id\":1\n\t},\n\t\"strip\": {\n\t\t\"id\":2\n\t},\n\t\"ocjena\":4,\n\t\"komentar\":\"me likey\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "localhost:8081/rating/dodaj-rating",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"rating",
+								"dodaj-rating"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Strip",
+			"item": [
+				{
+					"name": "svi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/stripovi",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"stripovi"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "stripInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/strip/1",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"strip",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "svi",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/korisnici",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"korisnici"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "dodajKorisnika",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/dodaj-korisnika",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"dodaj-korisnika"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "korisnikInfo",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "localhost:8081/korisnik/12",
+							"host": [
+								"localhost"
+							],
+							"port": "8081",
+							"path": [
+								"korisnik",
+								"12"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"protocolProfileBehavior": {}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
