@@ -5,21 +5,21 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
 import user.usermicroservice.DTO.UserDTO;
+import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
-import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.Servisi.UserServis;
 import user.usermicroservice.exception.ApiRequestException;
-import static org.junit.Assert.*;
 
-import javax.validation.constraints.AssertFalse;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @RestController
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
@@ -28,42 +28,25 @@ public class UserController {
     @Autowired
     RestTemplate restTemplate;
 
-    @RequestMapping("/user/{id}")
-    public Optional <User> getUser(@PathVariable Long id){
+    @GetMapping("/{id}")
+    public Optional<User> getUser(@PathVariable Long id){
         return userServis.findUserById(id);
     }
 
-    @RequestMapping("/ahmo")
-    public String sayHi(){
-        return "HIIII";
-    }
-    
-    //novo
-    @RequestMapping("/username/{id}")
-    public String getUsername(@PathVariable Long id) {
-    	return userServis.findUserById(id).get().getUserName();
-    }
-    //novo
-    @GetMapping(value="/user/count")
-    public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
-
-    @RequestMapping(method = RequestMethod.POST, value = "sign-in")
+    @PostMapping(value = "/sign-in")
     public Long signIn(@RequestBody UserDTO userDTO){
-
         String userName = userDTO.getUserName();
         String sifra = userDTO.getSifra();
-
-        if(! userServis.postojiUserName(userName)) throw new ApiRequestException("Username nije ispravan!");
-        if(! userDTO.getSifra().equals(userServis.findUserByUserName(userName).getSifra())) throw new ApiRequestException("Unesite ispravnu šifru!");
-
+        if(!userServis.postojiUserName(userName)) throw new ApiRequestException("Username nije ispravan!");
+        if(!sifra.equals(userServis.findUserByUserName(userName).getSifra())) throw new ApiRequestException("Unesite ispravnu šifru!");
         return userServis.findUserByUserName(userName).getId();
     }
 
-    @RequestMapping(method = RequestMethod.POST, value ="/sign-up")
+    @PostMapping(value ="/sign-up")
     public Long signUp(@RequestBody User user){
         if(user.getIme().equals("")) throw new ApiRequestException("Ime je obavezno!");
         if(user.getUserName().equals("")) throw new ApiRequestException("Username je obavezan!");
-        if(user.getEmail().equals("")) throw new ApiRequestException("Email mora biti valjan!");
+        if(user.getEmail().equals("")) throw new ApiRequestException("Email je obavezan!");
         if(userServis.postojiEmail(user.getEmail())) throw new ApiRequestException("User sa "+ user.getEmail()+ " već postoji!");
         if(user.getSifra().equals("")) throw new ApiRequestException("Sifra mora biti unesena!");
 
@@ -83,17 +66,32 @@ public class UserController {
         return response1.getBody();
     }
 
+    @PutMapping(value="/update-rating")
+    public void updateUser(@RequestBody UserRatingDTO userRatingInfo) {
+        userServis.updateUser(userRatingInfo);
+    }
 
+    //pomocne metode
     @RequestMapping("/userName/{name}")
     public Long getIdByUserName(@PathVariable String name){
         return userServis.findUserByUserName(name).getId();
     }
 
-
-
-    @RequestMapping("/svi/useri")
+    //samo za testiranje kroz postman
+    @RequestMapping("/svi")
     @GetMapping
     public List<User> svi(){ return userServis.svi(); }
 
+    @RequestMapping("/username/{id}")
+    public String getUsername(@PathVariable Long id) {
+        return userServis.findUserById(id).get().getUserName();
+    }
 
+    /*
+    @RequestMapping("/ahmo")
+    public String sayHi(){
+        return "HIIII";
+    }
+
+   */
 }

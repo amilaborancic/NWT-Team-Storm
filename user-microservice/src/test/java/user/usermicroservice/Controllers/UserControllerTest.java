@@ -10,13 +10,14 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
+import user.usermicroservice.DTO.UserDTO;
+import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Servisi.UserServis;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -40,37 +41,117 @@ public class UserControllerTest {
 
     @Test
     public void getUser() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/user/{id}", 1)
+        String url = "/user/{id}";
+        //sve okej
+        mockMvc.perform(get(url, 1)
                 .accept(MediaType.APPLICATION_JSON)).andDo(print())
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.id").value(1));
+                .andExpect(jsonPath("$.id").value(1));
+
+        //id usera ne postoji
+        mockMvc.perform(get(url, 123))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("User sa id-jem 123 ne postoji!"));
     }
 
-	@Test
-	public void getUsernameByUserId() throws Exception {
-		mockMvc.perform(MockMvcRequestBuilders.get("/username/{id}", 1).accept(MediaType.APPLICATION_JSON))
-				.andDo(print()).andExpect(status().isOk()).equals(1);
-	}
     @Test
-    public void getIdByUserName() throws Exception{
-        mockMvc.perform(MockMvcRequestBuilders.get("/userName/{name}", "Amila")
-                .accept(MediaType.APPLICATION_JSON)).andDo(print())
-                .andExpect(status().isOk())
-                .equals(1);
+    public void signIn() throws Exception {
+        String url = "/user/sign-in";
+        UserDTO user = new UserDTO("Amila", "sifraamila");
+        UserDTO pogresanUsername = new UserDTO("alksnd", "sifraamila");
+        UserDTO pogresnaSifra = new UserDTO("Mahira", "asmkfa");
+        //sve okej
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(user)))
+                .andExpect(status().isOk());
+        //pogresan username
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(pogresanUsername)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Username nije ispravan!"));
+
+        //pogresna sifra
+        mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(pogresnaSifra)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Unesite ispravnu šifru!"));
     }
 
     @Test
     public void signUp() throws Exception {
-
         User user = new User("Neko", "Nekic", "Nekoc","neko@gmail.com",
                 "neka",2, 5);
-
-        mockMvc.perform(post("/sign-up")
+        User faliIme = new User("", "klm", "Test","test@gmail.com",
+                "neka",2, 5);
+        User faliUsername = new User("dqwpakml", "Nasdmaslc", "","aksks@gmail.com",
+                "neka",2, 5);
+        User emailPostoji = new User("asdlm", "Neaslmdkic", "Ahmed","neko@gmail.com",
+                "neka",2, 5);
+        User faliSifra = new User("asamdsl", "sldml", "alsmlx","aslmdlx@gmail.com",
+                "",2, 5);
+        User faliEmail = new User("scld", "lsdmc", "laksmc","",
+                "neka",2, 5);
+        //sve okej
+        mockMvc.perform(post("/user/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
-                .content(asJsonString( user))).andExpect(status().isOk());
-
+                .content(asJsonString(user))).andExpect(status().isOk());
+        //fali ime
+        mockMvc.perform(post("/user/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(faliIme)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Ime je obavezno!"));
+        //fali username
+        mockMvc.perform(post("/user/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(faliUsername)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Username je obavezan!"));
+        //username vec postoji
+        mockMvc.perform(post("/user/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(emailPostoji)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("User sa neko@gmail.com već postoji!"));
+        //fali sifra
+        mockMvc.perform(post("/user/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(faliSifra)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Sifra mora biti unesena!"));
+        //fali email
+        mockMvc.perform(post("/user/sign-up")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(asJsonString(faliEmail)))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Email je obavezan!"));
     }
 
+    @Test
+    public void updateUser() throws Exception {
+        UserRatingDTO urinfo = new UserRatingDTO(Long.valueOf(1), 0, 0);
+        mockMvc.perform(
+                put("/user/update-rating").contentType(MediaType.APPLICATION_JSON).content(asJsonString(urinfo)))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getIdByUserName() throws Exception{
+        String url = "/user/userName/{name}";
+        //sve okej
+        mockMvc.perform(get(url, "Amila")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .equals(1);
+        //ne postoji user s tim usernameom
+        mockMvc.perform(get(url, "ajkjn")
+                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().is(400))
+                .andExpect(jsonPath("$.message").value("Korisnik sa username-om ajkjn ne postoji!"));
+    }
 
 
 }

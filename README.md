@@ -11,6 +11,7 @@ IntelliJ IDE (poželjno ali nije neophodno)
 2. U meniju koji se prikaže odaberite phpMyAdmin.
 3. U tom fajlu potražite username i password polja i postavite ih na username=root, password= (šifre nema).
 4. Spasite promjene.
+5. Otvorite MySql bazu kroz XAMPP panel i kreirajte 4 prazne baze sa imenima: katalozi, user-service, rating-service i stripovi.
 
 ## Upute za pokretanje projekta
 1. Prvo je potrebno u XAMPP control panelu pokrenuti Apache server i Mysql.

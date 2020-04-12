@@ -3,8 +3,6 @@ package user.usermicroservice.Servisi;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
-
 import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
@@ -31,7 +29,9 @@ public class UserServis {
 	}
 
 	public User findUserByUserName(String name) {
-		return userRepository.findByUserName(name);
+		User user = userRepository.findByUserName(name);
+		if(user == null) throw new ApiRequestException("Korisnik sa username-om " + name + " ne postoji!");
+		return user;
 	}
 
 	public boolean postojiUserName(String userName){
@@ -42,6 +42,7 @@ public class UserServis {
 		return userRepository.existsByEmail(email);
 	}
 
+	//samo za testiranje kroz postman
 	public List<User> svi() {
 		return userRepository.findAll();
 	}
