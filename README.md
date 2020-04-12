@@ -34,6 +34,22 @@ kreirajKatalog metoda (Katalog mikroservis, KatalogControllerTest)
 2. Pokrenuti Katalog mikroservis.
 3. Pokrenuti testnu metodu kreirajKatalog (ili sve testove odjednom za KatalogController klasu).
 
+signUp metoda (User mikroservis, UserControllerTest)
+1. Pokrenuti Eureka server.
+2. Pokrenuti Katalog mikroservis.
+3. Pokrenuti testnu metodu signUp.
+
+addRating metoda (Ratings mikroservis, RatingKontrolerTest)
+1. Pokrenuti Eureka server.
+2. Pokrenuti Strip mikroservis.
+3. Pokrenuti User mikorservis.
+4. Pokrenuti testnu metodu addRating.
+
+commentsByStrip metoda (Rating mikroservis, RatingKontrolerTest)
+1. Pokrenuti Eureka server.
+2. Pokrenuti Strip mikroservis.
+3. Pokrenuti testnu metodu commentsByStrip .
+
 <ins>Ostali testovi</ins></br>
 1. Pokrenuti Eureka server.
 2. Pokrenuti željeni test klikom na play dugme pokraj testne metode/klase.

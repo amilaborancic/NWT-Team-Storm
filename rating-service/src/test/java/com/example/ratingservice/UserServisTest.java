@@ -1,35 +1,25 @@
 package com.example.ratingservice;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.Assert.assertThat;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import org.springframework.http.MediaType;
+import com.example.ratingservice.exception.ApiRequestException;
+import com.example.ratingservice.modeli.User;
+import com.example.ratingservice.servisi.RatingServis;
+import com.example.ratingservice.servisi.UserServis;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.DirtiesContext.ClassMode;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
-import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.User;
-import com.example.ratingservice.modeli.Rating;
-import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.servisi.UserServis;
-import com.example.ratingservice.servisi.RatingServis;
-import com.example.ratingservice.servisi.StripServis;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest
 @DirtiesContext(classMode = ClassMode.AFTER_EACH_TEST_METHOD)
 
-public class KorisnikServisTest {
+public class UserServisTest {
 
 	@Autowired
 	UserServis korisnikServis;
@@ -38,16 +28,21 @@ public class KorisnikServisTest {
 	
 	@Test
 	public void getOne() throws Exception{
-		User korisnik=korisnikServis.getOne(Long.valueOf(1));
+		//sve okej
+		User korisnik=korisnikServis.getOne(1L);
 		assertThat(korisnik.getId()).isEqualTo(1);
+		//korisnik ne postoji
+		ApiRequestException nemaUsera = assertThrows(
+				ApiRequestException.class,
+				()->korisnikServis.getOne(121L)
+		);
+		assertThat(nemaUsera.getMessage().contains("nije pronadjen"));
 	}
-	
 
 	@Test
 	public void findAll()throws Exception {
 		assertThat(korisnikServis.findAll().size()).isNotEqualTo(0);
 	}
-	
 
 	@Test
 	public void save()throws Exception {

@@ -26,15 +26,13 @@ public class RatingServiceApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(RatingServiceApplication.class, args);
 	}
-	
 
 	@LoadBalanced
 	@Bean
 	public RestTemplate getRestTemplate() {
 		return new RestTemplate();
 	}
-	
-	
+
 }
 
 @Component
@@ -55,14 +53,14 @@ class DemoCommandLineRunner implements CommandLineRunner{
 		
 		Strip s1=new Strip();
 		Strip s2=new Strip();
+		Strip s3 = new Strip();
 		
 		stripRepozitorij.save(s1);
 		stripRepozitorij.save(s2);
+		stripRepozitorij.save(s3);
 		korisnikRepozitorij.save(k1);
 		ratingRepozitorij.save(new Rating(k1,s1,4, "super strip"));
-		//ratingRepozitorij.save(new Rating(k1,s2,1, "nisam odusevljen"));
-	
-		
+
 	}
 	
 }

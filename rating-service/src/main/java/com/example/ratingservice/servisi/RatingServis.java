@@ -1,39 +1,28 @@
 package com.example.ratingservice.servisi;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
+import com.example.ratingservice.DTO.KorisnikInfoRating;
+import com.example.ratingservice.DTO.StripInfoRating;
+import com.example.ratingservice.exception.ApiRequestException;
+import com.example.ratingservice.modeli.Rating;
+import com.example.ratingservice.modeli.Strip;
+import com.example.ratingservice.modeli.User;
+import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
+import com.example.ratingservice.repozitorij.RatingRepozitorij;
+import com.example.ratingservice.repozitorij.StripRepozitorij;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.example.ratingservice.DTO.KorisnikInfoRating;
-import com.example.ratingservice.DTO.StripInfoRating;
-import com.example.ratingservice.exception.ApiRequestException;
-import com.example.ratingservice.modeli.User;
-import com.example.ratingservice.modeli.Rating;
-import com.example.ratingservice.modeli.Strip;
-import com.example.ratingservice.repozitorij.KorisnikRepozitorij;
-import com.example.ratingservice.repozitorij.RatingRepozitorij;
-import com.example.ratingservice.repozitorij.StripRepozitorij;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Transactional
 @Service
@@ -55,11 +44,11 @@ public class RatingServis {
 	public Rating getOne(Long id) {
 		if(ratingRepozitorij.findById(id).isPresent()) 
 			return ratingRepozitorij.getOne(id);
-		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronađen!");
+		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronadjen!");
 	}
 	
 	public List<Rating> findByKorisnik(Long id) {
-		
+
 		if(korisnikRepozitorij.findById(id).isPresent()) {
 			List<Rating> all_ratings=ratingRepozitorij.findAll();
 			List<Rating> ratings_by_user=new ArrayList<Rating>();
@@ -71,16 +60,13 @@ public class RatingServis {
 		}
 		return ratings_by_user;
 		}
-		
-		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronađen!");
+		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronadjen!");
 	}
 	
 	public List<Rating> findByStrip(Long id) {
-		
 		if(stripRepozitorij.findById(id).isPresent()) {
 			List<Rating> all_ratings=ratingRepozitorij.findAll();
 			List<Rating> ratings_by_strip=new ArrayList<Rating>();
-		
 		for (Rating r:all_ratings) {
 			if(r.getStrip().getId()==id) {
 				ratings_by_strip.add(r);
@@ -88,20 +74,18 @@ public class RatingServis {
 		}
 		return ratings_by_strip;
 		}
-		
-		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronađen!");
+		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronadjen!");
 	}
-	
 	
 	public void save(Rating rating) {
 		ratingRepozitorij.save(rating);
 	}
 	
-	public void addRating(Rating rating) throws JsonMappingException, JsonProcessingException {
+	public String addRating(Rating rating) throws JsonMappingException, JsonProcessingException {
 
 		// provjera
 		if (rating.getOcjena() < 1 || rating.getOcjena() > 5)
-			throw new ApiRequestException("Ocjena mora bit u rasponu od 1 do 5!");
+			throw new ApiRequestException("Ocjena mora biti u rasponu od 1 do 5!");
 
 		if (rating.getKorisnik() == null || rating.getStrip() == null)
 			throw new ApiRequestException("Nepotpun zahtjev!");
@@ -111,9 +95,9 @@ public class RatingServis {
 
 		// provjera
 		if (rating.getKorisnik().getId() > korisnici.getBody() || rating.getKorisnik().getId() < 0)
-			throw new ApiRequestException("Id korisnika je pogrešan!");
+			throw new ApiRequestException("Id korisnika je pogresan!");
 		if (rating.getStrip().getId() > stripovi.getBody() || rating.getStrip().getId() < 0)
-			throw new ApiRequestException("Id stripa je pogrešan!");
+			throw new ApiRequestException("Id stripa je pogresan!");
 
 		// strip-rating, stripservis vraca ima li trazenog stripa
 		String url = "http://comicbook-service/strip?id_strip=" + rating.getStrip().getId();
@@ -139,7 +123,7 @@ public class RatingServis {
 		List<Rating> rating_lista = ratingRepozitorij.findAll();
 		for (Rating r : rating_lista) {
 			if (r.getKorisnik().getId() == korisnik_id && r.getStrip().getId() == strip_id)
-				throw new ApiRequestException("Korisnik je već ostavio rating na dati strip.");
+				throw new ApiRequestException("Korisnik je vec ostavio rating na dati strip.");
 		}
 
 		// logika za rating
@@ -192,8 +176,10 @@ public class RatingServis {
 		rating.setKorisnik(korisnik);
 		rating.setStrip(strip);
 		ratingRepozitorij.save(rating);
+		return "Uspjesno ste ostavili recenziju na strip!";
 	}
 
+	//komunicira sa user ms-om
 	public Map<String, String> commentsByStrip(Long id) {
 		List<Rating> all_ratings = ratingRepozitorij.findAll();
 		Map<String, String> korisnik_komentar = new HashMap<String, String>();
@@ -201,14 +187,13 @@ public class RatingServis {
 			for (Rating r : all_ratings) {
 				if (r.getStrip().getId() == id) {
 					ResponseEntity<String> username = restTemplate.exchange(
-							"http://user-service/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
+							"http://user-service/user/username/" + r.getKorisnik().getId().toString(), HttpMethod.GET, null,
 							String.class);
 					korisnik_komentar.put(username.getBody(), r.getKomentar());
 				}
 			}
 			return korisnik_komentar;
-		} else
-			throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronađen!");
+		} else throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronadjen!");
 	}
 	
 }

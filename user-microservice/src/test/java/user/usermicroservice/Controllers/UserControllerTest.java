@@ -80,6 +80,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.message").value("Unesite ispravnu šifru!"));
     }
 
+    //komunicira sa katalog servisom
     @Test
     public void signUp() throws Exception {
         User user = new User("Neko", "Nekic", "Nekoc","neko@gmail.com",

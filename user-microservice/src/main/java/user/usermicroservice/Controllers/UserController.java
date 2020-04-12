@@ -87,6 +87,9 @@ public class UserController {
         return userServis.findUserById(id).get().getUserName();
     }
 
+    @GetMapping(value="/count")
+    public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
+
     /*
     @RequestMapping("/ahmo")
     public String sayHi(){
