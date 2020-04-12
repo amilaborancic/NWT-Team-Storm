@@ -30,8 +30,12 @@ public class UserServis {
 		userRepository.save(user);
 	}
 
-	public Long findUserByName(String name) {
-		return userRepository.findByUserName(name).getId();
+	public User findUserByUserName(String name) {
+		return userRepository.findByUserName(name);
+	}
+
+	public boolean postojiUserName(String userName){
+		return userRepository.existsByUserName(userName);
 	}
 
 	public boolean postojiEmail(String email) {

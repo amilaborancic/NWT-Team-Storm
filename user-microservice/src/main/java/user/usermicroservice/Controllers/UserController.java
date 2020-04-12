@@ -5,14 +5,18 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
+import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.Servisi.UserServis;
 import user.usermicroservice.exception.ApiRequestException;
+import static org.junit.Assert.*;
 
+import javax.validation.constraints.AssertFalse;
 import java.util.*;
 
 @RestController
@@ -42,7 +46,18 @@ public class UserController {
     //novo
     @GetMapping(value="/user/count")
     public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
-    
+
+    @RequestMapping(method = RequestMethod.POST, value = "sign-in")
+    public Long signIn(@RequestBody UserDTO userDTO){
+
+        String userName = userDTO.getUserName();
+        String sifra = userDTO.getSifra();
+
+        if(! userServis.postojiUserName(userName)) throw new ApiRequestException("Username nije ispravan!");
+        if(! userDTO.getSifra().equals(userServis.findUserByUserName(userName).getSifra())) throw new ApiRequestException("Unesite ispravnu šifru!");
+
+        return userServis.findUserByUserName(userName).getId();
+    }
 
     @RequestMapping(method = RequestMethod.POST, value ="/sign-up")
     public Long signUp(@RequestBody User user){
@@ -66,17 +81,15 @@ public class UserController {
         HttpEntity<KatalogDTO> entity2 = new HttpEntity<>(zelimProcitati, headers);
         ResponseEntity<Long> response2 = restTemplate.postForEntity("http://catalogue-service/katalog/novi", entity2, Long.class);
         return response1.getBody();
-
-
-
-
-
     }
+
 
     @RequestMapping("/userName/{name}")
     public Long getIdByUserName(@PathVariable String name){
-        return userServis.findUserByName(name);
+        return userServis.findUserByUserName(name).getId();
     }
+
+
 
     @RequestMapping("/svi/useri")
     @GetMapping
