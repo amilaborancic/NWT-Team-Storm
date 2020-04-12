@@ -63,7 +63,7 @@ public class UserController {
 
         HttpEntity<KatalogDTO> entity2 = new HttpEntity<>(zelimProcitati, headers);
         ResponseEntity<Long> response2 = restTemplate.postForEntity("http://catalogue-service/katalog/novi", entity2, Long.class);
-        return response1.getBody();
+        return user.getId();
     }
 
     @PutMapping(value="/update-rating")
@@ -72,17 +72,16 @@ public class UserController {
     }
 
     //pomocne metode
-    @RequestMapping("/userName/{name}")
+    @GetMapping("/userName/{name}")
     public Long getIdByUserName(@PathVariable String name){
         return userServis.findUserByUserName(name).getId();
     }
 
     //samo za testiranje kroz postman
-    @RequestMapping("/svi")
-    @GetMapping
+    @GetMapping("/svi")
     public List<User> svi(){ return userServis.svi(); }
 
-    @RequestMapping("/username/{id}")
+    @GetMapping("/username/{id}")
     public String getUsername(@PathVariable Long id) {
         return userServis.findUserById(id).get().getUserName();
     }

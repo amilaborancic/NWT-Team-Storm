@@ -55,19 +55,4 @@ commentsByStrip metoda (Rating mikroservis, RatingKontrolerTest)
 2. Pokrenuti željeni test klikom na play dugme pokraj testne metode/klase.
 
 ## POSTMAN kolekcije
-POSTMAN kolekcije možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom.</br>
-User: </br>
-Katalog: <div class="postman-run-button"
-data-postman-action="collection/import"
-data-postman-var-1="5edfae045185632f4a75"></div>
-<script type="text/javascript">
-  (function (p,o,s,t,m,a,n) {
-    !p[s] && (p[s] = function () { (p[t] || (p[t] = [])).push(arguments); });
-    !o.getElementById(s+t) && o.getElementsByTagName("head")[0].appendChild((
-      (n = o.createElement("script")),
-      (n.id = s+t), (n.async = 1), (n.src = m), n
-    ));
-  }(window, document, "_pm", "PostmanRunObject", "https://run.pstmn.io/button.js"));
-</script></br>
-Strip:</br>
-Rating:</br>
+POSTMAN kolekcije za svaki od mikroservisa možete importovati u POSTMAN kako bi vam lakše bilo rukovati projektom. </br>
