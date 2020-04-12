@@ -13,7 +13,7 @@ public class ApiExceptionHandler {
 	@ExceptionHandler(value={ApiRequestException.class})
 	public ResponseEntity<Object> handleApiRequestExceptionNotFound(ApiRequestException e){
 	
-		ApiException apiException=new ApiException(e.getMessage(),e,HttpStatus.BAD_REQUEST);
+		ApiException apiException=new ApiException(e.getMessage(),HttpStatus.BAD_REQUEST);
 		return new ResponseEntity<>(apiException, HttpStatus.BAD_REQUEST);
 	}
 	
