@@ -1,4 +1,5 @@
-﻿package user.usermicroservice.Models;
+
+package user.usermicroservice.Models;
 
 
 import javax.persistence.*;
