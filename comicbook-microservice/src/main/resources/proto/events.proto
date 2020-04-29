@@ -1,0 +1,30 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+
+
+enum ActionType {
+    CREATE = 0;
+    UPDATE = 1;
+    DELETE = 2;
+    GET = 3;
+};
+enum ResponseType {
+    SUCCESS = 0;
+    ERROR = 1;
+}
+message Request {
+    google.protobuf.Timestamp timestamp = 1;
+    string nazivServisa = 2;
+    int64 idKorisnik = 3;
+    ActionType tipAkcije = 4;
+    string nazivResursa = 5;
+}
+
+message Response {
+    string responseContent = 1;
+    ResponseType responseType = 2;
+}
+
+service action{
+    rpc logAction(Request) returns(Response);
+}

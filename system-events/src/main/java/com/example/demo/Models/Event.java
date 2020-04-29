@@ -2,24 +2,23 @@ package com.example.demo.Models;
 
 import com.google.protobuf.Timestamp;
 import javax.persistence.*;
-
-@Table(name="event")
 @Entity
+@Table(name="event")
 public class Event {
-    @GeneratedValue
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String timestamp;
     private String nazivServisa;
     private Integer tipAkcije;
     private String nazivResursa;
     private Long idKorisnik;
 
-    public Long getId() {
+    public Integer  getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer  id) {
         this.id = id;
     }
 
@@ -64,7 +63,6 @@ public class Event {
     }
 
     public Event(Timestamp timestamp, Long idKorisnik, String nazivServisa, Integer tipAkcije, String nazivResursa) {
-        this.id = id;
         this.timestamp = timestamp.toString();
         this.nazivServisa = nazivServisa;
         this.tipAkcije = tipAkcije;
@@ -80,10 +78,10 @@ public class Event {
         return "Event{" +
                 "id=" + id +
                 ", timestamp=" + timestamp +
-                ", userId=" + idKorisnik +
-                ", serviceName='" + nazivServisa + '\'' +
-                ", actionType=" + tipAkcije +
-                ", resourceName='" + nazivResursa + '\'' +
+                ", idKorisnik=" + idKorisnik +
+                ", nazivServisa='" + nazivServisa + '\'' +
+                ", tipAkcije=" + tipAkcije +
+                ", nazivResursa='" + nazivResursa + '\'' +
                 '}';
     }
 }

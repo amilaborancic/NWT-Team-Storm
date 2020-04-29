@@ -1,12 +1,17 @@
 package comicbook.microsservice.comicbookmicroservice.service;
 
+import com.google.protobuf.Timestamp;
 import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
+import comicbook.microsservice.comicbookmicroservice.grpc.Events;
+import comicbook.microsservice.comicbookmicroservice.grpc.actionGrpc;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.AutorRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.IzdavacRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.StripRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.ZanrRepository;
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.time.Instant;
 import java.util.*;
 
 @Service
@@ -82,6 +88,38 @@ public class StripService {
         if(zanrRepository.findById(idZanr).isEmpty()) throw new ApiRequestException("Zanr sa id-jem " + idZanr + " ne postoji.");
         if(izdavacRepository.findById(idIzdavac).isEmpty()) throw new ApiRequestException("Izdavac sa id-jem " + idIzdavac + " ne postoji.");
         stripRepository.save(strip);
+
+        //event dio
+        try{
+            //otvorimo konekciju
+            ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 8084).usePlaintext().build();
+            //napravimo stub
+            actionGrpc.actionBlockingStub stub =  actionGrpc.newBlockingStub(channel);
+            //trenutno vrijeme
+            Instant time = Instant.now();
+            Timestamp timestamp = Timestamp.newBuilder().build();
+            System.out.println(timestamp);
+
+
+            //formiramo response
+            Events.Response response = stub.logAction(Events.Request.newBuilder()
+                    .setTimestamp(timestamp)
+                    .setIdKorisnik(100000L)
+                    .setNazivResursa("Novi strip, id: " + strip.getId())
+                    .setNazivServisa("comicbook-service")
+                    .setTipAkcije(Events.ActionType.GET)
+                    .build()
+            );
+            System.out.println(response.getResponseType());
+            System.out.println(response.getResponseContent());
+
+            channel.shutdown();
+        }
+        catch(Exception e){
+            System.out.println("Doslo je do greske u grpc komunikaciji!");
+        }
+
+
         return strip.getId();
     }
 
