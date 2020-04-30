@@ -44,7 +44,7 @@ public class EventService extends actionImplBase {
     }
 
     private PreparedStatement save(Event event) throws Exception {
-        String sql = "INSERT INTO event(id_korisnik, naziv_resursa, naziv_servisa, timestamp, tip_akcije) VALUES(?,?,?,?,?)";
+        String sql = "INSERT INTO event(timestamp, naziv_servisa, id_korisnik, tip_akcije, naziv_resursa) VALUES(?,?,?,?,?)";
         ArrayList<String> connectionProps = connectionConfig.getConnectionInfo();
 
         try{

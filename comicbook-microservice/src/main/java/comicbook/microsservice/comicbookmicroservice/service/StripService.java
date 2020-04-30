@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -96,10 +94,8 @@ public class StripService {
             //napravimo stub
             actionGrpc.actionBlockingStub stub =  actionGrpc.newBlockingStub(channel);
             //trenutno vrijeme
-            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Calendar cal = Calendar.getInstance();
             String timestamp = cal.getTime().toString();
-            System.out.println(dateFormat.format(cal.getTime()));
 
 
             //formiramo response
@@ -108,7 +104,7 @@ public class StripService {
                     .setIdKorisnik(100000L)
                     .setNazivResursa("Novi strip, id: " + strip.getId())
                     .setNazivServisa("comicbook-service")
-                    .setTipAkcije(Events.ActionType.GET)
+                    .setTipAkcije(Events.ActionType.CREATE)
                     .build()
             );
             System.out.println(response.getResponseType());
@@ -119,7 +115,6 @@ public class StripService {
         catch(Exception e){
             System.out.println("Doslo je do greske u grpc komunikaciji!");
         }
-
 
         return strip.getId();
     }
