@@ -13,7 +13,7 @@ enum ResponseType {
     ERROR = 1;
 }
 message Request {
-    google.protobuf.Timestamp timestamp = 1;
+    string timestamp = 1;
     string nazivServisa = 2;
     int64 idKorisnik = 3;
     ActionType tipAkcije = 4;

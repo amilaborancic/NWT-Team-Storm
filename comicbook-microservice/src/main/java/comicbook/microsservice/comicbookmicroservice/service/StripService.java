@@ -1,6 +1,5 @@
 package comicbook.microsservice.comicbookmicroservice.service;
 
-import com.google.protobuf.Timestamp;
 import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.grpc.Events;
@@ -20,7 +19,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -96,9 +96,10 @@ public class StripService {
             //napravimo stub
             actionGrpc.actionBlockingStub stub =  actionGrpc.newBlockingStub(channel);
             //trenutno vrijeme
-            Instant time = Instant.now();
-            Timestamp timestamp = Timestamp.newBuilder().build();
-            System.out.println(timestamp);
+            DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+            Calendar cal = Calendar.getInstance();
+            String timestamp = cal.getTime().toString();
+            System.out.println(dateFormat.format(cal.getTime()));
 
 
             //formiramo response

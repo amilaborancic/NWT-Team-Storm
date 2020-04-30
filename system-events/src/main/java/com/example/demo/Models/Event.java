@@ -1,6 +1,5 @@
 package com.example.demo.Models;
 
-import com.google.protobuf.Timestamp;
 import javax.persistence.*;
 @Entity
 @Table(name="event")
@@ -62,8 +61,8 @@ public class Event {
         this.idKorisnik = idKorisnik;
     }
 
-    public Event(Timestamp timestamp, Long idKorisnik, String nazivServisa, Integer tipAkcije, String nazivResursa) {
-        this.timestamp = timestamp.toString();
+    public Event(String timestamp, Long idKorisnik, String nazivServisa, Integer tipAkcije, String nazivResursa) {
+        this.timestamp = timestamp;
         this.nazivServisa = nazivServisa;
         this.tipAkcije = tipAkcije;
         this.nazivResursa = nazivResursa;
