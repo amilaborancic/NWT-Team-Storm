@@ -3,6 +3,8 @@ package com.example.ratingservice.servisi;
 import com.example.ratingservice.DTO.KorisnikInfoRating;
 import com.example.ratingservice.DTO.StripInfoRating;
 import com.example.ratingservice.exception.ApiRequestException;
+import com.example.ratingservice.grpc.Events;
+import com.example.ratingservice.grpc.actionGrpc;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
 import com.example.ratingservice.modeli.User;
@@ -13,74 +15,119 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.protobuf.Timestamp;
+import com.netflix.appinfo.InstanceInfo;
+import com.netflix.discovery.EurekaClient;
+
+import io.grpc.ManagedChannel;
+import io.grpc.ManagedChannelBuilder;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+@EnableEurekaClient
 @Transactional
 @Service
 public class RatingServis {
-	
+
+	@Autowired
+	private RestTemplate restTemplate;
+	@Autowired
+	private EurekaClient client;
 	@Autowired
 	private RatingRepozitorij ratingRepozitorij;
 	@Autowired
 	private KorisnikRepozitorij korisnikRepozitorij;
 	@Autowired
 	private StripRepozitorij stripRepozitorij;
-	@Autowired
-	private RestTemplate restTemplate;
-	
+
 	public List<Rating> findAll(){
+		addEvent(Events.ActionType.GET,"svi rejtinzi");
 		return ratingRepozitorij.findAll();
 	}
-	
-	public Rating getOne(Long id) {
-		if(ratingRepozitorij.findById(id).isPresent()) 
-			return ratingRepozitorij.getOne(id);
-		throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronadjen!");
+
+	public void addEvent(Events.ActionType tipAkcije, String nazivResursa) {
+
+		try {
+			ManagedChannel channel=ManagedChannelBuilder.forAddress("localhost", 8084).usePlaintext().build();
+			actionGrpc.actionBlockingStub stub=actionGrpc.newBlockingStub(channel);
+			Calendar c=Calendar.getInstance();
+			String ts=c.getTime().toString();
+
+			Events.Response response=stub.logAction(Events.Request.newBuilder()
+					.setTimestamp(ts)
+					.setNazivServisa("rating-service")
+					.setIdKorisnik(10000L)
+					.setTipAkcije(tipAkcije)
+					.setNazivResursa(nazivResursa)
+					.build()
+			);
+			System.out.println(response.getResponseTypeValue());
+			System.out.println(response.getResponseContent());
+			channel.shutdown();
+		}
+		catch(Exception e) {
+			System.out.println("Greska u grpc komunikaciji!");
+		}
+
 	}
-	
+
+	public Rating getOne(Long id) {
+
+		if(ratingRepozitorij.findById(id).isPresent()) {
+			addEvent(Events.ActionType.GET, "rating sa id "+id.toString());
+			return ratingRepozitorij.getOne(id);
+		}
+
+		else throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronadjen!");
+	}
+
 	public List<Rating> findByKorisnik(Long id) {
 
 		if(korisnikRepozitorij.findById(id).isPresent()) {
 			List<Rating> all_ratings=ratingRepozitorij.findAll();
 			List<Rating> ratings_by_user=new ArrayList<Rating>();
-			
-		for (Rating r:all_ratings) {
-			if(r.getKorisnik().getId()==id) {
-				ratings_by_user.add(r);
+
+			for (Rating r:all_ratings) {
+				if(r.getKorisnik().getId()==id) {
+					ratings_by_user.add(r);
+				}
 			}
-		}
-		return ratings_by_user;
+			addEvent(Events.ActionType.GET, "rejtinzi korisnika");
+			return ratings_by_user;
 		}
 		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronadjen!");
 	}
-	
+
 	public List<Rating> findByStrip(Long id) {
 		if(stripRepozitorij.findById(id).isPresent()) {
 			List<Rating> all_ratings=ratingRepozitorij.findAll();
 			List<Rating> ratings_by_strip=new ArrayList<Rating>();
-		for (Rating r:all_ratings) {
-			if(r.getStrip().getId()==id) {
-				ratings_by_strip.add(r);
+			for (Rating r:all_ratings) {
+				if(r.getStrip().getId()==id) {
+					ratings_by_strip.add(r);
+				}
 			}
-		}
-		return ratings_by_strip;
+			addEvent(Events.ActionType.GET, "rejtinzi stripa");
+			return ratings_by_strip;
 		}
 		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronadjen!");
 	}
-	
+
 	public void save(Rating rating) {
+		addEvent(Events.ActionType.CREATE,"dodavanje ratinga");
 		ratingRepozitorij.save(rating);
 	}
-	
+
 	public String addRating(Rating rating) throws JsonMappingException, JsonProcessingException {
 
 		// provjera
@@ -176,6 +223,8 @@ public class RatingServis {
 		rating.setKorisnik(korisnik);
 		rating.setStrip(strip);
 		ratingRepozitorij.save(rating);
+
+		addEvent(Events.ActionType.CREATE, "kreiranje ratinga");
 		return "Uspjesno ste ostavili recenziju na strip!";
 	}
 
@@ -192,8 +241,9 @@ public class RatingServis {
 					korisnik_komentar.put(username.getBody(), r.getKomentar());
 				}
 			}
+			addEvent(Events.ActionType.GET, "komentari korisnika na strip");
 			return korisnik_komentar;
 		} else throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronadjen!");
 	}
-	
+
 }
