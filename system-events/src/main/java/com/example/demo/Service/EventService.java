@@ -15,7 +15,6 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
 
-@Component
 public class EventService extends actionImplBase {
 
     private DatabaseConnection connectionConfig = new DatabaseConnection();
