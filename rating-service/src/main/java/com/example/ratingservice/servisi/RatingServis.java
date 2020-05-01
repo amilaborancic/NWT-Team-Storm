@@ -50,11 +50,6 @@ public class RatingServis {
 	@Autowired
 	private StripRepozitorij stripRepozitorij;
 
-	public List<Rating> findAll(){
-		addEvent(Events.ActionType.GET,"svi rejtinzi");
-		return ratingRepozitorij.findAll();
-	}
-
 	public void addEvent(Events.ActionType tipAkcije, String nazivResursa) {
 
 		try {
@@ -80,6 +75,13 @@ public class RatingServis {
 		}
 
 	}
+
+	public List<Rating> findAll(){
+		addEvent(Events.ActionType.GET,"svi rejtinzi");
+		return ratingRepozitorij.findAll();
+	}
+
+
 
 	public Rating getOne(Long id) {
 
