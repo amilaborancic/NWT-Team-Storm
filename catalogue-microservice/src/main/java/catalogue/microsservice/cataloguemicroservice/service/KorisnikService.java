@@ -1,9 +1,11 @@
 package catalogue.microsservice.cataloguemicroservice.service;
 
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
+import catalogue.microsservice.cataloguemicroservice.grpc.EventSubmission;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.repository.KorisnikRepository;
+import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +17,8 @@ public class KorisnikService {
     KorisnikRepository korisnikRepository;
     @Autowired
     KatalogService katalogService;
+    @Autowired
+    EventSubmission eventSubmission;
 
     public Long dodajKorisnika(Korisnik korisnik){
         //prvo dodamo korisnika
