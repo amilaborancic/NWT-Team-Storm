@@ -1,6 +1,4 @@
-package com.example.demo;
-
-import com.example.demo.Stubs.Events;
+package com.example.demo.GRPC;
 
 import static io.grpc.MethodDescriptor.generateFullMethodName;
 import static io.grpc.stub.ClientCalls.asyncUnaryCall;
@@ -13,7 +11,7 @@ import static io.grpc.stub.ServerCalls.asyncUnimplementedUnaryCall;
 /**
  */
 @javax.annotation.Generated(
-    value = "by gRPC proto compiler (version 1.29.0)",
+    value = "by gRPC proto compiler (version 1.15.0)",
     comments = "Source: events.proto")
 public final class actionGrpc {
 
@@ -36,35 +34,29 @@ public final class actionGrpc {
     if ((getLogActionMethod = actionGrpc.getLogActionMethod) == null) {
       synchronized (actionGrpc.class) {
         if ((getLogActionMethod = actionGrpc.getLogActionMethod) == null) {
-          actionGrpc.getLogActionMethod = getLogActionMethod =
+          actionGrpc.getLogActionMethod = getLogActionMethod = 
               io.grpc.MethodDescriptor.<Events.Request, Events.Response>newBuilder()
               .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
-              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "logAction"))
+              .setFullMethodName(generateFullMethodName(
+                  "action", "logAction"))
               .setSampledToLocalTracing(true)
               .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   Events.Request.getDefaultInstance()))
               .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
                   Events.Response.getDefaultInstance()))
-              .setSchemaDescriptor(new actionMethodDescriptorSupplier("logAction"))
-              .build();
+                  .setSchemaDescriptor(new actionMethodDescriptorSupplier("logAction"))
+                  .build();
+          }
         }
-      }
-    }
-    return getLogActionMethod;
+     }
+     return getLogActionMethod;
   }
 
   /**
    * Creates a new async stub that supports all call types for the service
    */
   public static actionStub newStub(io.grpc.Channel channel) {
-    io.grpc.stub.AbstractStub.StubFactory<actionStub> factory =
-      new io.grpc.stub.AbstractStub.StubFactory<actionStub>() {
-        @java.lang.Override
-        public actionStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-          return new actionStub(channel, callOptions);
-        }
-      };
-    return actionStub.newStub(factory, channel);
+    return new actionStub(channel);
   }
 
   /**
@@ -72,14 +64,7 @@ public final class actionGrpc {
    */
   public static actionBlockingStub newBlockingStub(
       io.grpc.Channel channel) {
-    io.grpc.stub.AbstractStub.StubFactory<actionBlockingStub> factory =
-      new io.grpc.stub.AbstractStub.StubFactory<actionBlockingStub>() {
-        @java.lang.Override
-        public actionBlockingStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-          return new actionBlockingStub(channel, callOptions);
-        }
-      };
-    return actionBlockingStub.newStub(factory, channel);
+    return new actionBlockingStub(channel);
   }
 
   /**
@@ -87,14 +72,7 @@ public final class actionGrpc {
    */
   public static actionFutureStub newFutureStub(
       io.grpc.Channel channel) {
-    io.grpc.stub.AbstractStub.StubFactory<actionFutureStub> factory =
-      new io.grpc.stub.AbstractStub.StubFactory<actionFutureStub>() {
-        @java.lang.Override
-        public actionFutureStub newStub(io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
-          return new actionFutureStub(channel, callOptions);
-        }
-      };
-    return actionFutureStub.newStub(factory, channel);
+    return new actionFutureStub(channel);
   }
 
   /**
@@ -123,15 +101,19 @@ public final class actionGrpc {
 
   /**
    */
-  public static final class actionStub extends io.grpc.stub.AbstractAsyncStub<actionStub> {
-    private actionStub(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+  public static final class actionStub extends io.grpc.stub.AbstractStub<actionStub> {
+    private actionStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
+    private actionStub(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected actionStub build(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+    protected actionStub build(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       return new actionStub(channel, callOptions);
     }
 
@@ -146,15 +128,19 @@ public final class actionGrpc {
 
   /**
    */
-  public static final class actionBlockingStub extends io.grpc.stub.AbstractBlockingStub<actionBlockingStub> {
-    private actionBlockingStub(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+  public static final class actionBlockingStub extends io.grpc.stub.AbstractStub<actionBlockingStub> {
+    private actionBlockingStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
+    private actionBlockingStub(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected actionBlockingStub build(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+    protected actionBlockingStub build(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       return new actionBlockingStub(channel, callOptions);
     }
 
@@ -168,15 +154,19 @@ public final class actionGrpc {
 
   /**
    */
-  public static final class actionFutureStub extends io.grpc.stub.AbstractFutureStub<actionFutureStub> {
-    private actionFutureStub(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+  public static final class actionFutureStub extends io.grpc.stub.AbstractStub<actionFutureStub> {
+    private actionFutureStub(io.grpc.Channel channel) {
+      super(channel);
+    }
+
+    private actionFutureStub(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       super(channel, callOptions);
     }
 
     @java.lang.Override
-    protected actionFutureStub build(
-        io.grpc.Channel channel, io.grpc.CallOptions callOptions) {
+    protected actionFutureStub build(io.grpc.Channel channel,
+        io.grpc.CallOptions callOptions) {
       return new actionFutureStub(channel, callOptions);
     }
 

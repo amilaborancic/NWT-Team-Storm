@@ -15,11 +15,13 @@ public class AutorService {
     @Autowired
     AutorRepository autorRepository;
 
+    @Autowired
+    private EventSubmission eventSubmission;
     private Long idAdmin = 1000L;
     private Long idLogovanogKorisnika = 500L;
 
     public List<Autor> sviAutori(){
-        EventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi autori");
+        eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi autori");
         return autorRepository.findAll();
     }
     public Long dodajAutora(Autor autor){
@@ -27,7 +29,7 @@ public class AutorService {
         if(autor.getIme().equals("") || autor.getIme() == null) throw new ApiRequestException("Ime autora ne smije biti prazno!");
         if(autor.getPrezime().equals("") || autor.getPrezime() == null) throw new ApiRequestException("Prezime autora ne smije biti prazno!");
         autorRepository.save(autor);
-        EventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi autor, id: " + autor.getId());
+        eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi autor, id: " + autor.getId());
         return autor.getId();
     }
 }

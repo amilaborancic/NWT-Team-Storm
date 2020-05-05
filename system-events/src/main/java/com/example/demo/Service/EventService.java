@@ -1,12 +1,13 @@
 package com.example.demo.Service;
 
 import com.example.demo.DatabaseConnection;
+import com.example.demo.GRPC.Events;
+import com.example.demo.GRPC.Events.Request;
+import com.example.demo.GRPC.Events.Response;
+import com.example.demo.GRPC.actionGrpc.actionImplBase;
 import com.example.demo.Models.Event;
-import com.example.demo.Stubs.Events;
-import com.example.demo.Stubs.Events.Request;
-import com.example.demo.Stubs.Events.Response;
-import com.example.demo.actionGrpc.actionImplBase;
 import io.grpc.stub.StreamObserver;
+import org.lognet.springboot.grpc.GRpcService;
 import org.springframework.stereotype.Component;
 
 import java.sql.Connection;
@@ -14,7 +15,8 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 
-
+@Component
+@GRpcService
 public class EventService extends actionImplBase {
 
     private DatabaseConnection connectionConfig = new DatabaseConnection();
@@ -40,6 +42,7 @@ public class EventService extends actionImplBase {
         //zatvorimo konekciju
         responseObserver.onNext(response.build());
         responseObserver.onCompleted();
+
     }
 
     private PreparedStatement save(Event event) throws Exception {

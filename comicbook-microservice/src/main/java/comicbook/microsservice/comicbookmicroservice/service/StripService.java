@@ -31,12 +31,14 @@ public class StripService {
     AutorRepository autorRepository;
     @Autowired
 	RestTemplate restTemplate;
+    @Autowired
+    EventSubmission eventSubmission;
     private Long idAdmin = 1000L;
     private Long idLogovanogKorisnika = 500L;
 
     public List<Strip> sviStripovi(int brojStranice, int brojStripovaNaStranici){
         int brStr = brojStranice + 1;
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi, stranica " + brStr );
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi, stranica " + brStr );
         return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
     }
 
@@ -46,7 +48,7 @@ public class StripService {
             throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         }
 
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Jedan strip, id: " + id_strip);
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Jedan strip, id: " + id_strip);
         return strip.get();
     }
 
@@ -56,7 +58,7 @@ public class StripService {
         else if(ime.equals("")) return stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
         else if(prezime.equals("")) return stripRepository.findAllByAutori_ImeContains(ime, PageRequest.of(brojStranice, brojStripovaNaStranici));
         int brStr = brojStranice + 1;
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog autora, stranica " + brStr);
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog autora, stranica " + brStr);
 
         return stripRepository.findAllByAutori_ImeContainsAndAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
 
@@ -64,13 +66,13 @@ public class StripService {
 
     public List<Strip> stripoviPoIzdavacu(Long id_izdavac, int brojStranice, int brojStripovaNaStranici){
         int brStr = brojStranice + 1;
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog izdavaca, stranica " + brStr);
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog izdavaca, stranica " + brStr);
         return stripRepository.findByIdIzdavac(id_izdavac, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public List<Strip> stripoviPoZanru(Long id_zanr, int brojStranice, int brojStripovaNaStranici){
         int brStr = brojStranice + 1;
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog zanra, stranica " + brStr);
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi jednog zanra, stranica " + brStr);
         return stripRepository.findByIdZanr(id_zanr, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
@@ -78,7 +80,7 @@ public class StripService {
         if(naziv == null) throw new ApiRequestException("Naziv mora biti poslan!");
         if(naziv.length() < 3) throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
         int brStr = brojStranice + 1;
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi sa kljucnom rjecju " + naziv + ", stranica " + brStr);
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi sa kljucnom rjecju " + naziv + ", stranica " + brStr);
         return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
@@ -100,7 +102,7 @@ public class StripService {
         if(izdavacRepository.findById(idIzdavac).isEmpty()) throw new ApiRequestException("Izdavac sa id-jem " + idIzdavac + " ne postoji.");
         stripRepository.save(strip);
 
-        EventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi strip, id: " + strip.getId());
+        eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi strip, id: " + strip.getId());
 
         return strip.getId();
     }
@@ -115,7 +117,7 @@ public class StripService {
 			strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
 			strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
 			stripRepository.save(strip_iz_baze);
-            EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Rating stripa azuriran.");
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Rating stripa azuriran.");
 		}
 		else {
             throw new ApiRequestException("Strip sa id-jem " + stripRatingInfo.getId().toString() + " ne postoji.");
@@ -124,7 +126,7 @@ public class StripService {
 
 	//pomocna metoda
 	public List<Strip> sviStripoviPoId(List<Long> idStripova) {
-        EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Stripovi po id-ju.");
+        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Stripovi po id-ju.");
 		return stripRepository.findAllByIdIn(idStripova);
 	}
 
@@ -134,7 +136,7 @@ public class StripService {
 					"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
 					new ParameterizedTypeReference<Map<String, String>>() {
 					});
-            EventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Komentari stripa, id: " + id);
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Komentari stripa, id: " + id);
 			return komentari_stripa;
 		}
 		throw new ApiRequestException("Strip sa id-jem " + id.toString() + " ne postoji.");

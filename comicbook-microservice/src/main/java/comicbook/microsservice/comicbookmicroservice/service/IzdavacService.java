@@ -14,19 +14,21 @@ import java.util.List;
 public class IzdavacService {
     @Autowired
     IzdavacRepository izdavacRepository;
+    @Autowired
+    EventSubmission eventSubmission;
 
     private Long idAdmin = 1000L;
     private Long idLogovanogKorisnika = 500L;
 
     public List<Izdavac> sviIzdavaci(){
-        EventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi izdavaci");
+        eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi izdavaci");
         return izdavacRepository.findAll();
     }
 
     public Long dodajIzdavaca(Izdavac izdavac){
         if(izdavac.getNaziv().equals("") || izdavac.getNaziv() == null) throw new ApiRequestException("Naziv izdavaca ne smije biti prazan!");
         izdavacRepository.save(izdavac);
-        EventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi izdavac, id: " + izdavac.getId());
+        eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi izdavac, id: " + izdavac.getId());
         return izdavac.getId();
     }
 }
