@@ -61,4 +61,5 @@ public class UserServis {
 		return userRepository.count();
 	}
 
+	public User singleUser(String username){return userRepository.findByUserName(username);}
 }

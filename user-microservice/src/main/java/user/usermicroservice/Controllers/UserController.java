@@ -77,6 +77,16 @@ public class UserController {
         return userServis.findUserByUserName(name).getId();
     }
 
+    @GetMapping("/single/{name}")
+    public UserDTO getByUsername(@PathVariable String name){
+        User pronadjeniUser = userServis.singleUser(name);
+        if(pronadjeniUser != null){
+            UserDTO user = new UserDTO(pronadjeniUser.getUserName(), pronadjeniUser.getSifra());
+            return user;
+        }
+        return null;
+    }
+
     //samo za testiranje kroz postman
     @GetMapping("/svi")
     public List<User> svi(){ return userServis.svi(); }
