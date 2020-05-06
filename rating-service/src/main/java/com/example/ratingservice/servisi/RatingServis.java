@@ -3,8 +3,8 @@ package com.example.ratingservice.servisi;
 import com.example.ratingservice.DTO.KorisnikInfoRating;
 import com.example.ratingservice.DTO.StripInfoRating;
 import com.example.ratingservice.exception.ApiRequestException;
+import com.example.ratingservice.grpc.EventSubmission;
 import com.example.ratingservice.grpc.Events;
-import com.example.ratingservice.grpc.actionGrpc;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.Strip;
 import com.example.ratingservice.modeli.User;
@@ -15,13 +15,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.protobuf.Timestamp;
-import com.netflix.appinfo.InstanceInfo;
-import com.netflix.discovery.EurekaClient;
-
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.http.*;
@@ -30,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +34,7 @@ public class RatingServis {
 	@Autowired
 	private RestTemplate restTemplate;
 	@Autowired
-	private EurekaClient client;
+	EventSubmission eventSubmission;
 	@Autowired
 	private RatingRepozitorij ratingRepozitorij;
 	@Autowired
@@ -50,43 +42,15 @@ public class RatingServis {
 	@Autowired
 	private StripRepozitorij stripRepozitorij;
 
-	public void addEvent(Events.ActionType tipAkcije, String nazivResursa) {
-
-		try {
-			ManagedChannel channel=ManagedChannelBuilder.forAddress("localhost", 8084).usePlaintext().build();
-			actionGrpc.actionBlockingStub stub=actionGrpc.newBlockingStub(channel);
-			Calendar c=Calendar.getInstance();
-			String ts=c.getTime().toString();
-
-			Events.Response response=stub.logAction(Events.Request.newBuilder()
-					.setTimestamp(ts)
-					.setNazivServisa("rating-service")
-					.setIdKorisnik(10000L)
-					.setTipAkcije(tipAkcije)
-					.setNazivResursa(nazivResursa)
-					.build()
-			);
-			System.out.println(response.getResponseTypeValue());
-			System.out.println(response.getResponseContent());
-			channel.shutdown();
-		}
-		catch(Exception e) {
-			System.out.println("Greska u grpc komunikaciji!");
-		}
-
-	}
-
 	public List<Rating> findAll(){
-		addEvent(Events.ActionType.GET,"svi rejtinzi");
+		eventSubmission.addEvent(Events.ActionType.GET,"svi rejtinzi");
 		return ratingRepozitorij.findAll();
 	}
-
-
 
 	public Rating getOne(Long id) {
 
 		if(ratingRepozitorij.findById(id).isPresent()) {
-			addEvent(Events.ActionType.GET, "rating sa id "+id.toString());
+			eventSubmission.addEvent(Events.ActionType.GET, "rating sa id "+id.toString());
 			return ratingRepozitorij.getOne(id);
 		}
 
@@ -104,7 +68,7 @@ public class RatingServis {
 					ratings_by_user.add(r);
 				}
 			}
-			addEvent(Events.ActionType.GET, "rejtinzi korisnika");
+			eventSubmission.addEvent(Events.ActionType.GET, "rejtinzi korisnika");
 			return ratings_by_user;
 		}
 		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronadjen!");
@@ -119,14 +83,14 @@ public class RatingServis {
 					ratings_by_strip.add(r);
 				}
 			}
-			addEvent(Events.ActionType.GET, "rejtinzi stripa");
+			eventSubmission.addEvent(Events.ActionType.GET, "rejtinzi stripa");
 			return ratings_by_strip;
 		}
 		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronadjen!");
 	}
 
 	public void save(Rating rating) {
-		addEvent(Events.ActionType.CREATE,"dodavanje ratinga");
+		eventSubmission.addEvent(Events.ActionType.CREATE,"dodavanje ratinga");
 		ratingRepozitorij.save(rating);
 	}
 
@@ -226,7 +190,7 @@ public class RatingServis {
 		rating.setStrip(strip);
 		ratingRepozitorij.save(rating);
 
-		addEvent(Events.ActionType.CREATE, "kreiranje ratinga");
+		eventSubmission.addEvent(Events.ActionType.CREATE, "kreiranje ratinga");
 		return "Uspjesno ste ostavili recenziju na strip!";
 	}
 
@@ -243,7 +207,7 @@ public class RatingServis {
 					korisnik_komentar.put(username.getBody(), r.getKomentar());
 				}
 			}
-			addEvent(Events.ActionType.GET, "komentari korisnika na strip");
+			eventSubmission.addEvent(Events.ActionType.GET, "komentari korisnika na strip");
 			return korisnik_komentar;
 		} else throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronadjen!");
 	}

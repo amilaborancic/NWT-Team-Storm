@@ -6,54 +6,48 @@ spring:
 
 # zuul
 zuul:
+  host:
+    socket-timeout-millis: 20000
+    connect-timeout-millis: 20000
   routes:
     #user servis
     user:
       path: /user/**
-      url: http://localhost:8080/user
       service-id: user-service
       strip-prefix: false
     #rating servis
     rating:
       path: /rating/**
-      url: http://localhost:8081/rating
       service-id: rating-service
       strip-prefix: false
     #katalog servis
     korisnik:
       path: /korisnik/**
-      url: http://localhost:8082/korisnik
       service-id: catalogue-service
       strip-prefix: false
     katalog:
       path: /katalog/**
-      url: http://localhost:8082/katalog
       service-id: catalogue-service
       strip-prefix: false
     stripKatalog:
       path: /katalog/iz-kataloga/**
-      url: http://localhost:8082/katalog/iz_kataloga
       service-id: catalogue-service
       strip-prefix: false
     #comicbook servis
     autor:
       path: /autor/**
-      url: http://localhost:8083/autor
       service-id: comicbook-service
       strip-prefix: false
     zanr:
       path: /zanr/**
-      url: http://localhost:8083/zanr
       service-id: comicbook-service
       strip-prefix: false
     izdavac:
       path: /izdavac/**
-      url: http://localhost:8083/izdavac
       service-id: comicbook-service
       strip-prefix: false
     strip:
       path: /strip/**
-      url: http://localhost:8083/strip
       service-id: comicbook-service
       strip-prefix: false
 
