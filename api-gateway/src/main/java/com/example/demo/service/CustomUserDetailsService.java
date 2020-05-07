@@ -35,6 +35,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         //username, sifra, list of authorities
         return new User(response.getBody().getUserName(),response.getBody().getSifra(), new ArrayList<>());
+        //return new User("ami", "lmao", new ArrayList<>());
     }
 
 
