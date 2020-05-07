@@ -12,7 +12,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
+import user.usermicroservice.Models.Role;
 import user.usermicroservice.Models.User;
+import user.usermicroservice.RoleName;
 import user.usermicroservice.Servisi.UserServis;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -83,17 +85,19 @@ public class UserControllerTest {
     //komunicira sa katalog servisom
     @Test
     public void signUp() throws Exception {
-        User user = new User("Neko", "Nekic", "Nekoc","neko@gmail.com",
+
+        Role role=new Role(RoleName.USER);
+        User user = new User(role,"Neko", "Nekic", "Nekoc","neko@gmail.com",
                 "neka",2, 5);
-        User faliIme = new User("", "klm", "Test","test@gmail.com",
+        User faliIme = new User(role,"", "klm", "Test","test@gmail.com",
                 "neka",2, 5);
-        User faliUsername = new User("dqwpakml", "Nasdmaslc", "","aksks@gmail.com",
+        User faliUsername = new User(role,"dqwpakml", "Nasdmaslc", "","aksks@gmail.com",
                 "neka",2, 5);
-        User emailPostoji = new User("asdlm", "Neaslmdkic", "Ahmed","neko@gmail.com",
+        User emailPostoji = new User(role,"asdlm", "Neaslmdkic", "Ahmed","neko@gmail.com",
                 "neka",2, 5);
-        User faliSifra = new User("asamdsl", "sldml", "alsmlx","aslmdlx@gmail.com",
+        User faliSifra = new User(role,"asamdsl", "sldml", "alsmlx","aslmdlx@gmail.com",
                 "",2, 5);
-        User faliEmail = new User("scld", "lsdmc", "laksmc","",
+        User faliEmail = new User(role,"scld", "lsdmc", "laksmc","",
                 "neka",2, 5);
         //sve okej
         mockMvc.perform(post("/user/sign-up")

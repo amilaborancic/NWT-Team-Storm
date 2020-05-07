@@ -1,6 +1,4 @@
-
 package user.usermicroservice.Models;
-
 
 import javax.persistence.*;
 import javax.validation.constraints.Email;
@@ -18,6 +16,10 @@ public class User {
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
+    @ManyToOne()
+    @JoinColumn(name = "id_role")
+    private Role role;
+
     @NotBlank(message = "Ime je obavezno!")
     private String ime;
     private  String prezime;
@@ -33,8 +35,9 @@ public class User {
 
     protected User(){}
 
-    public User( String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
+    public User( Role role,String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
 
+        this.role=role;
         this.ime = ime;
         this.prezime = prezime;
         this.userName = userName;
@@ -74,15 +77,21 @@ public class User {
         return ukupno_reviewa;
     }
 
-	public void setBroj_losih_reviewa(int broj_losih_reviewa) {
-		this.broj_losih_reviewa=broj_losih_reviewa;
-		
-	}
+    public void setBroj_losih_reviewa(int broj_losih_reviewa) {
+        this.broj_losih_reviewa=broj_losih_reviewa;
 
-	public void setUkupno_reviewa(int ukupno_reviewa ) {
-		this.ukupno_reviewa=ukupno_reviewa;
-	}
-    
-  
-    
+    }
+
+    public void setUkupno_reviewa(int ukupno_reviewa ) {
+        this.ukupno_reviewa=ukupno_reviewa;
+    }
+
+    public Role getRole(){
+        return role;
+    }
+    public void setRole(Role role){
+        this.role=role;
+    }
+
+
 }
