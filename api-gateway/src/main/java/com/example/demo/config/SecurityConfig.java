@@ -5,6 +5,7 @@ import com.example.demo.service.CustomUserDetailsService;
 import com.netflix.loadbalancer.NoOpPing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -33,7 +34,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception{
-        //autorizacija
+        // autorizacija
         http.httpBasic().and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up").permitAll()
@@ -44,21 +45,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa").hasRole("USER")
                 .and()
                 .csrf().disable();
-        //autentikacija
+
+        // autentikacija
         http.csrf().disable().authorizeRequests()
-                .antMatchers("/authenticate").permitAll()
-                .antMatchers("/user/single/**").permitAll()
+                .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/single/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/naziv-role/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // Allow eureka client to be accessed without authentication
-        web.ignoring().antMatchers("/*/")//
-                .antMatchers("/eureka/**")//
+        // Allow eureka client and user service method to be accessed without authentication
+        web.ignoring().antMatchers("/*/")
+                .antMatchers("/eureka/**")
                 .antMatchers(HttpMethod.OPTIONS, "/**"); // Request type options should be allowed.
     }
 

@@ -26,7 +26,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         //dobavimo usere iz user servisa i pronadjemo onog sa username-om username
-
+        System.out.println("username iz authenticate " + username);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
@@ -38,7 +38,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         //username, sifra, list of authorities
         return new User(response.getBody().getUserName(),response.getBody().getSifra(), getGrantedAuthorities(response.getBody().getUserName()));
-        //return new User("ami", "lmao", new ArrayList<>());
     }
 
     private Collection<GrantedAuthority> getGrantedAuthorities(String username){

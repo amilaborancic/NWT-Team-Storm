@@ -9,7 +9,6 @@ import user.usermicroservice.Repository.UserRepository;
 import user.usermicroservice.exception.ApiRequestException;
 import user.usermicroservice.grpc.EventSubmission;
 import user.usermicroservice.grpc.Events;
-import user.usermicroservice.grpc.actionGrpc;
 
 import java.util.List;
 import java.util.Optional;
@@ -82,5 +81,12 @@ public class UserServis {
 		return userRepository.count();
 	}
 
-	public User singleUser(String username){return userRepository.findByUserName(username);}
+	public User singleUser(String username){
+		User user = userRepository.findByUserName(username);
+
+		System.out.println(username);
+		System.out.println(user.getUserName());
+		if(user.getUserName().equals(username)) return user;
+		return null;
+	}
 }

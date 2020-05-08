@@ -79,6 +79,7 @@ public class UserController {
 
     @GetMapping("/single/{name}")
     public UserDTO getByUsername(@PathVariable String name){
+        System.out.println("name " + name);
         User pronadjeniUser = userServis.singleUser(name);
         if(pronadjeniUser != null){
             UserDTO user = new UserDTO(pronadjeniUser.getUserName(), pronadjeniUser.getSifra());
