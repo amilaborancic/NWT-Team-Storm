@@ -5,6 +5,8 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 
 @Service
@@ -34,9 +37,15 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
 
         //username, sifra, list of authorities
-        return new User(response.getBody().getUserName(),response.getBody().getSifra(), new ArrayList<>());
+        return new User(response.getBody().getUserName(),response.getBody().getSifra(), getGrantedAuthorities(response.getBody().getUserName()));
         //return new User("ami", "lmao", new ArrayList<>());
     }
 
+    private Collection<GrantedAuthority> getGrantedAuthorities(String username){
+        Collection<GrantedAuthority> grantedAuthorities=new ArrayList<>();
+        ResponseEntity<String> rola = restTemplate.getForEntity("http://user-service/user/naziv-role/"+username, String.class);
+        grantedAuthorities.add(new SimpleGrantedAuthority(rola.getBody()));
+        return grantedAuthorities;
+    }
 
 }

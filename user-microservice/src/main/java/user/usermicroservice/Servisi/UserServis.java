@@ -56,7 +56,9 @@ public class UserServis {
 		}
 		else throw new ApiRequestException("User sa id-jem " + userRatingInfo.getId().toString() + " ne postoji!");
 	}
-
+	public String getNazivRole(String username){
+		return userRepository.findByUserName(username).getRole().getRoleName().toString();
+	}
 	public Long brojKorisnikaUBazi() {
 		return userRepository.count();
 	}

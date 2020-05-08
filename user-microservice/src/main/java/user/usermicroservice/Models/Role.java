@@ -20,10 +20,10 @@ public class Role {
         this.role=role;
     }
 
-    public void setRole(RoleName role){
+    public void setRoleName(RoleName role){
         this.role=role;
     }
-    public RoleName getRole(){
+    public RoleName getRoleName(){
         return role;
     }
     public void setId(Long id){

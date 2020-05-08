@@ -99,6 +99,9 @@ public class UserController {
     @GetMapping(value="/count")
     public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
 
+    @GetMapping(value="/naziv-role/{username}")
+    public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
+
     /*
     @RequestMapping("/ahmo")
     public String sayHi(){
