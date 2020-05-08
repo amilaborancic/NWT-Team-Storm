@@ -42,7 +42,10 @@ public class KatalogService {
         //provjera postoji li user
         korisnikService.jedanKorisnik(idKorisnik);
         //provjera da li je naziv prazan
-        if(naziv.equals("")) throw new ApiRequestException("Naziv kataloga ne smije biti prazan!");
+        if(naziv.equals("")) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Naziv kataloga prezan!");
+            throw new ApiRequestException("Naziv kataloga ne smije biti prazan!");
+        }
         katalogRepository.save(katalog);
         eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi katalog");
         return katalog.getId();
@@ -53,7 +56,10 @@ public class KatalogService {
         Katalog katalog = getKatalog(id_katalog);
         Strip strip = stripService.jedanStrip(id_strip);
         //ako je taj strip vec u katalogu
-        if(stripService.postojiUKatalogu(id_strip, id_katalog)) throw new ApiRequestException("Strip je vec dodan u katalog!");
+        if(stripService.postojiUKatalogu(id_strip, id_katalog)) {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Strip vec postoji u katalogu!");
+            throw new ApiRequestException("Strip je vec dodan u katalog!");
+        }
         List<Strip> stripoviUKatalogu = katalog.getStripovi();
         stripoviUKatalogu.add(strip);
         katalog.setStripovi(stripoviUKatalogu);
@@ -64,7 +70,10 @@ public class KatalogService {
 
     public Katalog getKatalog(Long id_katalog){
         Optional<Katalog> katalog = katalogRepository.findById(id_katalog);
-        if(katalog.isEmpty()) throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
+        if(katalog.isEmpty()) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Katalog ne postoji!");
+            throw new ApiRequestException("Katalog sa id-jem " + id_katalog + " ne postoji.");
+        }
         eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Katalog sa id = " + id_katalog);
         return katalog.get();
     }
@@ -75,7 +84,10 @@ public class KatalogService {
         List<Strip> stripoviUKatalogu = katalogic.getStripovi();
         int brojStripovaUKatalogu = stripoviUKatalogu.size();
         stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
-        if(stripoviUKatalogu.size() == brojStripovaUKatalogu) return false;
+        if(stripoviUKatalogu.size() == brojStripovaUKatalogu) {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Strip nije moguce obrisati.");
+            return false;
+        }
         katalogic.setStripovi(stripoviUKatalogu);
         katalogRepository.save(katalogic);
         eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Obrisan strip sa id = " + id_strip + " iz kataloga sa id = " + id_katalog);

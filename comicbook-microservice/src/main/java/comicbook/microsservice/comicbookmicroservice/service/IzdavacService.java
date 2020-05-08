@@ -26,7 +26,10 @@ public class IzdavacService {
     }
 
     public Long dodajIzdavaca(Izdavac izdavac){
-        if(izdavac.getNaziv().equals("") || izdavac.getNaziv() == null) throw new ApiRequestException("Naziv izdavaca ne smije biti prazan!");
+        if(izdavac.getNaziv().equals("") || izdavac.getNaziv() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Naziv izdavaca ne smije biti prazan!");
+            throw new ApiRequestException("Naziv izdavaca ne smije biti prazan!");
+        }
         izdavacRepository.save(izdavac);
         eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi izdavac, id: " + izdavac.getId());
         return izdavac.getId();

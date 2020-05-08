@@ -24,7 +24,10 @@ public class ZanrService {
     }
 
     public Long dodajZanr(Zanr zanr){
-        if(zanr.getNaziv().equals("") || zanr.getNaziv() == null) throw new ApiRequestException("Naziv zanra ne smije biti prazan!");
+        if(zanr.getNaziv().equals("") || zanr.getNaziv() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Naziv zanra ne smije biti prazan!");
+            throw new ApiRequestException("Naziv zanra ne smije biti prazan!");
+        }
         zanrRepository.save(zanr);
         eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi zanr, id: " + zanr.getId());
         return zanr.getId();

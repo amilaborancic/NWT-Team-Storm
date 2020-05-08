@@ -26,8 +26,14 @@ public class AutorService {
     }
     public Long dodajAutora(Autor autor){
         //provjera da li su ime i prezime korektni
-        if(autor.getIme().equals("") || autor.getIme() == null) throw new ApiRequestException("Ime autora ne smije biti prazno!");
-        if(autor.getPrezime().equals("") || autor.getPrezime() == null) throw new ApiRequestException("Prezime autora ne smije biti prazno!");
+        if(autor.getIme().equals("") || autor.getIme() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Ime autora ne smije biti prazno!");
+            throw new ApiRequestException("Ime autora ne smije biti prazno!");
+        }
+        if(autor.getPrezime().equals("") || autor.getPrezime() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Prezime autora ne smije biti prazno!");
+            throw new ApiRequestException("Prezime autora ne smije biti prazno!");
+        }
         autorRepository.save(autor);
         eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi autor, id: " + autor.getId());
         return autor.getId();

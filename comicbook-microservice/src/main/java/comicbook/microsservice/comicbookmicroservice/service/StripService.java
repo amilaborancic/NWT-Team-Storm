@@ -17,7 +17,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class StripService {
@@ -45,6 +48,7 @@ public class StripService {
     public Strip jedanStrip(Long id_strip){
         Optional<Strip> strip = stripRepository.findById(id_strip);
         if(strip.isEmpty()) {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Strip ne postoji!");
             throw new ApiRequestException("Strip sa id-jem " + id_strip + " ne postoji.");
         }
 
@@ -77,8 +81,14 @@ public class StripService {
     }
 
     public List<Strip> stripoviPoNazivu(String naziv, int brojStranice, int brojStripovaNaStranici){
-        if(naziv == null) throw new ApiRequestException("Naziv mora biti poslan!");
-        if(naziv.length() < 3) throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
+        if(naziv == null) {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Naziv mora biti poslan!");
+            throw new ApiRequestException("Naziv mora biti poslan!");
+        }
+        if(naziv.length() < 3) {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Potrebna su barem tri slova u nazivu.");
+            throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
+        }
         int brStr = brojStranice + 1;
         eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi sa kljucnom rjecju " + naziv + ", stranica " + brStr);
         return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
@@ -90,16 +100,43 @@ public class StripService {
         Double rating = strip.getUkupniRating();
         Integer brojKom = strip.getUkupnoKomentara();
         //validacija parametara za inicijalizaciju stripa
-        if(strip.getNaziv().equals("") || strip.getNaziv() == null) throw new ApiRequestException("Strip mora imati naziv!");
-        if(idIzdavac == null) throw new ApiRequestException("Strip mora imati izdavaca!");
-        if(idZanr == null) throw new ApiRequestException("Strip mora imati zanr!");
-        if(rating < 0) throw new ApiRequestException("Strip mora imati pozitivan rating!");
-        if(strip.getSlika() == null) throw new ApiRequestException("Strip mora imati sliku!");
-        if(brojKom < 0) throw new ApiRequestException("Strip mora imati pozitivan broj komentara!");
-        if(strip.getAutori() == null || strip.getAutori().size() == 0) throw new ApiRequestException("Strip mora imati autore!");
+        if(strip.getNaziv().equals("") || strip.getNaziv() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati naziv!");
+            throw new ApiRequestException("Strip mora imati naziv!");
+        }
+        if(idIzdavac == null){
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati izdavaca!");
+            throw new ApiRequestException("Strip mora imati izdavaca!");
+        }
+        if(idZanr == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati zanr!");
+            throw new ApiRequestException("Strip mora imati zanr!");
+        }
+        if(rating < 0) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati pozitivan rating!");
+            throw new ApiRequestException("Strip mora imati pozitivan rating!");
+        }
+        if(strip.getSlika() == null) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati sliku!");
+            throw new ApiRequestException("Strip mora imati sliku!");
+        }
+        if(brojKom < 0) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati pozitivan broj komentara!");
+            throw new ApiRequestException("Strip mora imati pozitivan broj komentara!");
+        }
+        if(strip.getAutori() == null || strip.getAutori().size() == 0) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Strip mora imati autore!");
+            throw new ApiRequestException("Strip mora imati autore!");
+        }
         //provjera postoje li proslijedjeni zanr i izdavac
-        if(zanrRepository.findById(idZanr).isEmpty()) throw new ApiRequestException("Zanr sa id-jem " + idZanr + " ne postoji.");
-        if(izdavacRepository.findById(idIzdavac).isEmpty()) throw new ApiRequestException("Izdavac sa id-jem " + idIzdavac + " ne postoji.");
+        if(zanrRepository.findById(idZanr).isEmpty()) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Zanr ne postoji");
+            throw new ApiRequestException("Zanr sa id-jem " + idZanr + " ne postoji.");
+        }
+        if(izdavacRepository.findById(idIzdavac).isEmpty()) {
+            eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Izdavac ne postoji");
+            throw new ApiRequestException("Izdavac sa id-jem " + idIzdavac + " ne postoji.");
+        }
         stripRepository.save(strip);
 
         eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi strip, id: " + strip.getId());
@@ -120,6 +157,7 @@ public class StripService {
             eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Rating stripa azuriran.");
 		}
 		else {
+            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Strip ne postoji!.");
             throw new ApiRequestException("Strip sa id-jem " + stripRatingInfo.getId().toString() + " ne postoji.");
         }
 	}
@@ -139,6 +177,7 @@ public class StripService {
             eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Komentari stripa, id: " + id);
 			return komentari_stripa;
 		}
+		eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Strip ne postoji!");
 		throw new ApiRequestException("Strip sa id-jem " + id.toString() + " ne postoji.");
 	}
 
