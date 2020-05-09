@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -26,10 +27,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private CustomUserDetailsService customUserDetailsService;
     @Autowired
     JwtRequestFilter jwtRequestFilter;
+    @Autowired
+    PasswordEncoder passwordEncoder;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(customUserDetailsService);
+        auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder);
     }
 
     @Override
@@ -37,12 +40,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // autorizacija
         http.httpBasic().and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up").permitAll()
-                .antMatchers(HttpMethod.POST,"/rating/dodaj-rating","/strip/noviStrip","/strip/sviPoId","/katalog/novi").hasRole("USER")
+                .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up", "/strip/sviPoId").permitAll()
+                .antMatchers(HttpMethod.POST,"/rating/dodaj-rating","/strip/sviPoId","/katalog/novi").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/rating/**", "/strip/svi","/strip","/strip/trazi-autor","/strip/trazi-zanr",
                         "/strip/trazi-izdavac","/strip/trazi-naziv","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE,"/katalog/**").hasRole("USER")
-                .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa").hasRole("USER")
+                .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
+                .antMatchers(HttpMethod.POST, "/strip/noviStrip", "/zanr/novi", "/izdavac/novi", "/autor/novi").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/user/count","/user/username/**","/user/userName/**","/user/**").hasRole("ADMIN")
                 .and()
                 .csrf().disable();
 
@@ -73,6 +78,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
     @Bean
     public PasswordEncoder passwordEncoder(){
-        return NoOpPasswordEncoder.getInstance();
+        return new BCryptPasswordEncoder();
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -14,7 +15,6 @@ import user.usermicroservice.Models.Role;
 import user.usermicroservice.Models.User;
 import user.usermicroservice.Repository.RoleRepository;
 import user.usermicroservice.Repository.UserRepository;
-import user.usermicroservice.RoleName;
 
 @SpringBootApplication
 @EnableSwagger2
@@ -39,20 +39,21 @@ class DemoCommandLineRunner implements CommandLineRunner{
 	@Autowired
 	private RoleRepository roleRepository;
 
-
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	@Override
 	public void run(String... args) throws Exception{
 		Role admin=new Role(RoleName.ADMIN);
 		Role user=new Role(RoleName.USER);
 		User u1 = new User(admin,"Amila", "Borancic",
-				"Amila", "amila.borancic@gmail.com", "sifraamila",
+				"Amila", "amila.borancic@gmail.com", passwordEncoder.encode("sifraamila"),
 				0,5);
 
 		User u2 = new User( user,"Mahira", "Buturovic",
-				"Mahira", "mahira.buturovic@gmail.com", "siframahira",
+				"Mahira", "mahira.buturovic@gmail.com", passwordEncoder.encode("siframahira"),
 				0,5);
 		User u3 = new User( user,"Ahmed", "Serdarevic",
-				"Ahmo", "ahmo.arsenal@gmail.com", "sifrahmo",
+				"Ahmo", "ahmo.arsenal@gmail.com", passwordEncoder.encode("sifrahmo"),
 				4,5);
 		roleRepository.save(admin);
 		roleRepository.save(user);

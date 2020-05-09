@@ -5,6 +5,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
@@ -28,6 +29,9 @@ public class UserController {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
     @GetMapping("/{id}")
     public Optional<User> getUser(@PathVariable Long id){
         return userServis.findUserById(id);
@@ -37,6 +41,8 @@ public class UserController {
     public Long signIn(@RequestBody UserDTO userDTO){
         String userName = userDTO.getUserName();
         String sifra = userDTO.getSifra();
+        //hash sifre
+        sifra = passwordEncoder.encode(sifra);
         if(!userServis.postojiUserName(userName)) throw new ApiRequestException("Username nije ispravan!");
         if(!sifra.equals(userServis.findUserByUserName(userName).getSifra())) throw new ApiRequestException("Unesite ispravnu šifru!");
         return userServis.findUserByUserName(userName).getId();
@@ -49,8 +55,11 @@ public class UserController {
         if(user.getEmail().equals("")) throw new ApiRequestException("Email je obavezan!");
         if(userServis.postojiEmail(user.getEmail())) throw new ApiRequestException("User sa "+ user.getEmail()+ " već postoji!");
         if(user.getSifra().equals("")) throw new ApiRequestException("Sifra mora biti unesena!");
-
+        //hash sifre
+        user.setSifra(passwordEncoder.encode(user.getSifra()));
+        //spasavanje u bazu
         userServis.addNewUser(user);
+        //kreiranje kataloga
         KatalogDTO procitani = new KatalogDTO("Pročitani stripovi", user.getId());
         KatalogDTO zelimProcitati = new KatalogDTO("Želim pročitati", user.getId());
 
@@ -79,7 +88,6 @@ public class UserController {
 
     @GetMapping("/single/{name}")
     public UserDTO getByUsername(@PathVariable String name){
-        System.out.println("name " + name);
         User pronadjeniUser = userServis.singleUser(name);
         if(pronadjeniUser != null){
             UserDTO user = new UserDTO(pronadjeniUser.getUserName(), pronadjeniUser.getSifra());

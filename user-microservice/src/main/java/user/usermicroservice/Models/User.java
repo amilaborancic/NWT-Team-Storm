@@ -1,11 +1,11 @@
 package user.usermicroservice.Models;
 
+import org.hibernate.annotations.Proxy;
+
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-import org.hibernate.annotations.Proxy;
 
 
 @Entity
@@ -13,7 +13,7 @@ import org.hibernate.annotations.Proxy;
 @Table(name="user")
 public class User {
     @Id
-    @GeneratedValue(strategy=GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne()
@@ -29,6 +29,7 @@ public class User {
     @Email(message = "Email mora biti validan")
     private  String email;
     @NotBlank(message = "Sifra je obavezna!")
+    @Size(min=60, max=60)
     private String sifra;
     private int broj_losih_reviewa;
     private int ukupno_reviewa;
@@ -94,4 +95,7 @@ public class User {
     }
 
 
+    public void setSifra(String sifra) {
+        this.sifra = sifra;
+    }
 }

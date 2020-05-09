@@ -10,6 +10,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +25,8 @@ public class AuthController {
     private CustomUserDetailsService userDetailsService;
     @Autowired
     private JwtUtil jwt;
-
+    @Autowired
+    private PasswordEncoder passwordEncoder;
     //dummy request
     @GetMapping(value="/hello")
     public String pozdrav(){
@@ -34,7 +36,7 @@ public class AuthController {
     @PostMapping(value="/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authReq) throws Exception {
         try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authReq.getUserName(), authReq.getSifra()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authReq.getUserName(),authReq.getSifra()));
         }
         catch(BadCredentialsException e){
             throw new Exception("Netacan username ili sifra!", e);

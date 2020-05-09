@@ -83,9 +83,6 @@ public class UserServis {
 
 	public User singleUser(String username){
 		User user = userRepository.findByUserName(username);
-
-		System.out.println(username);
-		System.out.println(user.getUserName());
 		if(user.getUserName().equals(username)) return user;
 		return null;
 	}
