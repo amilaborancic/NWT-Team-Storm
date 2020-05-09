@@ -39,6 +39,7 @@ public class AuthController {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authReq.getUserName(),authReq.getSifra()));
         }
         catch(BadCredentialsException e){
+            System.out.println(e);
             throw new Exception("Netacan username ili sifra!", e);
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authReq.getUserName());

@@ -86,7 +86,7 @@ public class UserControllerTest {
     @Test
     public void signUp() throws Exception {
 
-        Role role=new Role(RoleName.USER);
+        Role role=new Role(RoleName.ROLE_USER);
         User user = new User(role,"Neko", "Nekic", "Nekoc","neko@gmail.com",
                 "neka",2, 5);
         User faliIme = new User(role,"", "klm", "Test","test@gmail.com",

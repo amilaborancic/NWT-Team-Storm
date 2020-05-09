@@ -33,41 +33,38 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(customUserDetailsService).passwordEncoder(passwordEncoder);
+
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception{
+
         // autorizacija
-        http.httpBasic().and()
+        http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up", "/strip/sviPoId").permitAll()
+                .antMatchers(HttpMethod.GET, "/","/user/single/**", "/user/naziv-role/**", "/strip/sviPoId").permitAll()
+                .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up", "/authenticate").permitAll()
                 .antMatchers(HttpMethod.POST,"/rating/dodaj-rating","/strip/sviPoId","/katalog/novi").hasRole("USER")
-                .antMatchers(HttpMethod.GET,"/rating/**", "/strip/svi","/strip","/strip/trazi-autor","/strip/trazi-zanr",
-                        "/strip/trazi-izdavac","/strip/trazi-naziv","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
+                .antMatchers(HttpMethod.GET,"/rating/**","/strip/trazi-autor*","/strip/trazi-zanr*",
+                        "/strip/trazi-izdavac*","/strip/trazi-naziv*","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE,"/katalog/**").hasRole("USER")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/strip/noviStrip", "/zanr/novi", "/izdavac/novi", "/autor/novi").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/user/count","/user/username/**","/user/userName/**","/user/**").hasRole("ADMIN")
-                .and()
-                .csrf().disable();
-
-        // autentikacija
-        http.csrf().disable().authorizeRequests()
-                .antMatchers(HttpMethod.POST,"/authenticate").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/single/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/naziv-role/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/count","/user/username/**","/user/userName/**","/user/**", "/strip/svi*", "/autor/svi").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .exceptionHandling().accessDeniedPage("/error");
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Override
     public void configure(WebSecurity web) throws Exception {
-        // Allow eureka client and user service method to be accessed without authentication
+        // Allow eureka client to be accessed without authentication
         web.ignoring().antMatchers("/*/")
                 .antMatchers("/eureka/**")
+                .antMatchers("/error/**")
                 .antMatchers(HttpMethod.OPTIONS, "/**"); // Request type options should be allowed.
     }
 

@@ -43,8 +43,8 @@ class DemoCommandLineRunner implements CommandLineRunner{
 	private PasswordEncoder passwordEncoder;
 	@Override
 	public void run(String... args) throws Exception{
-		Role admin=new Role(RoleName.ADMIN);
-		Role user=new Role(RoleName.USER);
+		Role admin=new Role(RoleName.ROLE_ADMIN);
+		Role user=new Role(RoleName.ROLE_USER);
 		User u1 = new User(admin,"Amila", "Borancic",
 				"Amila", "amila.borancic@gmail.com", passwordEncoder.encode("sifraamila"),
 				0,5);
