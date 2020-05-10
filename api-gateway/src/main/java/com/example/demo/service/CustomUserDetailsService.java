@@ -36,13 +36,12 @@ public class CustomUserDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("User sa username-om " + username + " nije pronadjen!");
         }
         //username, sifra, list of authorities
-        return new User(response.getBody().getUserName(),response.getBody().getSifra(), getGrantedAuthorities(response.getBody().getUserName()));
+        return new User(response.getBody().getUsername(),response.getBody().getPassword(), getGrantedAuthorities(response.getBody().getRola()));
     }
 
-    private Collection<GrantedAuthority> getGrantedAuthorities(String username){
+    private Collection<GrantedAuthority> getGrantedAuthorities(String rola){
         Collection<GrantedAuthority> grantedAuthorities=new ArrayList<>();
-        ResponseEntity<String> rola = restTemplate.getForEntity("http://user-service/user/naziv-role/"+username, String.class);
-        grantedAuthorities.add(new SimpleGrantedAuthority(rola.getBody()));
+        grantedAuthorities.add(new SimpleGrantedAuthority(rola));
         return grantedAuthorities;
     }
 

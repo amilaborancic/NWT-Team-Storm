@@ -1,10 +1,12 @@
 package catalogue.microsservice.cataloguemicroservice.api;
+import catalogue.microsservice.cataloguemicroservice.DTO.UserAuthDTO;
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.model.Strip;
 import catalogue.microsservice.cataloguemicroservice.service.KatalogService;
 import catalogue.microsservice.cataloguemicroservice.service.KorisnikService;
+import catalogue.microsservice.cataloguemicroservice.util.JwtUtil;
 import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
@@ -12,6 +14,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import java.security.Principal;
 import java.util.*;
 import java.util.List;
 
@@ -25,7 +28,8 @@ public class KatalogController {
     KatalogService katalogService;
     @Autowired
     KorisnikService korisnikService;
-
+    @Autowired
+    JwtUtil jwt;
     @Autowired
     RestTemplate restTemplate;
 
@@ -69,7 +73,23 @@ public class KatalogController {
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
-    public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise){
+    public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise, @RequestHeader Map<String,String> headers){
+
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+        Long idKorisnik = katalogKojiSeBrise.get("idKorisnik");
+
+        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + idKorisnik, UserAuthDTO.class);
+
+        System.out.println(res.getBody());
+        System.out.println(idKorisnik);
+
+        //provjera da li korisnik sa privilegijom smije dirati ovaj resurs
+        if(res.getBody() == null || !username.equals(res.getBody().getUsername())) {
+            System.out.println("Ilegala");
+            throw new ApiRequestException("Radite nesto ilegalno!");
+        }
+
         Long id_katalog = katalogKojiSeBrise.get("idKatalog");
         return katalogService.obrisiKatalog(id_katalog);
     }

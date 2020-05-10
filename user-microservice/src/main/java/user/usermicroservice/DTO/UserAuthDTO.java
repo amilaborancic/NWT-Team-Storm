@@ -1,9 +1,6 @@
-package com.example.demo.models;
+package user.usermicroservice.DTO;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
-
-public class AuthenticationRequest {
+public class UserAuthDTO {
     private Long id;
     private String username;
     private String password;
@@ -25,13 +22,12 @@ public class AuthenticationRequest {
         this.id = id;
     }
 
-    public AuthenticationRequest(Long id, String username, String password, String rola) {
+    public UserAuthDTO(Long id, String username, String password, String rola) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.rola = rola;
     }
-    public AuthenticationRequest(){}
 
     public String getUsername() {
         return username;

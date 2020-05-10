@@ -102,4 +102,14 @@ public class UserServis {
 		eventSubmission.addEvent(Events.ActionType.GET, "Korisnik sa usernameom " + username + " ne postoji.");
 		return null;
 	}
+
+	public User singlebyId(Long id){
+		Optional<User> user = userRepository.findById(id);
+		if(user.isEmpty()){
+			eventSubmission.addEvent(Events.ActionType.GET, "Korisnik sa id-jem " + id + " ne postoji.");
+			return null;
+		}
+		eventSubmission.addEvent(Events.ActionType.GET, "Korisnik pronadjen.");
+		return user.get();
+	}
 }

@@ -9,6 +9,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.KatalogDTO;
+import user.usermicroservice.DTO.UserAuthDTO;
 import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
@@ -87,13 +88,20 @@ public class UserController {
     }
 
     @GetMapping("/single/{name}")
-    public UserDTO getByUsername(@PathVariable String name){
+    public UserAuthDTO getByUsername(@PathVariable String name){
         User pronadjeniUser = userServis.singleUser(name);
         if(pronadjeniUser != null){
-            UserDTO user = new UserDTO(pronadjeniUser.getUserName(), pronadjeniUser.getSifra());
+            UserAuthDTO user = new UserAuthDTO(pronadjeniUser.getId(), pronadjeniUser.getUserName(), pronadjeniUser.getSifra(), pronadjeniUser.getRole().getRoleName().toString());
             return user;
         }
         return null;
+    }
+
+    @GetMapping("/single/id/{id}")
+    public UserAuthDTO getById(@PathVariable Long id){
+        System.out.println(id);
+        User user = userServis.singlebyId(id);
+        return new UserAuthDTO(user.getId(), user.getUserName(), user.getSifra(), user.getRole().getRoleName().toString());
     }
 
     //samo za testiranje kroz postman
@@ -111,11 +119,4 @@ public class UserController {
     @GetMapping(value="/naziv-role/{username}")
     public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
 
-    /*
-    @RequestMapping("/ahmo")
-    public String sayHi(){
-        return "HIIII";
-    }
-
-   */
 }

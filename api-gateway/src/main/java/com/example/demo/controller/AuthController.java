@@ -36,13 +36,13 @@ public class AuthController {
     @PostMapping(value="/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authReq) throws Exception {
         try{
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authReq.getUserName(),authReq.getSifra()));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authReq.getUsername(),authReq.getPassword()));
         }
         catch(BadCredentialsException e){
             System.out.println(e);
             throw new Exception("Netacan username ili sifra!", e);
         }
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(authReq.getUserName());
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authReq.getUsername());
         final String token = jwt.generateToken(userDetails);
         return ResponseEntity.ok(new AuthenticationResponse(token));
     }
