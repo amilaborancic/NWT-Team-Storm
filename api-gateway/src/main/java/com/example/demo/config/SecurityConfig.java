@@ -49,14 +49,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/strip/trazi-izdavac*","/strip/trazi-naziv*","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE,"/katalog/**").hasRole("USER")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
-                .antMatchers(HttpMethod.POST, "/strip/noviStrip", "/zanr/novi", "/izdavac/novi", "/autor/novi").hasRole("ADMIN")
-                .antMatchers(HttpMethod.GET, "/user/count","/user/username/**","/user/userName/**","/user/**", "/strip/svi*", "/autor/svi").hasRole("ADMIN")
+                .antMatchers("/").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                .exceptionHandling().accessDeniedPage("/error");
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Override
@@ -64,7 +61,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // Allow eureka client to be accessed without authentication
         web.ignoring().antMatchers("/*/")
                 .antMatchers("/eureka/**")
-                .antMatchers("/error/**")
+                .antMatchers("/error")
                 .antMatchers(HttpMethod.OPTIONS, "/**"); // Request type options should be allowed.
     }
 
