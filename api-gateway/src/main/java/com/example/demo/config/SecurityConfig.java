@@ -42,18 +42,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // autorizacija
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/","/user/single/**", "/user/naziv-role/**", "/strip/sviPoId").permitAll()
-                .antMatchers(HttpMethod.POST,"/user/sign-in", "/user/sign-up", "/authenticate").permitAll()
-                .antMatchers(HttpMethod.POST,"/rating/dodaj-rating","/strip/sviPoId","/katalog/novi").hasRole("USER")
+                .antMatchers(HttpMethod.GET, "/", "/user/single/**", "/user/naziv-role/**", "/strip/sviPoId").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/sign-in", "/user/sign-up", "/authenticate").permitAll()
+                .antMatchers(HttpMethod.POST, "/rating/dodaj-rating", "/strip/sviPoId", "/katalog/novi").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/rating/**","/strip/trazi-autor*","/strip/trazi-zanr*",
                         "/strip/trazi-izdavac*","/strip/trazi-naziv*","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE,"/katalog/**").hasRole("USER")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
-                .antMatchers("/").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.POST,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.DELETE,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.PUT,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
         http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
     @Override

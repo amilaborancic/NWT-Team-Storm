@@ -14,6 +14,7 @@ import org.springframework.web.client.RestTemplate;
 public class ApiGatewayApplication {
 
 	public static void main(String[] args) {
+		System.setProperty("server.connection-timeout","300000");
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
 
