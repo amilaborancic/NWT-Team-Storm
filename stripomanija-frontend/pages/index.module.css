@@ -1,0 +1,31 @@
+.container{
+    width: 100vw;
+}
+
+.upperSection{
+    height: 70vh;
+    background-color: black;
+    font-size: 200px;
+    font-weight: 700;
+    color:white;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    position: relative;
+}
+
+.space{
+    margin-left: 80px;
+}
+
+.buttons{
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    bottom: -20px;
+}
+
+.button{
+    width: 150px;
+}
+
