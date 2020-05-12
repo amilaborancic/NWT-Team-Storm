@@ -1,0 +1,22 @@
+.container {
+    width: 100vw;
+    height: 100vh;
+}
+
+.button {
+    color: var(--white) !important;
+    background-color: var(--dark-gray) !important;
+}
+
+.button:hover{
+    color: var(--white) !important;
+    background-color: var(--dark) !important;
+}
+
+.dropdown {
+    position: absolute;
+    transform: translate3d(0px, 39px, 0px);
+    top: 0px;
+    left: 0px;
+    will-change: transform;
+}
