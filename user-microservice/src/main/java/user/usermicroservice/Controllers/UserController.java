@@ -13,11 +13,15 @@ import user.usermicroservice.DTO.UserAuthDTO;
 import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.User;
+import user.usermicroservice.RoleName;
 import user.usermicroservice.Servisi.UserServis;
 import user.usermicroservice.exception.ApiRequestException;
+import user.usermicroservice.exception.ApiUnauthorizedException;
+import user.usermicroservice.util.JwtUtil;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @RestController
@@ -26,13 +30,12 @@ public class UserController {
 
     @Autowired
     UserServis userServis;
-
     @Autowired
     RestTemplate restTemplate;
-
     @Autowired
     PasswordEncoder passwordEncoder;
-
+    @Autowired
+    JwtUtil jwt;
     @GetMapping("/{id}")
     public Optional<User> getUser(@PathVariable Long id){
         return userServis.findUserById(id);
@@ -77,7 +80,8 @@ public class UserController {
     }
 
     @PutMapping(value="/update-rating")
-    public void updateUser(@RequestBody UserRatingDTO userRatingInfo) {
+    public void updateUser(@RequestBody UserRatingDTO userRatingInfo, @RequestHeader Map<String,String> headers) {
+        isUserPriviledged(userRatingInfo.getId(), headers, "Nemate privilegiju da updateujete ovaj rating!");
         userServis.updateUser(userRatingInfo);
     }
 
@@ -119,4 +123,12 @@ public class UserController {
     @GetMapping(value="/naziv-role/{username}")
     public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
 
+    private void isUserPriviledged(Long id, Map<String, String> headers, String errorMsg){
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+        User logovani_user = userServis.singleUser(username);
+        Long id_logovanog = logovani_user.getId();
+        String role = logovani_user.getRole().getRoleName().toString();
+        if(!role.equals(RoleName.ROLE_ADMIN.toString()) && id != id_logovanog) throw new ApiUnauthorizedException(errorMsg);
+    }
 }

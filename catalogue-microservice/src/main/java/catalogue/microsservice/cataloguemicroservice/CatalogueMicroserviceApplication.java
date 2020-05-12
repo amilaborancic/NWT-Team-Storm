@@ -121,8 +121,8 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		}
 */
 
-		Korisnik korisnik = korisnikRepozitorij.findAll().get(0);
-		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(1);
+		Korisnik korisnik = korisnikRepozitorij.findAll().get(1);
+		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(2);
 		Katalog kat1 = new Katalog("Prvi katalog", korisnik.getId());
 		Katalog kat2 = new Katalog("Drugi katalog", korisnik.getId());
 		Katalog kat3 = new Katalog("Dummy za brisanje", korisnik_2.getId());

@@ -1,6 +1,7 @@
 package catalogue.microsservice.cataloguemicroservice.api;
 import catalogue.microsservice.cataloguemicroservice.DTO.UserAuthDTO;
 import catalogue.microsservice.cataloguemicroservice.exception.ApiRequestException;
+import catalogue.microsservice.cataloguemicroservice.exception.ApiUnauthorizedException;
 import catalogue.microsservice.cataloguemicroservice.model.Katalog;
 import catalogue.microsservice.cataloguemicroservice.model.Korisnik;
 import catalogue.microsservice.cataloguemicroservice.model.Strip;
@@ -41,7 +42,16 @@ public class KatalogController {
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
-    public Long kreirajKatalog(@RequestBody Katalog katalog){
+    public Long kreirajKatalog(@RequestBody Katalog katalog, @RequestHeader Map<String,String> headers){
+        //provjera na vlasnika
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+        Long id_user = katalog.getIdKorisnik();
+        if(!isUserAdmin(username)){
+            ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id_user, UserAuthDTO.class);
+            if(res.getBody() == null || !res.getBody().getUsername().equals(username)) throw new ApiUnauthorizedException("Nemate privilegiju da kreirate ovaj katalog!");
+        }
+
         katalogService.kreirajKatalog(katalog);
         restTemplate.put("http://catalogue-service/korisnik/update", katalog);
         return katalog.getId();
@@ -49,9 +59,17 @@ public class KatalogController {
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
-    public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody){
+    public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody,  @RequestHeader Map<String,String> headers){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
+
+        //provjera na vlasnika
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+
+        if(!isUserAdmin(username)){
+            vlasnikKataloga(id_katalog, username, "Nemate privilegiju da dodate strip u ovaj katalog!");
+        }
         katalogService.dodajStripUKatalog(id_strip, id_katalog);
         return "Strip je uspješno dodan u katalog!";
     }
@@ -64,33 +82,51 @@ public class KatalogController {
 
     //brisanje stripa iz kataloga
     @DeleteMapping(value="/brisanje-stripa")
-    public String obrisiStrip(@RequestBody Map<String, Long> body){
+    public String obrisiStrip(@RequestBody Map<String, Long> body, @RequestHeader Map<String,String> headers){
+        //provjera vlasnika kataloga
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
         Long id_katalog = body.get("id_katalog");
         Long id_strip = body.get("id_strip");
-        if(katalogService.obrisiStrip(id_strip, id_katalog)) return "Strip je uspješno obrisan iz kataloga!";
+        //provjera da li je admin
+        if(!isUserAdmin(username)){
+            //nadjemo vlasnika kataloga
+            vlasnikKataloga(id_katalog, username, "Nemate privilegiju da obrisete strip iz ovog kataloga!");
+        }
+        if(katalogService.obrisiStrip(id_strip, id_katalog)) return "Strip je uspjesno obrisan iz kataloga!";
         return "Strip sa id-jem " + id_strip + " se ne nalazi u katalogu!";
     }
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
     public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise, @RequestHeader Map<String,String> headers){
-
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
-        Long idKorisnik = katalogKojiSeBrise.get("idKorisnik");
+        Long id_katalog = katalogKojiSeBrise.get("idKatalog");
 
-        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + idKorisnik, UserAuthDTO.class);
-
-        System.out.println(res.getBody());
-        System.out.println(idKorisnik);
-
-        //provjera da li korisnik sa privilegijom smije dirati ovaj resurs
-        if(res.getBody() == null || !username.equals(res.getBody().getUsername())) {
-            System.out.println("Ilegala");
-            throw new ApiRequestException("Radite nesto ilegalno!");
+        //provjera da li je admin
+        if(!isUserAdmin(username)){
+            //nadjemo vlasnika kataloga
+            vlasnikKataloga(id_katalog, username, "Nemate privilegiju da obrisete ovaj katalog!");
         }
 
-        Long id_katalog = katalogKojiSeBrise.get("idKatalog");
         return katalogService.obrisiKatalog(id_katalog);
+    }
+
+    private void vlasnikKataloga(Long id_katalog, String username, String errorMsg) {
+        Katalog kat = katalogService.getKatalog(id_katalog);
+        Long id_vlasnik = kat.getIdKorisnik();
+        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id_vlasnik, UserAuthDTO.class);
+        if(res.getBody() == null || !res.getBody().getUsername().equals(username)) throw new ApiUnauthorizedException(errorMsg);
+    }
+    private boolean isUserAdmin(Long id){
+        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id, UserAuthDTO.class);
+        if(res.getBody() == null || !res.getBody().getRola().equals("ROLE_ADMIN")) return false;
+        return true;
+    }
+    private boolean isUserAdmin(String username){
+        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/" + username, UserAuthDTO.class);
+        if(res.getBody() == null || !res.getBody().getRola().equals("ROLE_ADMIN")) return false;
+        return true;
     }
 }

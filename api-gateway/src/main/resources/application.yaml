@@ -50,6 +50,7 @@ zuul:
       path: /strip/**
       service-id: comicbook-service
       strip-prefix: false
+  sensitive-headers:
 
 # eureka
 eureka:

@@ -20,4 +20,9 @@ public class ApiExceptionHandler {
         //return response entity
         return new ResponseEntity<>(apiException, apiException.getHttpStatus());
     }
+    @ExceptionHandler(value = {ApiUnauthorizedException.class})
+    public ResponseEntity<Object> handleApiUnathorizedException(ApiUnauthorizedException e){
+        ApiException apiException = new ApiException(e.getMessage(), HttpStatus.UNAUTHORIZED, ZonedDateTime.now(ZoneId.of("Z")));
+        return new ResponseEntity<>(apiException, apiException.getHttpStatus());
+    }
 }
