@@ -88,7 +88,7 @@ module.exports =
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 5);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ({
@@ -104,43 +104,71 @@ module.exports =
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! classnames */ "classnames");
+/* harmony import */ var classnames__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(classnames__WEBPACK_IMPORTED_MODULE_1__);
 var _jsxFileName = "C:\\Users\\USER\\Desktop\\NWT-Team-Storm\\stripomanija-frontend\\components\\FormFields\\GenericField.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
 
 
 const GenericField = ({
   type,
   id,
   label,
-  placeholder
+  placeholder,
+  onChange,
+  name,
+  isInvalid,
+  validationMsg
 }) => {
   return __jsx("div", {
     className: "form-group",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 5,
+      lineNumber: 6,
       columnNumber: 9
     }
   }, __jsx("label", {
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 6,
+      lineNumber: 7,
       columnNumber: 13
     }
   }, label), __jsx("input", {
     type: type,
-    className: "form-control",
+    className: classnames__WEBPACK_IMPORTED_MODULE_1___default()("form-control", {
+      "is-invalid": isInvalid
+    }),
     id: id,
     placeholder: placeholder,
+    onChange: onChange,
+    name: name,
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 7,
+      lineNumber: 8,
       columnNumber: 13
     }
-  }));
+  }), __jsx("div", {
+    className: "col",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 9,
+      columnNumber: 13
+    }
+  }, __jsx("small", {
+    id: `${id}validation`,
+    className: "text-danger",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 10,
+      columnNumber: 17
+    }
+  }, validationMsg)));
 };
 
 /* harmony default export */ __webpack_exports__["default"] = (GenericField);
@@ -174,8 +202,7 @@ const GenericModal = ({
   modalTitle,
   closeModal,
   showModal,
-  bottomText,
-  btnText
+  bottomText
 }) => {
   return __jsx(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Modal"], {
     show: showModal,
@@ -209,23 +236,7 @@ const GenericModal = ({
       lineNumber: 12,
       columnNumber: 13
     }
-  }, children), __jsx(react_bootstrap__WEBPACK_IMPORTED_MODULE_1__["Modal"].Footer, {
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 16,
-      columnNumber: 13
-    }
-  }, __jsx("button", {
-    type: "button",
-    className: "btn btn-primary",
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 17,
-      columnNumber: 17
-    }
-  }, btnText)));
+  }, children));
 };
 
 const ModalBody = ({
@@ -236,7 +247,7 @@ const ModalBody = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 24,
+      lineNumber: 21,
       columnNumber: 13
     }
   }, children, __jsx("small", {
@@ -244,7 +255,7 @@ const ModalBody = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 26,
+      lineNumber: 23,
       columnNumber: 9
     }
   }, text));
@@ -287,8 +298,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! react */ "react");
 /* harmony import */ var react__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(react__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ../components/FormFields/GenericField */ "./components/FormFields/GenericField.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_6___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_6__);
+/* harmony import */ var _util_url__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ../util/url */ "./util/url.js");
+/* harmony import */ var _util_routes__WEBPACK_IMPORTED_MODULE_8__ = __webpack_require__(/*! ../util/routes */ "./util/routes.js");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_9__ = __webpack_require__(/*! next/router */ "next/router");
+/* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_9___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_9__);
 var _jsxFileName = "C:\\Users\\USER\\Desktop\\NWT-Team-Storm\\stripomanija-frontend\\pages\\index.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_4___default.a.createElement;
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+
+
+
+
 
 
 
@@ -309,7 +337,7 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 13,
+      lineNumber: 19,
       columnNumber: 37
     }
   }), isLoginModalOpen && __jsx(LoginModal, {
@@ -317,7 +345,7 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 14,
+      lineNumber: 20,
       columnNumber: 34
     }
   }), __jsx("div", {
@@ -325,21 +353,21 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 15,
+      lineNumber: 21,
       columnNumber: 13
     }
   }, __jsx(next_head__WEBPACK_IMPORTED_MODULE_0___default.a, {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 16,
+      lineNumber: 22,
       columnNumber: 17
     }
   }, __jsx("title", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 17,
+      lineNumber: 23,
       columnNumber: 21
     }
   }, "Stripomanija"), __jsx("link", {
@@ -348,7 +376,7 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 18,
+      lineNumber: 24,
       columnNumber: 21
     }
   })), __jsx("div", {
@@ -356,14 +384,14 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 20,
+      lineNumber: 26,
       columnNumber: 17
     }
   }, __jsx("div", {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 21,
+      lineNumber: 27,
       columnNumber: 21
     }
   }, "STRIPOMANIJA"), __jsx("div", {
@@ -371,7 +399,7 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 22,
+      lineNumber: 28,
       columnNumber: 21
     }
   }, __jsx("button", {
@@ -381,7 +409,7 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 23,
+      lineNumber: 29,
       columnNumber: 25
     }
   }, "Registracija"), __jsx("button", {
@@ -391,15 +419,37 @@ function Home() {
     __self: this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 25,
+      lineNumber: 31,
       columnNumber: 25
     }
   }, "Login")))));
-}
+} //ne radi jos
 
 const RegistrationModal = ({
   setIsRegisterModalOpen
 }) => {
+  const {
+    0: validationMsg,
+    1: setValidationMsg
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(null);
+  const {
+    0: isInvalid,
+    1: setIsInvalid
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false); //role povuci sa apija!!
+
+  const {
+    0: user,
+    1: setUser
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])({
+    role: "ROLE_USER",
+    ime: "",
+    prezime: "",
+    userName: "",
+    sifra: "",
+    email: "",
+    broj_losih_reviewa: 0,
+    ukupno_reviewa: 0
+  });
   return __jsx(_components_GenericModal_GenericModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
     modalTitle: "Registracija",
     closeModal: () => setIsRegisterModalOpen(false),
@@ -409,70 +459,113 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 35,
+      lineNumber: 56,
       columnNumber: 12
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "ime",
+    name: "ime",
     label: "Ime",
     placeholder: "Vaše ime",
     type: "text",
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 41,
+      lineNumber: 62,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "prezime",
+    name: "prezime",
     label: "Prezime",
     placeholder: "Vaše prezime",
     type: "text",
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 42,
+      lineNumber: 63,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "email",
+    name: "email",
     label: "Email adresa",
     placeholder: "Npr. jane@doe.com",
     type: "email",
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 43,
+      lineNumber: 64,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "usernameRegistracija",
+    name: "userName",
     label: "Username",
     placeholder: "Pomoću username-a se prijavljujete na Stripomaniju.",
     type: "text",
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 44,
+      lineNumber: 65,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "sifraRegistracija",
+    name: "sifra",
     label: "Šifra",
     placeholder: "Vaša šifra",
     type: "password",
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 45,
+      lineNumber: 66,
       columnNumber: 13
     }
-  }));
+  }), __jsx("div", {
+    className: "d-flex w-100 justify-content-end",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 67,
+      columnNumber: 13
+    }
+  }, __jsx("button", {
+    type: "button",
+    className: "btn btn-primary",
+    onClick: () => sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].register.path, user, setValidationMsg, setIsInvalid),
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 68,
+      columnNumber: 17
+    }
+  }, "Predaj")));
 };
 
 const LoginModal = ({
   setIsLoginModalOpen
 }) => {
+  const {
+    0: validationMsg,
+    1: setValidationMsg
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(null);
+  const {
+    0: isInvalid,
+    1: setIsInvalid
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false);
+  const {
+    0: user,
+    1: setUser
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])({
+    username: "",
+    password: ""
+  });
   return __jsx(_components_GenericModal_GenericModal__WEBPACK_IMPORTED_MODULE_3__["default"], {
     modalTitle: "Prijava",
     btnText: "Predaj",
@@ -481,33 +574,88 @@ const LoginModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 51,
-      columnNumber: 12
+      lineNumber: 83,
+      columnNumber: 9
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "usernameLogin",
+    name: "username",
     label: "Username",
     placeholder: "Vaš username",
     type: "text",
+    isInvalid: isInvalid,
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 57,
+      lineNumber: 88,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
     id: "sifraLogin",
+    name: "password",
     label: "Šifra",
     placeholder: "Vaša šifra",
     type: "password",
+    isInvalid: isInvalid,
+    validationMsg: validationMsg,
+    onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 58,
+      lineNumber: 89,
       columnNumber: 13
     }
-  }));
+  }), __jsx("div", {
+    className: "d-flex w-100 justify-content-end",
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 90,
+      columnNumber: 13
+    }
+  }, __jsx("button", {
+    type: "button",
+    className: "btn btn-primary",
+    onClick: () => sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].authenticate.path, user, setValidationMsg, setIsInvalid),
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 91,
+      columnNumber: 17
+    }
+  }, "Predaj")));
 };
+
+function handleFieldChange(e, user, setUser) {
+  const {
+    name,
+    value
+  } = e.target;
+  setUser(prevState => _objectSpread({}, prevState, {
+    [name]: value
+  }));
+}
+
+function sendRequest(url, reqBody, setValidationMsg, setIsInvalid) {
+  axios__WEBPACK_IMPORTED_MODULE_6___default.a.post(url, reqBody).then(response => {
+    // save token to local storage
+    localStorage.setItem("jwt", response.data.jwt);
+    setValidationMsg(null);
+    setIsInvalid(false);
+    next_router__WEBPACK_IMPORTED_MODULE_9___default.a.push(_util_routes__WEBPACK_IMPORTED_MODULE_8__["navbarRoutes"].katalozi.path);
+  }).catch(error => {
+    console.log(error);
+
+    if (error.response.status === 400) {
+      //validacija
+      setIsInvalid(true);
+      setValidationMsg(error.response.data.message);
+    }
+
+    console.log(error.response.data.message);
+  });
+}
 
 /***/ }),
 
@@ -529,7 +677,80 @@ module.exports = {
 
 /***/ }),
 
-/***/ 5:
+/***/ "./util/routes.js":
+/*!************************!*\
+  !*** ./util/routes.js ***!
+  \************************/
+/*! exports provided: navbarRoutes, routes */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "navbarRoutes", function() { return navbarRoutes; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "routes", function() { return routes; });
+/* harmony import */ var _url__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./url */ "./util/url.js");
+
+const navbarRoutes = {
+  home: {
+    label: "Home",
+    path: "/"
+  },
+  katalozi: {
+    label: "Moji katalozi",
+    path: "/katalozi"
+  }
+};
+const routes = {
+  searchStripovi: {
+    label: "Rezultati pretrage",
+    path: "/search"
+  },
+  stripoviUKatalogu: {
+    label: "Stripovi u mom katalogu",
+    path: "/katalozi/katalog/[idKatalog]/stripovi" //privremeno
+
+  },
+  jedanKatalog: {
+    label: "katalog",
+    path: "/katalozi/katalog/"
+  },
+  authenticate: {
+    label: "login",
+    path: "/authenticate"
+  },
+  register: {
+    label: "register",
+    path: `${_url__WEBPACK_IMPORTED_MODULE_0__["user"]}/sign-up`
+  },
+  katalozi: {
+    label: "katalozi",
+    path: `${_url__WEBPACK_IMPORTED_MODULE_0__["catalogue"]}/svi`
+  }
+};
+
+/***/ }),
+
+/***/ "./util/url.js":
+/*!*********************!*\
+  !*** ./util/url.js ***!
+  \*********************/
+/*! exports provided: baseUrl, user, catalogue, comicbook */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "baseUrl", function() { return baseUrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "user", function() { return user; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "catalogue", function() { return catalogue; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "comicbook", function() { return comicbook; });
+const baseUrl = "http://localhost:8086";
+const user = "/user";
+const catalogue = "/katalog";
+const comicbook = "/strip";
+
+/***/ }),
+
+/***/ 3:
 /*!******************************!*\
   !*** multi ./pages/index.js ***!
   \******************************/
@@ -538,6 +759,17 @@ module.exports = {
 
 module.exports = __webpack_require__(/*! C:\Users\USER\Desktop\NWT-Team-Storm\stripomanija-frontend\pages\index.js */"./pages/index.js");
 
+
+/***/ }),
+
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
 
 /***/ }),
 
@@ -560,6 +792,17 @@ module.exports = require("classnames");
 /***/ (function(module, exports) {
 
 module.exports = require("next/head");
+
+/***/ }),
+
+/***/ "next/router":
+/*!******************************!*\
+  !*** external "next/router" ***!
+  \******************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("next/router");
 
 /***/ }),
 

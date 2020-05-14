@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.example.demo.exception.ApiRequestException;
 import com.example.demo.models.AuthenticationRequest;
 import com.example.demo.models.AuthenticationResponse;
 import com.example.demo.service.CustomUserDetailsService;
@@ -11,11 +12,9 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthController {
 
@@ -27,11 +26,6 @@ public class AuthController {
     private JwtUtil jwt;
     @Autowired
     private PasswordEncoder passwordEncoder;
-    //dummy request
-    @GetMapping(value="/hello")
-    public String pozdrav(){
-        return "Cao!";
-    }
 
     @PostMapping(value="/authenticate")
     public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authReq) throws Exception {
@@ -40,7 +34,7 @@ public class AuthController {
         }
         catch(BadCredentialsException e){
             System.out.println(e);
-            throw new Exception("Netacan username ili sifra!", e);
+            throw new ApiRequestException("Netačan username ili šifra!");
         }
         final UserDetails userDetails = userDetailsService.loadUserByUsername(authReq.getUsername());
         final String token = jwt.generateToken(userDetails);

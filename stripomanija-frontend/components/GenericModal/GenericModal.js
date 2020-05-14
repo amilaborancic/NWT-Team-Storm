@@ -2,7 +2,7 @@ import React from "react";
 import {Modal} from "react-bootstrap";
 import style from "./GenericModal.module.css";
 
-const GenericModal = ({children, modalTitle, closeModal, showModal, bottomText, btnText})=>{
+const GenericModal = ({children, modalTitle, closeModal, showModal, bottomText})=>{
     return(
         <Modal show={showModal} onHide={closeModal}>
             <Modal.Header closeButton>
@@ -13,9 +13,6 @@ const GenericModal = ({children, modalTitle, closeModal, showModal, bottomText, 
                 {children}
             </ModalBody>
 
-            <Modal.Footer>
-                <button type="button" className="btn btn-primary">{btnText}</button>
-            </Modal.Footer>
         </Modal>
     );
 }

@@ -19,7 +19,7 @@ const NavbarContainer = ({children})=>{
                 <div className="collapse navbar-collapse" id="navbarColor01">
                     <ul className="navbar-nav mr-auto">
                         {Object.values(navbarRoutes).map(route=>
-                            <li className={cx("nav-item", {"active": router.pathname === route.path})}>
+                            <li className={cx("nav-item", {"active": router.pathname === route.path})} key={route.path}>
                                 <a className="nav-link" href={route.path}>{route.label}</a>
                             </li>
                         )}

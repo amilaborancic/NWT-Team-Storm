@@ -515,7 +515,7 @@ exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/di
 
 exports.push([module.i, "@import url(https://fonts.googleapis.com/css2?family=News+Cycle:wght@400;700&display=swap);"]);
 // Module
-exports.push([module.i, "/* noinspection CssUnknownTarget */\r\n\r\nbody {\r\n  font-family: 'News Cycle', sans-serif;\r\n}\r\n:root {\r\n  --dark-gray: #4a4a4a;\r\n}", "",{"version":3,"sources":["C:/Users/USER/Desktop/NWT-Team-Storm/stripomanija-frontend/pages/global.css"],"names":[],"mappings":"AAAA,kCAAkC;;AAGlC;EACE,qCAAqC;AACvC;AACA;EACE,oBAAoB;AACtB","file":"global.css","sourcesContent":["/* noinspection CssUnknownTarget */\r\n@import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@400;700&display=swap');\r\n\r\nbody {\r\n  font-family: 'News Cycle', sans-serif;\r\n}\r\n:root {\r\n  --dark-gray: #4a4a4a;\r\n}"]}]);
+exports.push([module.i, "/* noinspection CssUnknownTarget */\r\n\r\nbody {\r\n  font-family: 'News Cycle', sans-serif;\r\n}\r\n:root {\r\n  --dark-gray: #4a4a4a;\r\n  --dark-gray-02: #2d2d2d;\r\n  --muted-black: #202020;\r\n}", "",{"version":3,"sources":["C:/Users/USER/Desktop/NWT-Team-Storm/stripomanija-frontend/pages/global.css"],"names":[],"mappings":"AAAA,kCAAkC;;AAGlC;EACE,qCAAqC;AACvC;AACA;EACE,oBAAoB;EACpB,uBAAuB;EACvB,sBAAsB;AACxB","file":"global.css","sourcesContent":["/* noinspection CssUnknownTarget */\r\n@import url('https://fonts.googleapis.com/css2?family=News+Cycle:wght@400;700&display=swap');\r\n\r\nbody {\r\n  font-family: 'News Cycle', sans-serif;\r\n}\r\n:root {\r\n  --dark-gray: #4a4a4a;\r\n  --dark-gray-02: #2d2d2d;\r\n  --muted-black: #202020;\r\n}"]}]);
 
 
 /***/ }),

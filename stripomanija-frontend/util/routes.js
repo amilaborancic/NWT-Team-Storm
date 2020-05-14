@@ -1,3 +1,5 @@
+import {catalogue, user} from "./url";
+
 export const navbarRoutes = {
     home: {
         label: "Home",
@@ -16,6 +18,22 @@ export const routes = {
     },
     stripoviUKatalogu: {
         label: "Stripovi u mom katalogu",
-        path: "/katalog/stripovi"
+        path: "/katalozi/katalog/[idKatalog]/stripovi" //privremeno
+    },
+    jedanKatalog: {
+        label: "katalog",
+        path: "/katalozi/katalog/"
+    },
+    authenticate: {
+        label:"login",
+        path: "/authenticate"
+    },
+    register: {
+        label: "register",
+        path: `${user}/sign-up`
+    },
+    katalozi: {
+        label: "katalozi",
+        path: `${catalogue}/svi`
     }
 }
