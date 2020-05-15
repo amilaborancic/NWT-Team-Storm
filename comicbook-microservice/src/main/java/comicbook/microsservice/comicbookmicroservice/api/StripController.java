@@ -1,14 +1,21 @@
 package comicbook.microsservice.comicbookmicroservice.api;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import comicbook.microsservice.comicbookmicroservice.DTO.OcjenaKomentarDTO;
+import comicbook.microsservice.comicbookmicroservice.DTO.RatingDTO;
 import comicbook.microsservice.comicbookmicroservice.DTO.StripIdList;
+import comicbook.microsservice.comicbookmicroservice.RabbitMQ.RabbitMQProducer;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.service.StripService;
+import comicbook.microsservice.comicbookmicroservice.util.JwtUtil;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/strip")
@@ -19,6 +26,11 @@ public class StripController {
     @Autowired
     StripService stripService;
 
+    @Autowired
+    private RabbitMQProducer producer;
+
+    @Autowired
+    JwtUtil jwt;
     //get sa paginacijom - svi stripovi
     @GetMapping(value="/svi")
     public List<Strip> sviStripovi(@Param("brojStranice") int brojStranice){
@@ -59,6 +71,16 @@ public class StripController {
     @PostMapping(value="/sviPoId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
         return stripService.sviStripoviPoId(idStripova.getIdStripova());
+    }
+
+    //svi stripovi ciji je id poslan kao request body
+    @PutMapping(value="/ostavi-rating/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public void ostaviRating(@PathVariable Long id, @RequestBody OcjenaKomentarDTO ocjenaKomentarDTO,@RequestHeader Map<String,String> headers) throws JsonProcessingException {
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+        Strip strip=stripService.jedanStrip(id);
+        RatingDTO ratingDTO=new RatingDTO(username,ocjenaKomentarDTO.getOcjena(),ocjenaKomentarDTO.getKomentar(),strip.getUkupniRating(),strip.getUkupnoKomentara());
+        producer.send(ratingDTO);
     }
 
     //pomocni endpointi
