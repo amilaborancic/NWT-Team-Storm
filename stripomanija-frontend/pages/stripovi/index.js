@@ -5,29 +5,8 @@ import cx from "classnames";
 import {baseUrl} from "../../util/url";
 import {routes} from "../../util/routes";
 import axios from "axios";
-
-const SEARCH_TYPES = {
-    SVI: {
-        id:0,
-        label: "Svi"
-    },
-    NAZIV: {
-        id:1,
-        label: "Pretraga po nazivu"
-    },
-    AUTOR: {
-        id:2,
-        label: "Pretraga po autoru"
-    },
-    ZANR: {
-        id:3,
-        label: "Pretraga po žanru"
-    },
-    IZDAVAC: {
-        id: 4,
-        label: "Pretraga po izdavaču"
-    }
-}
+import Pagination from "../../components/Pagination/Pagination";
+import {SEARCH_TYPES} from "../../util/searchTypes";
 
 const Stripovi = ()=>{
     const [activeSearchType, setActiveSearchType] = useState(null);
@@ -57,7 +36,6 @@ const Stripovi = ()=>{
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
                 />
-                {/*<h1 className={styles.title}>Rezultati pretrage za </h1>*/}
             </div>
         </NavbarContainer>);
 }
@@ -65,33 +43,56 @@ const Stripovi = ()=>{
 
 const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled,
                              isSearchDisabled, url, setUrl, currentPage, setCurrentPage, params, setParams, searchQuery, setSearchQuery})=>{
-    const searchValues = Object.values(SEARCH_TYPES);
-    const searchKeys = Object.keys(SEARCH_TYPES);
-    const arr = [{naziv: "marvel", boja: "success"}, {naziv: "dc", boja:"info"}];
+
+    const [isSearchQueried, setIsSearchQueried] = useState(false);
+    //temporary - should call api
+    const [genrePublisherArray, setGenrePublisherArray] = useState([{naziv: "marvel", boja: "success", id:0}, {naziv: "dc", boja:"info", id:1}]);
 
     return(
         <form className="form-inline my-2 my-lg-0 w-50 mr-3">
-            <input className="form-control w-75" type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"  onChange={(e)=>handleChangeInput(e)} />
-            <div className={styles.buttonContainer}>
-                <button type="button" className={cx("btn dropdown-toggle ml-0", styles.button)} onClick={()=>setIsDropDownOpen(!isDropDownOpen)}/>
-                <div className={cx("dropdown-menu", {"show": isDropDownOpen}, styles.searchDropdown)}>
-                    {
-                        searchValues.map((value, index) =>
-                            <a className={cx("dropdown-item", styles.option)} key={value.id}
-                               onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery)}
-                               style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
-                            >{value.label}</a>)
-                    }
-                </div>
-                <button className={cx("btn my-2 my-sm-0", styles.button)} type="submit" onClick={()=>handleSearch(activeSearchType)}>Traži!</button>
-            </div>
+            <input className="form-control w-75" type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
+                   onChange={(e)=>handleChangeInput(e, setSearchQuery)} />
+            <SearchDropDown
+                setUrl={setUrl}
+                activeSearchType={activeSearchType}
+                setIsSearchDisabled={setIsSearchDisabled}
+                currentPage={currentPage}
+                isDropDownOpen={isDropDownOpen}
+                setIsDropDownOpen={setIsDropDownOpen}
+                searchQuery={searchQuery}
+                setActiveSearchType={setActiveSearchType}
+                setIsSearchQueried={setIsSearchQueried}
+                setParams={setParams}
+                setSearchQuery={setSearchQuery}
+                />
             <div className="d-flex w-100 justify-content-center mt-2">
-                {isSearchDisabled && <GenrePublisherButtons array={arr}/> }
+                {isSearchDisabled && <GenrePublisherButtons array={genrePublisherArray} setSearchQuery={setSearchQuery}/> }
             </div>
+            {isSearchQueried && <SearchResults />}
         </form>);
 }
 
-function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery){
+const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery,setSearchQuery, setIsSearchQueried})=>{
+    const searchValues = Object.values(SEARCH_TYPES);
+    const searchKeys = Object.keys(SEARCH_TYPES);
+    return(
+        <div className={styles.buttonContainer}>
+            <button type="button" className={cx("btn dropdown-toggle ml-0", styles.button)} onClick={()=>setIsDropDownOpen(!isDropDownOpen)}/>
+            <div className={cx("dropdown-menu", {"show": isDropDownOpen}, styles.searchDropdown)}>
+                {
+                    searchValues.map((value, index) =>
+                        <a className={cx("dropdown-item", styles.option)} key={value.id}
+                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setSearchQuery)}
+                           style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
+                        >{value.label}</a>)
+                }
+            </div>
+            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(activeSearchType, setIsSearchQueried)}>Traži!</button>
+        </div>
+    );
+}
+
+function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setSearchQuery){
     setActiveSearchType(SEARCH_TYPES[activeSearchType]);
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
@@ -139,7 +140,7 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
             setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
             setParams({
                 brojStranice: currentPage,
-                naziv: searchQuery
+                id_zanr: searchQuery
             });
             break;
 
@@ -148,7 +149,7 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
             setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
             setParams({
                 brojStranice: currentPage,
-                naziv: searchQuery
+                id_izdavac: searchQuery
             });
             break;
 
@@ -156,24 +157,40 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
     }
 }
 
-function handleChangeInput(e){
-    console.log(e.target.value);
+function handleChangeInput(e, setSearchQuery){
+    setSearchQuery(e.target.value);
+    console.log(e.target.value)
 }
 
-function handleSearch(activeSearchType){
+function handleSearch(activeSearchType, setIsSearchQueried){
     if(activeSearchType === null){
         console.log("odaberite tip pretrage")
     }
     else{
-
+        setIsSearchQueried(true);
     }
 }
 
-const GenrePublisherButtons = ({array})=>{
+const GenrePublisherButtons = ({array, setSearchQuery})=>{
     return(
-        array.map(value=> <button type="button" key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}>{value.naziv}</button>)
+        array.map(value=> <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
+                                  onClick={(e)=>handleChangeInput(e, setSearchQuery)}>{value.naziv}</button>)
     );
 }
+
+const SearchResults = ()=>{
+    return(
+        <div className="d-flex w-100 flex-column justify-content-center align-items-center">
+            <h1 className={styles.title}>Rezultati pretrage</h1>
+            <div className="d-flex fixed-bottom justify-content-center">
+                <Pagination numberOfPages={10}/>
+            </div>
+        </div>
+    );
+}
+
+
+/*     API CALLS        */
 
 function fetchGenreOrPublisher(url, params){
     const colors = ["success", "info", "danger", "warning"];
@@ -190,6 +207,13 @@ function fetchGenreOrPublisher(url, params){
     });
 }
 
+function sendRequest(url, params){
+    axios.get(url, {
+        params: params
+    }).then(res=>{
+        const stripovi = res.data;
+    })
+}
 
 
 export default Stripovi;
