@@ -3,7 +3,6 @@ package user.usermicroservice.Models;
 import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
@@ -26,7 +25,6 @@ public class User {
     @NotBlank(message = "Username je obavezan!")
     @Size(min = 1, max = 15, message = "Username mora imati između 1 i 15 karaktera")
     private String userName;
-    @Email(message = "Email mora biti validan")
     private  String email;
     @NotBlank(message = "Sifra je obavezna!")
     @Size(min=60, max=60)
@@ -36,8 +34,7 @@ public class User {
 
     protected User(){}
 
-    public User( Role role,String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
-
+    public User(Role role,String ime, String prezime, String userName, String email, String sifra, int broj_losih_reviewa, int ukupno_reviewa) {
         this.role=role;
         this.ime = ime;
         this.prezime = prezime;

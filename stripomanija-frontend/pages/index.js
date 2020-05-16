@@ -39,11 +39,9 @@ export default function Home() {
 //ne radi jos
 const RegistrationModal = ({setIsRegisterModalOpen})=>{
     const [validationMsg, setValidationMsg] = useState(null);
-    const [isInvalid, setIsInvalid] = useState(false);
 
     //role povuci sa apija!!
     const [user, setUser] = useState({
-        role: "ROLE_USER",
         ime: "",
         prezime: "",
         userName: "",
@@ -63,9 +61,9 @@ const RegistrationModal = ({setIsRegisterModalOpen})=>{
             <GenericField id={"prezime"} name={"prezime"} label={"Prezime"} placeholder={"Vaše prezime"} type={"text"} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"email"} name={"email"} label={"Email adresa"} placeholder={"Npr. jane@doe.com"} type={"email"} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"usernameRegistracija"} name={"userName"} label={"Username"} placeholder={"Pomoću username-a se prijavljujete na Stripomaniju."} type={"text"} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
-            <GenericField id={"sifraRegistracija"} name={"sifra"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
+            <GenericField id={"sifraRegistracija"} name={"sifra"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} validationMsg={validationMsg} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-primary" onClick={()=>sendRequest(baseUrl + routes.register.path, user, setValidationMsg, setIsInvalid)}>Predaj</button>
+                <button type="button" className="btn btn-primary" onClick={()=>handleRegistrationRequest(baseUrl + routes.register.path, user, setValidationMsg)}>Predaj</button>
             </div>
         </GenericModal>
     );
@@ -88,7 +86,7 @@ const LoginModal = ({setIsLoginModalOpen})=>{
             <GenericField id={"usernameLogin"} name={"username"} label={"Username"} placeholder={"Vaš username"} type={"text"} isInvalid={isInvalid} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"sifraLogin"} name={"password"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} isInvalid={isInvalid} validationMsg={validationMsg} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-primary" onClick={()=> sendRequest(baseUrl + routes.authenticate.path, user, setValidationMsg, setIsInvalid)}>Predaj</button>
+                <button type="button" className="btn btn-primary" onClick={()=> handleLoginRequest(baseUrl + routes.authenticate.path, user, setValidationMsg, setIsInvalid)}>Predaj</button>
             </div>
         </GenericModal>
     );
@@ -103,7 +101,7 @@ function handleFieldChange(e, user, setUser){
     )
 }
 
-function sendRequest(url,reqBody, setValidationMsg, setIsInvalid){
+function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
     axios.post(url, reqBody)
         .then(response=>{
             // save token to local storage
@@ -112,12 +110,27 @@ function sendRequest(url,reqBody, setValidationMsg, setIsInvalid){
             setIsInvalid(false);
             Router.push(navbarRoutes.katalozi.path);
         }).catch(error=>{
-        console.log(error)
         if(error.response.status === 400){
             //validacija
             setIsInvalid(true);
             setValidationMsg(error.response.data.message);
         }
-        console.log(error.response.data.message);
+    });
+}
+
+function handleRegistrationRequest(url,reqBody, setValidationMsg){
+    axios.post(url, reqBody)
+        .then(response=>{
+            setValidationMsg(null);
+            Router.push(navbarRoutes.katalozi.path);
+        }).catch(error=>{
+        try{
+            console.log(error)
+            let errorObj = error.response.data;
+            setValidationMsg(errorObj.message);
+        }
+        catch (e) {
+            console.log(e);
+        }
     });
 }

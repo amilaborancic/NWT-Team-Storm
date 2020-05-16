@@ -11,18 +11,18 @@ import org.springframework.web.client.RestTemplate;
 import user.usermicroservice.DTO.UserAuthDTO;
 import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
+import user.usermicroservice.Models.Role;
 import user.usermicroservice.Models.User;
+import user.usermicroservice.Repository.RoleRepository;
 import user.usermicroservice.RoleName;
 import user.usermicroservice.Servisi.UserServis;
 import user.usermicroservice.exception.ApiRequestException;
 import user.usermicroservice.exception.ApiUnauthorizedException;
 import user.usermicroservice.util.JwtUtil;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -33,6 +33,9 @@ public class UserController {
     RestTemplate restTemplate;
     @Autowired
     PasswordEncoder passwordEncoder;
+    @Autowired
+    RoleRepository roleRepository;
+
     @Autowired
     JwtUtil jwt;
     @GetMapping("/{id}")
@@ -56,32 +59,24 @@ public class UserController {
         if(user.getIme().equals("")) throw new ApiRequestException("Ime je obavezno!");
         if(user.getUserName().equals("")) throw new ApiRequestException("Username je obavezan!");
         if(user.getEmail().equals("")) throw new ApiRequestException("Email je obavezan!");
-        if(userServis.postojiEmail(user.getEmail())) throw new ApiRequestException("User sa "+ user.getEmail()+ " već postoji!");
+        if(userServis.postojiEmail(user.getEmail())) throw new ApiRequestException("User sa emailom "+ user.getEmail()+ " već postoji!");
+        if(userServis.postojiUserName(user.getUserName())) throw new ApiRequestException("User sa usernameom " + user.getUserName() + " već postoji!");
         if(user.getSifra().equals("")) throw new ApiRequestException("Sifra mora biti unesena!");
+        //rola
+        List<Role> role =  roleRepository.findAll();
+        role.forEach(rola -> {
+            if(rola.getRoleName().toString().equals(RoleName.ROLE_USER.toString())) user.setRole(rola);
+        });
         //hash sifre
         user.setSifra(passwordEncoder.encode(user.getSifra()));
         //spasavanje u bazu
         userServis.addNewUser(user);
-        //kreiranje kataloga
-        /*KatalogDTO procitani = new KatalogDTO("Pročitani stripovi", user.getId());
-        KatalogDTO zelimProcitati = new KatalogDTO("Želim pročitati", user.getId());
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        //request body
-        HttpEntity<KatalogDTO> entity1 = new HttpEntity<>(procitani, headers);
-        ResponseEntity<Long> response1 = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity1, Long.class);
-
-        HttpEntity<KatalogDTO> entity2 = new HttpEntity<>(zelimProcitati, headers);
-        ResponseEntity<Long> response2 = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity2, Long.class);
-        return user.getId();*/
+        //katalozi
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<Long> entity = new HttpEntity<>(user.getId(), headers);
         ResponseEntity<Long> res = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity, Long.class);
-        System.out.println(res);
         return user.getId();
     }
 

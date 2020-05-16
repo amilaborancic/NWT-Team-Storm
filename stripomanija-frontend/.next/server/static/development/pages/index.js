@@ -431,17 +431,12 @@ const RegistrationModal = ({
   const {
     0: validationMsg,
     1: setValidationMsg
-  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(null);
-  const {
-    0: isInvalid,
-    1: setIsInvalid
-  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(false); //role povuci sa apija!!
+  } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])(null); //role povuci sa apija!!
 
   const {
     0: user,
     1: setUser
   } = Object(react__WEBPACK_IMPORTED_MODULE_4__["useState"])({
-    role: "ROLE_USER",
     ime: "",
     prezime: "",
     userName: "",
@@ -459,7 +454,7 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 56,
+      lineNumber: 54,
       columnNumber: 12
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -472,7 +467,7 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62,
+      lineNumber: 60,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -485,7 +480,7 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 63,
+      lineNumber: 61,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -498,7 +493,7 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 64,
+      lineNumber: 62,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -511,7 +506,7 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 65,
+      lineNumber: 63,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -520,11 +515,12 @@ const RegistrationModal = ({
     label: "Šifra",
     placeholder: "Vaša šifra",
     type: "password",
+    validationMsg: validationMsg,
     onChange: e => handleFieldChange(e, user, setUser),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66,
+      lineNumber: 64,
       columnNumber: 13
     }
   }), __jsx("div", {
@@ -532,17 +528,17 @@ const RegistrationModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 67,
+      lineNumber: 65,
       columnNumber: 13
     }
   }, __jsx("button", {
     type: "button",
     className: "btn btn-primary",
-    onClick: () => sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].register.path, user, setValidationMsg, setIsInvalid),
+    onClick: () => handleRegistrationRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].register.path, user, setValidationMsg),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 68,
+      lineNumber: 66,
       columnNumber: 17
     }
   }, "Predaj")));
@@ -574,7 +570,7 @@ const LoginModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 83,
+      lineNumber: 81,
       columnNumber: 9
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -588,7 +584,7 @@ const LoginModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88,
+      lineNumber: 86,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_5__["default"], {
@@ -603,7 +599,7 @@ const LoginModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 89,
+      lineNumber: 87,
       columnNumber: 13
     }
   }), __jsx("div", {
@@ -611,17 +607,17 @@ const LoginModal = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 90,
+      lineNumber: 88,
       columnNumber: 13
     }
   }, __jsx("button", {
     type: "button",
     className: "btn btn-primary",
-    onClick: () => sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].authenticate.path, user, setValidationMsg, setIsInvalid),
+    onClick: () => handleLoginRequest(_util_url__WEBPACK_IMPORTED_MODULE_7__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_8__["routes"].authenticate.path, user, setValidationMsg, setIsInvalid),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 91,
+      lineNumber: 89,
       columnNumber: 17
     }
   }, "Predaj")));
@@ -637,7 +633,7 @@ function handleFieldChange(e, user, setUser) {
   }));
 }
 
-function sendRequest(url, reqBody, setValidationMsg, setIsInvalid) {
+function handleLoginRequest(url, reqBody, setValidationMsg, setIsInvalid) {
   axios__WEBPACK_IMPORTED_MODULE_6___default.a.post(url, reqBody).then(response => {
     // save token to local storage
     localStorage.setItem("jwt", response.data.jwt);
@@ -645,15 +641,26 @@ function sendRequest(url, reqBody, setValidationMsg, setIsInvalid) {
     setIsInvalid(false);
     next_router__WEBPACK_IMPORTED_MODULE_9___default.a.push(_util_routes__WEBPACK_IMPORTED_MODULE_8__["navbarRoutes"].katalozi.path);
   }).catch(error => {
-    console.log(error);
-
     if (error.response.status === 400) {
       //validacija
       setIsInvalid(true);
       setValidationMsg(error.response.data.message);
     }
+  });
+}
 
-    console.log(error.response.data.message);
+function handleRegistrationRequest(url, reqBody, setValidationMsg) {
+  axios__WEBPACK_IMPORTED_MODULE_6___default.a.post(url, reqBody).then(response => {
+    setValidationMsg(null);
+    next_router__WEBPACK_IMPORTED_MODULE_9___default.a.push(_util_routes__WEBPACK_IMPORTED_MODULE_8__["navbarRoutes"].katalozi.path);
+  }).catch(error => {
+    try {
+      console.log(error);
+      let errorObj = error.response.data;
+      setValidationMsg(errorObj.message);
+    } catch (e) {
+      console.log(e);
+    }
   });
 }
 

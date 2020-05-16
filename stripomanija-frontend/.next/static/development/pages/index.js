@@ -22131,15 +22131,10 @@ var RegistrationModal = function RegistrationModal(_ref) {
 
   var _useState3 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(null),
       validationMsg = _useState3[0],
-      setValidationMsg = _useState3[1];
-
-  var _useState4 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
-      isInvalid = _useState4[0],
-      setIsInvalid = _useState4[1]; //role povuci sa apija!!
+      setValidationMsg = _useState3[1]; //role povuci sa apija!!
 
 
-  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])({
-    role: "ROLE_USER",
+  var _useState4 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])({
     ime: "",
     prezime: "",
     userName: "",
@@ -22148,8 +22143,8 @@ var RegistrationModal = function RegistrationModal(_ref) {
     broj_losih_reviewa: 0,
     ukupno_reviewa: 0
   }),
-      user = _useState5[0],
-      setUser = _useState5[1];
+      user = _useState4[0],
+      setUser = _useState4[1];
 
   return __jsx(_components_GenericModal_GenericModal__WEBPACK_IMPORTED_MODULE_4__["default"], {
     modalTitle: "Registracija",
@@ -22164,7 +22159,7 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 56,
+      lineNumber: 54,
       columnNumber: 12
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22179,7 +22174,7 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 62,
+      lineNumber: 60,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22194,7 +22189,7 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 63,
+      lineNumber: 61,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22209,7 +22204,7 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 64,
+      lineNumber: 62,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22224,7 +22219,7 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 65,
+      lineNumber: 63,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22233,13 +22228,14 @@ var RegistrationModal = function RegistrationModal(_ref) {
     label: "Šifra",
     placeholder: "Vaša šifra",
     type: "password",
+    validationMsg: validationMsg,
     onChange: function onChange(e) {
       return handleFieldChange(e, user, setUser);
     },
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 66,
+      lineNumber: 64,
       columnNumber: 13
     }
   }), __jsx("div", {
@@ -22247,19 +22243,19 @@ var RegistrationModal = function RegistrationModal(_ref) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 67,
+      lineNumber: 65,
       columnNumber: 13
     }
   }, __jsx("button", {
     type: "button",
     className: "btn btn-primary",
     onClick: function onClick() {
-      return sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_8__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_9__["routes"].register.path, user, setValidationMsg, setIsInvalid);
+      return handleRegistrationRequest(_util_url__WEBPACK_IMPORTED_MODULE_8__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_9__["routes"].register.path, user, setValidationMsg);
     },
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 68,
+      lineNumber: 66,
       columnNumber: 17
     }
   }, "Predaj")));
@@ -22268,20 +22264,20 @@ var RegistrationModal = function RegistrationModal(_ref) {
 var LoginModal = function LoginModal(_ref2) {
   var setIsLoginModalOpen = _ref2.setIsLoginModalOpen;
 
-  var _useState6 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(null),
-      validationMsg = _useState6[0],
-      setValidationMsg = _useState6[1];
+  var _useState5 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(null),
+      validationMsg = _useState5[0],
+      setValidationMsg = _useState5[1];
 
-  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
-      isInvalid = _useState7[0],
-      setIsInvalid = _useState7[1];
+  var _useState6 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])(false),
+      isInvalid = _useState6[0],
+      setIsInvalid = _useState6[1];
 
-  var _useState8 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])({
+  var _useState7 = Object(react__WEBPACK_IMPORTED_MODULE_5__["useState"])({
     username: "",
     password: ""
   }),
-      user = _useState8[0],
-      setUser = _useState8[1];
+      user = _useState7[0],
+      setUser = _useState7[1];
 
   return __jsx(_components_GenericModal_GenericModal__WEBPACK_IMPORTED_MODULE_4__["default"], {
     modalTitle: "Prijava",
@@ -22295,7 +22291,7 @@ var LoginModal = function LoginModal(_ref2) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 83,
+      lineNumber: 81,
       columnNumber: 9
     }
   }, __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22311,7 +22307,7 @@ var LoginModal = function LoginModal(_ref2) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 88,
+      lineNumber: 86,
       columnNumber: 13
     }
   }), __jsx(_components_FormFields_GenericField__WEBPACK_IMPORTED_MODULE_6__["default"], {
@@ -22328,7 +22324,7 @@ var LoginModal = function LoginModal(_ref2) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 89,
+      lineNumber: 87,
       columnNumber: 13
     }
   }), __jsx("div", {
@@ -22336,19 +22332,19 @@ var LoginModal = function LoginModal(_ref2) {
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 90,
+      lineNumber: 88,
       columnNumber: 13
     }
   }, __jsx("button", {
     type: "button",
     className: "btn btn-primary",
     onClick: function onClick() {
-      return sendRequest(_util_url__WEBPACK_IMPORTED_MODULE_8__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_9__["routes"].authenticate.path, user, setValidationMsg, setIsInvalid);
+      return handleLoginRequest(_util_url__WEBPACK_IMPORTED_MODULE_8__["baseUrl"] + _util_routes__WEBPACK_IMPORTED_MODULE_9__["routes"].authenticate.path, user, setValidationMsg, setIsInvalid);
     },
     __self: _this,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 91,
+      lineNumber: 89,
       columnNumber: 17
     }
   }, "Predaj")));
@@ -22363,7 +22359,7 @@ function handleFieldChange(e, user, setUser) {
   });
 }
 
-function sendRequest(url, reqBody, setValidationMsg, setIsInvalid) {
+function handleLoginRequest(url, reqBody, setValidationMsg, setIsInvalid) {
   axios__WEBPACK_IMPORTED_MODULE_7___default.a.post(url, reqBody).then(function (response) {
     // save token to local storage
     localStorage.setItem("jwt", response.data.jwt);
@@ -22371,15 +22367,26 @@ function sendRequest(url, reqBody, setValidationMsg, setIsInvalid) {
     setIsInvalid(false);
     next_router__WEBPACK_IMPORTED_MODULE_10___default.a.push(_util_routes__WEBPACK_IMPORTED_MODULE_9__["navbarRoutes"].katalozi.path);
   })["catch"](function (error) {
-    console.log(error);
-
     if (error.response.status === 400) {
       //validacija
       setIsInvalid(true);
       setValidationMsg(error.response.data.message);
     }
+  });
+}
 
-    console.log(error.response.data.message);
+function handleRegistrationRequest(url, reqBody, setValidationMsg) {
+  axios__WEBPACK_IMPORTED_MODULE_7___default.a.post(url, reqBody).then(function (response) {
+    setValidationMsg(null);
+    next_router__WEBPACK_IMPORTED_MODULE_10___default.a.push(_util_routes__WEBPACK_IMPORTED_MODULE_9__["navbarRoutes"].katalozi.path);
+  })["catch"](function (error) {
+    try {
+      console.log(error);
+      var errorObj = error.response.data;
+      setValidationMsg(errorObj.message);
+    } catch (e) {
+      console.log(e);
+    }
   });
 }
 
