@@ -25,8 +25,8 @@ const NavbarContainer = ({children})=>{
                             </li>
                         )}
                     </ul>
-                    <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} />
                 </div>
+                <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} />
             </nav>
             {children}
         </div>
@@ -36,15 +36,24 @@ const NavbarContainer = ({children})=>{
 
 const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked})=>{
     return(
-        <ul className={cx("navbar-nav mr-2")}>
-            <li className={cx("nav-item show")}>
-                <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                   onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>Opcije</a>
-                <div className={cx("dropdown-menu", {"show":isDropDownClicked}, styles.dropdown)}>
-                    <a className={cx("dropdown-item")} href="#">Odjava</a>
-                </div>
-            </li>
-        </ul>
+        <div className={styles.dropdownContainer}>
+            <a className={cx("nav-link dropdown-toggle show")} role="button"
+               onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>Opcije</a>
+            <div className={cx("dropdown-menu", styles.customDropdown, {"show":isDropDownClicked})}>
+                <a className={cx("dropdown-item")} >Odjava</a>
+            </div>
+        </div>
+    );
+}
+
+const Dummy = ({setIsDropDownClicked,isDropDownClicked})=>{
+    return(
+        <div className={styles.dropdownContainer}>
+            <button type="button" className={cx("btn dropdown-toggle ml-0")}/>
+            <div className={cx("dropdown-menu", {"show": isDropDownClicked}, styles.customDropdown)}>
+                <a className={cx("dropdown-item")} onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>fdffff</a>)
+            </div>
+        </div>
     );
 }
 

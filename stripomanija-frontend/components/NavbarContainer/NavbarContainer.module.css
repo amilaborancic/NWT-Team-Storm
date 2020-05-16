@@ -4,11 +4,12 @@
 }
 
 
-.dropdown {
+.customDropdown {
     position: absolute;
-    transform: translate3d(0px, 0px, 0px) !important;
-    right: 20px;
-    left: calc(100% - 170px);
-    width: 80px;
-    will-change: transform;
+    transform: translate(-60px, 0);
+}
+
+.dropdownContainer{
+    position: relative;
+    color:white;
 }

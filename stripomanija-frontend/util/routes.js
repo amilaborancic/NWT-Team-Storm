@@ -8,6 +8,10 @@ export const navbarRoutes = {
     katalozi: {
         label: "Moji katalozi",
         path: "/katalozi"
+    },
+    pretraga: {
+        label: "Pretraga stripova",
+        path:"/stripovi"
     }
 }
 

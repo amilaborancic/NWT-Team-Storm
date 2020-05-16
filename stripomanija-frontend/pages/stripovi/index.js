@@ -4,6 +4,7 @@ import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import cx from "classnames";
 import {baseUrl} from "../../util/url";
 import {routes} from "../../util/routes";
+import axios from "axios";
 
 const SEARCH_TYPES = {
     SVI: {
@@ -55,7 +56,6 @@ const Stripovi = ()=>{
                     params={params}
                     setCurrentPage={setCurrentPage}
                     currentPage={currentPage}
-
                 />
                 {/*<h1 className={styles.title}>Rezultati pretrage za </h1>*/}
             </div>
@@ -67,6 +67,8 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                              isSearchDisabled, url, setUrl, currentPage, setCurrentPage, params, setParams, searchQuery, setSearchQuery})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
+    const arr = [{naziv: "marvel", boja: "success"}, {naziv: "dc", boja:"info"}];
+
     return(
         <form className="form-inline my-2 my-lg-0 w-50 mr-3">
             <input className="form-control w-75" type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"  onChange={(e)=>handleChangeInput(e)} />
@@ -82,6 +84,9 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                     }
                 </div>
                 <button className={cx("btn my-2 my-sm-0", styles.button)} type="submit" onClick={()=>handleSearch(activeSearchType)}>Traži!</button>
+            </div>
+            <div className="d-flex w-100 justify-content-center mt-2">
+                {isSearchDisabled && <GenrePublisherButtons array={arr}/> }
             </div>
         </form>);
 }
@@ -125,17 +130,26 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
                 prezime: surname
             };
             setIsSearchDisabled(false);
+            setParams(autorParams);
             setUrl(baseUrl + routes.strip.path + routeAutor.path);
             break;
 
         case SEARCH_TYPES.ZANR:
             setIsSearchDisabled(true);
             setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
+            setParams({
+                brojStranice: currentPage,
+                naziv: searchQuery
+            });
             break;
 
         case SEARCH_TYPES.IZDAVAC:
             setIsSearchDisabled(true);
             setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
+            setParams({
+                brojStranice: currentPage,
+                naziv: searchQuery
+            });
             break;
 
         default: console.log("blah");
@@ -155,9 +169,27 @@ function handleSearch(activeSearchType){
     }
 }
 
-function loadGenre(){
-console.log("nesto")
+const GenrePublisherButtons = ({array})=>{
+    return(
+        array.map(value=> <button type="button" key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}>{value.naziv}</button>)
+    );
 }
+
+function fetchGenreOrPublisher(url, params){
+    const colors = ["success", "info", "danger", "warning"];
+    axios.get(url, {
+        params: params
+    }).then(res=>{
+        const genrePublisherArray = res.data;
+        genrePublisherArray.map((item, index)=>{
+            item.boja = colors[index % colors.length];
+        });
+        return genrePublisherArray;
+    }).catch(error=>{
+        console.log(error);
+    });
+}
+
 
 
 export default Stripovi;
