@@ -9,7 +9,6 @@ import {baseUrl} from "../util/url";
 import {navbarRoutes, routes} from "../util/routes";
 import Router from 'next/router';
 
-
 export default function Home() {
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);

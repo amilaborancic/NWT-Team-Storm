@@ -3,6 +3,7 @@ import styles from "./NavbarContainer.module.css";
 import cx from "classnames";
 import { useRouter } from 'next/router';
 import {navbarRoutes} from "../../util/routes";
+import axios from "axios";
 
 const NavbarContainer = ({children})=>{
     const router = useRouter();
@@ -23,18 +24,8 @@ const NavbarContainer = ({children})=>{
                                 <a className="nav-link" href={route.path}>{route.label}</a>
                             </li>
                         )}
-                        <li className="nav-item dropdown show">
-                            <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
-                               onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>Opcije</a>
-                            <div className={cx("dropdown-menu", "dropdown", {"show":isDropDownClicked})}>
-                                <a className="dropdown-item" href="#">Odjava</a>
-                            </div>
-                        </li>
                     </ul>
-                    <form className="form-inline my-2 my-lg-0">
-                        <input className="form-control mr-sm-2" type="text" placeholder="Pretraga"/>
-                            <button className={cx("btn my-2 my-sm-0", styles.button)} type="submit">Traži!</button>
-                    </form>
+                    <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} />
                 </div>
             </nav>
             {children}
@@ -42,8 +33,24 @@ const NavbarContainer = ({children})=>{
     );
 }
 
+
+const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked})=>{
+    return(
+        <ul className={cx("navbar-nav mr-2")}>
+            <li className={cx("nav-item show")}>
+                <a className="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button"
+                   onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>Opcije</a>
+                <div className={cx("dropdown-menu", {"show":isDropDownClicked}, styles.dropdown)}>
+                    <a className={cx("dropdown-item")} href="#">Odjava</a>
+                </div>
+            </li>
+        </ul>
+    );
+}
+
 const handleDropDownClick = (setIsDropDownClicked, isDropDownClicked)=>{
     setIsDropDownClicked(!isDropDownClicked);
 }
+
 
 export default NavbarContainer;

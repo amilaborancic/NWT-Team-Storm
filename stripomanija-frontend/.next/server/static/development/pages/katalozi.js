@@ -227,8 +227,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! next/router */ "next/router");
 /* harmony import */ var next_router__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(next_router__WEBPACK_IMPORTED_MODULE_3__);
 /* harmony import */ var _util_routes__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../../util/routes */ "./util/routes.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! axios */ "axios");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_5___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_5__);
 var _jsxFileName = "C:\\Users\\USER\\Desktop\\NWT-Team-Storm\\stripomanija-frontend\\components\\NavbarContainer\\NavbarContainer.js";
 var __jsx = react__WEBPACK_IMPORTED_MODULE_0___default.a.createElement;
+
 
 
 
@@ -248,7 +251,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 12,
+      lineNumber: 13,
       columnNumber: 9
     }
   }, __jsx("nav", {
@@ -256,7 +259,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 13,
+      lineNumber: 14,
       columnNumber: 13
     }
   }, __jsx("a", {
@@ -264,7 +267,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 14,
+      lineNumber: 15,
       columnNumber: 17
     }
   }, "STRIPOMANIJA"), __jsx("button", {
@@ -278,7 +281,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 15,
+      lineNumber: 16,
       columnNumber: 17
     }
   }), __jsx("div", {
@@ -287,7 +290,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 19,
+      lineNumber: 20,
       columnNumber: 17
     }
   }, __jsx("ul", {
@@ -295,7 +298,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 20,
+      lineNumber: 21,
       columnNumber: 21
     }
   }, Object.values(_util_routes__WEBPACK_IMPORTED_MODULE_4__["navbarRoutes"]).map(route => __jsx("li", {
@@ -306,7 +309,7 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 22,
+      lineNumber: 23,
       columnNumber: 29
     }
   }, __jsx("a", {
@@ -315,16 +318,40 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 23,
+      lineNumber: 24,
       columnNumber: 33
     }
-  }, route.label))), __jsx("li", {
-    className: "nav-item dropdown show",
+  }, route.label)))), __jsx(DropDownMenu, {
+    isDropDownClicked: isDropDownClicked,
+    setIsDropDownClicked: setIsDropDownClicked,
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 26,
-      columnNumber: 25
+      lineNumber: 28,
+      columnNumber: 21
+    }
+  }))), children);
+};
+
+const DropDownMenu = ({
+  setIsDropDownClicked,
+  isDropDownClicked
+}) => {
+  return __jsx("ul", {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("navbar-nav mr-2"),
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 39,
+      columnNumber: 9
+    }
+  }, __jsx("li", {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("nav-item show"),
+    __self: undefined,
+    __source: {
+      fileName: _jsxFileName,
+      lineNumber: 40,
+      columnNumber: 13
     }
   }, __jsx("a", {
     className: "nav-link dropdown-toggle",
@@ -335,56 +362,29 @@ const NavbarContainer = ({
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 27,
-      columnNumber: 29
+      lineNumber: 41,
+      columnNumber: 17
     }
   }, "Opcije"), __jsx("div", {
-    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("dropdown-menu", "dropdown", {
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("dropdown-menu", {
       "show": isDropDownClicked
-    }),
+    }, _NavbarContainer_module_css__WEBPACK_IMPORTED_MODULE_1___default.a.dropdown),
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 29,
-      columnNumber: 29
+      lineNumber: 43,
+      columnNumber: 17
     }
   }, __jsx("a", {
-    className: "dropdown-item",
+    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("dropdown-item"),
     href: "#",
     __self: undefined,
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 30,
-      columnNumber: 33
-    }
-  }, "Odjava")))), __jsx("form", {
-    className: "form-inline my-2 my-lg-0",
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 34,
+      lineNumber: 44,
       columnNumber: 21
     }
-  }, __jsx("input", {
-    className: "form-control mr-sm-2",
-    type: "text",
-    placeholder: "Pretraga",
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 35,
-      columnNumber: 25
-    }
-  }), __jsx("button", {
-    className: classnames__WEBPACK_IMPORTED_MODULE_2___default()("btn my-2 my-sm-0", _NavbarContainer_module_css__WEBPACK_IMPORTED_MODULE_1___default.a.button),
-    type: "submit",
-    __self: undefined,
-    __source: {
-      fileName: _jsxFileName,
-      lineNumber: 36,
-      columnNumber: 29
-    }
-  }, "Tra\u017Ei!")))), children);
+  }, "Odjava"))));
 };
 
 const handleDropDownClick = (setIsDropDownClicked, isDropDownClicked) => {
@@ -405,7 +405,6 @@ const handleDropDownClick = (setIsDropDownClicked, isDropDownClicked) => {
 // Exports
 module.exports = {
 	"container": "NavbarContainer_container__3cgbN",
-	"button": "NavbarContainer_button__2rT8n",
 	"dropdown": "NavbarContainer_dropdown__3xLQf"
 };
 
@@ -2198,6 +2197,10 @@ const navbarRoutes = {
   katalozi: {
     label: "Moji katalozi",
     path: "/katalozi"
+  },
+  pretraga: {
+    label: "Pretraga stripova",
+    path: "/stripovi"
   }
 };
 const routes = {
@@ -2225,6 +2228,32 @@ const routes = {
   katalozi: {
     label: "katalozi",
     path: `${_url__WEBPACK_IMPORTED_MODULE_0__["catalogue"]}/svi`
+  },
+  strip: {
+    label: "stripovi",
+    path: "/strip",
+    pretraga: {
+      naziv: {
+        path: "/trazi-naziv",
+        params: ["brojStranice", "naziv"]
+      },
+      svi: {
+        path: "/svi",
+        params: ["brojStranice"]
+      },
+      autor: {
+        path: "/trazi-autor",
+        params: ["brojStranice", "ime", "prezime"]
+      },
+      zanr: {
+        path: "/trazi-zanr",
+        params: ["brojStranice", "id_zanr"]
+      },
+      izdavac: {
+        path: "/trazi-izdavac",
+        params: ["brojStranice", "id_izdavac"]
+      }
+    }
   }
 };
 
@@ -2259,6 +2288,17 @@ const comicbook = "/strip";
 
 module.exports = __webpack_require__(/*! C:\Users\USER\Desktop\NWT-Team-Storm\stripomanija-frontend\pages\katalozi\index.js */"./pages/katalozi/index.js");
 
+
+/***/ }),
+
+/***/ "axios":
+/*!************************!*\
+  !*** external "axios" ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+module.exports = require("axios");
 
 /***/ }),
 
