@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
-import user.usermicroservice.DTO.KatalogDTO;
 import user.usermicroservice.DTO.UserAuthDTO;
 import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
@@ -64,7 +63,7 @@ public class UserController {
         //spasavanje u bazu
         userServis.addNewUser(user);
         //kreiranje kataloga
-        KatalogDTO procitani = new KatalogDTO("Pročitani stripovi", user.getId());
+        /*KatalogDTO procitani = new KatalogDTO("Pročitani stripovi", user.getId());
         KatalogDTO zelimProcitati = new KatalogDTO("Želim pročitati", user.getId());
 
         HttpHeaders headers = new HttpHeaders();
@@ -72,10 +71,17 @@ public class UserController {
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         //request body
         HttpEntity<KatalogDTO> entity1 = new HttpEntity<>(procitani, headers);
-        ResponseEntity<Long> response1 = restTemplate.postForEntity("http://catalogue-service/katalog/novi", entity1, Long.class);
+        ResponseEntity<Long> response1 = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity1, Long.class);
 
         HttpEntity<KatalogDTO> entity2 = new HttpEntity<>(zelimProcitati, headers);
-        ResponseEntity<Long> response2 = restTemplate.postForEntity("http://catalogue-service/katalog/novi", entity2, Long.class);
+        ResponseEntity<Long> response2 = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity2, Long.class);
+        return user.getId();*/
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        HttpEntity<Long> entity = new HttpEntity<>(user.getId(), headers);
+        ResponseEntity<Long> res = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity, Long.class);
+        System.out.println(res);
         return user.getId();
     }
 

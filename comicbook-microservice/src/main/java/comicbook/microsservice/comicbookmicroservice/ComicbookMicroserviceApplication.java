@@ -92,35 +92,35 @@ class InitialCommandLineRunner implements CommandLineRunner {
 
 		//stripovi
 		String opis_1 = "Batman sets his sights on ending a case that started when he first started wearing the cape and cowl. Over the years he has found various clues and has been able to cross people of a list of who is behind this mysterious case.";
-		String slika_1 = "https://drive.google.com/open?id=14I5xbWytYdeC7oBFkAu01AQZMEmQ01zE";
+		String slika_1 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589184103/covers/detective_comics__1000_qrqqrn.jpg";
 		List<Autor> autori_1 = new ArrayList<>();
 		autori_1.add(a1);
 		autori_1.add(a2);
 
 		String opis_2 = "Stark's final major project is the \"Big Jump\" a space elevator that will greatly reduce the cost of travel; however, failing health and sabotage by Roxxon in the form of the Ultra-Dynamo prove too much for him to handle. A young scientist named Nick Travis becomes Stark's successor as lead tech and soon after, Iron Man.";
-		String slika_2 = "https://drive.google.com/open?id=16-T_6YxvuJBMTG4ySoDVEU9uRPXz3BtS";
+		String slika_2 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589184106/covers/ironman_the_end__1_ywwy8w.jpg";
 		List<Autor> autori_2 = new ArrayList<>();
 		autori_2.add(a3);
 		autori_2.add(a1);
 		autori_2.add(a2);
 
 		String opis_3 = "It's the climactic conclusion to \"American Soil.\" Donna Troy and Cassie Sandsmark are left to defend their hometown from persecution. In the shadow of their foes, and with their friends at their backs, we have the rise of the Wonder Girls!";
-		String slika_3 = "https://drive.google.com/open?id=1NoXo3oXwwSrcybpAwRoJdFQFeCowUyLA";
+		String slika_3 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589184098/covers/bombshells_united__6_ddmc09.jpg";
 		List<Autor> autori_3 = new ArrayList<>();
 		autori_3.add(a4);
 
 		String opis_4 = "One is wanted for a murder she didn't commit. The other is on the run because she knows too much. They are Dinah Laurel Lance and Ev Crawford - a.k.a. Black Canary and Starling - and joining them are the villainous Poison Ivy and the heroic Batgirl and together, as Gotham City's covert ops team, they're taking down the villains other heroes can't touch. They are the Birds of Prey.\n";
-		String slika_4 = "https://drive.google.com/open?id=1fM4pT2okoN0fXuNPmvDRcWmc5UCaPdVi";
+		String slika_4 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589184097/covers/birds_of_prey__1_qferm5.jpg";
 		List<Autor> autori_4 = new ArrayList<>();
 		autori_4.add(a5);
 
 		String opis_5 = "Raphael and Alopex are trapped in Null Industries and face brand-new enemies that force them to question their future! ";
-		String slika_5 = "https://drive.google.com/open?id=102_5i4gvxsvADaF6o2nS1i2m8AnncU27";
+		String slika_5 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589184107/covers/tmnt_universe_20_eqxlq4.jpg";
 		List<Autor> autori_5 = new ArrayList<>();
 		autori_5.add(a6);
 
 		String opis_6 = "Enter the Age of X-Man, with the perfect heroes for a perfect world! The X-Men have helped make the planet into a utopia where living in fear and hatred is a thing of the past. All people are united under the banner of mutantkind, and all of mutantkind idolizes the X-Men. ";
-		String slika_6 = "https://drive.google.com/open?id=12ZdhhN8LfYH75SgXkVYvhhi1AiC94kQU";
+		String slika_6 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1589528708/covers/Uncanny_x_men_2018-2019_annual__1_iwlfhi.jpg";
 		List<Autor> autori_6 = new ArrayList<>();
 		autori_6.add(a7);
 

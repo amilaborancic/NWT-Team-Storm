@@ -63,16 +63,16 @@ class DemoCommandLineRunner implements CommandLineRunner {
 
 		//NE BRISATI OVO!!
         //korisnike dobavljamo od user servisa
-       /* String resourceURL = "http://user-service/svi/useri";
+        String resourceURL = "http://user-service/user/svi";
         ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
         ObjectMapper mapper = new ObjectMapper();
         JsonNode root = mapper.readTree(response.getBody());
 		root.forEach(korisnik->{
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
-		});*/
+		});
 
-		Korisnik k1 = new Korisnik((long) 1);
+		/*Korisnik k1 = new Korisnik((long) 1);
 		Korisnik k2 = new Korisnik((long) 2);
 		Korisnik k3 = new Korisnik((long) 3);
 		Korisnik k4 = new Korisnik((long) 4);
@@ -81,7 +81,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		korisnikRepozitorij.save(k2);
 		korisnikRepozitorij.save(k3);
 		korisnikRepozitorij.save(k4);
-
+*/
 
 		Strip s1 = new Strip((long) 1);
 		Strip s2 = new Strip((long) 2);

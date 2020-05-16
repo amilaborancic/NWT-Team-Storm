@@ -57,6 +57,13 @@ public class KatalogController {
         return katalog.getId();
     }
 
+    //kreiranje kataloga za nekog usera
+    @PostMapping(value="/new")
+    public Long newCatalogueRegistration(@RequestBody Long idKorisnik){
+        Korisnik korisnik = new Korisnik(idKorisnik);
+        return korisnikService.dodajKorisnika(korisnik);
+    }
+
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
     public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody,  @RequestHeader Map<String,String> headers){

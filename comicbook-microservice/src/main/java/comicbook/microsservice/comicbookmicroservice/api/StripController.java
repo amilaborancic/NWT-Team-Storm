@@ -8,7 +8,6 @@ import comicbook.microsservice.comicbookmicroservice.RabbitMQ.RabbitMQProducer;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.service.StripService;
 import comicbook.microsservice.comicbookmicroservice.util.JwtUtil;
-import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
@@ -73,7 +72,7 @@ public class StripController {
         return stripService.sviStripoviPoId(idStripova.getIdStripova());
     }
 
-    //svi stripovi ciji je id poslan kao request body
+
     @PutMapping(value="/ostavi-rating/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public void ostaviRating(@PathVariable Long id, @RequestBody OcjenaKomentarDTO ocjenaKomentarDTO,@RequestHeader Map<String,String> headers) throws JsonProcessingException {
         String token = headers.get("authorization").substring(7);

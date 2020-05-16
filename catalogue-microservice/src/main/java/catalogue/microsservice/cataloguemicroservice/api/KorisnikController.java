@@ -20,4 +20,5 @@ public class KorisnikController {
         return korisnikService.dodajKatalogUListu(katalog);
     }
 
+
 }
