@@ -1,0 +1,41 @@
+.wrapper {
+    margin: 20px 50px 50px 50px;
+    display: flex;
+    justify-content: center;
+}
+
+.title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.button {
+    color: var(--white) !important;
+    background-color: var(--dark-gray) !important;
+}
+
+.button:hover{
+    color: var(--white) !important;
+    background-color: var(--dark) !important;
+}
+
+.buttonContainer {
+    background-color: var(--dark-gray);
+    position: relative;
+}
+
+.searchDropdown{
+    position: absolute;
+    width: 200px;
+}
+
+.activeLink{
+    background-color: var(--orange);
+}
+
+.option {
+    cursor: pointer;
+}
+

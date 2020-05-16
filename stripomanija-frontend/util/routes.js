@@ -35,5 +35,31 @@ export const routes = {
     katalozi: {
         label: "katalozi",
         path: `${catalogue}/svi`
+    },
+    strip:{
+        label:"stripovi",
+        path: "/strip",
+        pretraga: {
+            naziv: {
+                path: "/trazi-naziv",
+                params: ["brojStranice", "naziv"]
+            },
+            svi: {
+                path: "/svi",
+                params: ["brojStranice"]
+            },
+            autor: {
+                path: "/trazi-autor",
+                params: ["brojStranice", "ime", "prezime"]
+            },
+            zanr: {
+                path: "/trazi-zanr",
+                params: ["brojStranice", "id_zanr"]
+            },
+            izdavac: {
+                path: "/trazi-izdavac",
+                params: ["brojStranice", "id_izdavac"]
+            }
+        }
     }
 }
