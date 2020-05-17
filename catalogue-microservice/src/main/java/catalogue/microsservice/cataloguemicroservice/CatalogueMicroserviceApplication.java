@@ -62,11 +62,11 @@ class DemoCommandLineRunner implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 
 		//NE BRISATI OVO!!
-        //korisnike dobavljamo od user servisa
-        String resourceURL = "http://user-service/user/svi";
-        ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode root = mapper.readTree(response.getBody());
+		//korisnike dobavljamo od user servisa
+		/*String resourceURL = "http://user-service/user/svi";
+		ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
+		ObjectMapper mapper = new ObjectMapper();
+		JsonNode root = mapper.readTree(response.getBody());
 		root.forEach(korisnik->{
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
@@ -76,13 +76,12 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Korisnik k2 = new Korisnik((long) 2);
 		Korisnik k3 = new Korisnik((long) 3);
 		Korisnik k4 = new Korisnik((long) 4);
-
 		korisnikRepozitorij.save(k1);
 		korisnikRepozitorij.save(k2);
 		korisnikRepozitorij.save(k3);
 		korisnikRepozitorij.save(k4);
 */
-
+/*
 		Strip s1 = new Strip((long) 1);
 		Strip s2 = new Strip((long) 2);
 		Strip s3 = new Strip((long) 3);
@@ -120,7 +119,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			i++;
 		}
 */
-
+/*
 		Korisnik korisnik = korisnikRepozitorij.findAll().get(1);
 		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(2);
 		Katalog kat1 = new Katalog("Prvi katalog", korisnik.getId());
@@ -143,7 +142,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		stripovi.add(s6);
 		kat3.setStripovi(stripovi);
 
-		katalogRepositorij.save(kat3);
+		katalogRepositorij.save(kat3);*/
 	}
 
 }

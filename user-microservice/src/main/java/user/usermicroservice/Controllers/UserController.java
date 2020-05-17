@@ -13,6 +13,7 @@ import user.usermicroservice.DTO.UserDTO;
 import user.usermicroservice.DTO.UserRatingDTO;
 import user.usermicroservice.Models.Role;
 import user.usermicroservice.Models.User;
+import user.usermicroservice.RabbitMQ.Producer;
 import user.usermicroservice.Repository.RoleRepository;
 import user.usermicroservice.RoleName;
 import user.usermicroservice.Servisi.UserServis;
@@ -27,6 +28,8 @@ import java.util.*;
 @RequestMapping("/user")
 public class UserController {
 
+    @Autowired
+    private Producer producer;
     @Autowired
     UserServis userServis;
     @Autowired
@@ -71,12 +74,18 @@ public class UserController {
         user.setSifra(passwordEncoder.encode(user.getSifra()));
         //spasavanje u bazu
         userServis.addNewUser(user);
+        //rabbitmq
+        User singleUser=userServis.singleUser(user.getUserName());
+        producer.send(user.getId().toString());
+
+        //sinhrona
+        /*
         //katalozi
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
         HttpEntity<Long> entity = new HttpEntity<>(user.getId(), headers);
-        ResponseEntity<Long> res = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity, Long.class);
+        ResponseEntity<Long> res = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity, Long.class);*/
         return user.getId();
     }
 

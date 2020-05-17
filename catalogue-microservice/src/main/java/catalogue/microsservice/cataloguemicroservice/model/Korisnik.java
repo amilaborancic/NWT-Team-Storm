@@ -1,9 +1,12 @@
 package catalogue.microsservice.cataloguemicroservice.model;
 
+import org.hibernate.annotations.Proxy;
+
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
+@Proxy(lazy = false)
 @Table(name="korisnik")
 public class Korisnik {
     @Id

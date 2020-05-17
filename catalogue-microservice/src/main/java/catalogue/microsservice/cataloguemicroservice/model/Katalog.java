@@ -2,6 +2,7 @@ package catalogue.microsservice.cataloguemicroservice.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.annotations.Proxy;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Proxy(lazy = false)
 @Table(name="katalog")
 public class Katalog {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
