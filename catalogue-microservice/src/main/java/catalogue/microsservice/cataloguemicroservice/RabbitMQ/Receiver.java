@@ -31,14 +31,12 @@ public class Receiver {
 
         logger.info("Poruka primljena");
         if(id_korisnika!=null && korisnikRepository.findById(Long.valueOf(id_korisnika)).isEmpty()) {
-            if(korisnikRepository.findById(Long.valueOf(id_korisnika)).isEmpty()) {
                 korisnikRepository.save(new Korisnik(Long.valueOf(id_korisnika)));
                 Katalog zelim = new Katalog("Zelim procitati", Long.valueOf(id_korisnika));
                 Katalog procitano = new Katalog("Procitano", Long.valueOf(id_korisnika));
                 katalogRepository.save(zelim);
                 katalogRepository.save(procitano);
-            }
-            logger.info("Kreirani defaultni katalozi");
+      	        logger.info("Kreirani defaultni katalozi");
         }
         else throw new ApiRequestException("Pogrešan id korisnika!");
     }
