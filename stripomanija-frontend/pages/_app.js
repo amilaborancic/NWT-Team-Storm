@@ -1,6 +1,6 @@
 import React from "react";
 import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/css/bootstrap.theme.min.css';
+import "../public/bootstrap.theme.min.css";
 import "./global.css";
 
 // eslint-disable-next-line react/prop-types
