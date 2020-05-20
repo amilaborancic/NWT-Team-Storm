@@ -3,3 +3,7 @@
     position: absolute;
     top: 100px;
 }
+
+.cursor {
+    cursor: pointer;
+}
