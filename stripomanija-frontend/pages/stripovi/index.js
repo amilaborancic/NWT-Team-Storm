@@ -1,8 +1,8 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import styles from "./index.module.css";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import cx from "classnames";
-import {baseUrl} from "../../util/url";
+import {baseUrl, comicsUrl} from "../../util/url";
 import {routes} from "../../util/routes";
 import axios from "axios";
 import Pagination from "../../components/Pagination/Pagination";
@@ -45,15 +45,21 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                              isSearchDisabled, url, setUrl, currentPage, setCurrentPage, params, setParams, searchQuery, setSearchQuery})=>{
 
     const [isSearchQueried, setIsSearchQueried] = useState(false);
+    const [numberOfPages, setNumberOfPages] = useState(null);
+
     //temporary - should call api
     const [genrePublisherArray, setGenrePublisherArray] = useState([{naziv: "marvel", boja: "success", id:0}, {naziv: "dc", boja:"info", id:1}]);
 
     return(
         <form className="form-inline my-2 my-lg-0 w-50 mr-3">
-            <input className="form-control w-75" type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
-                   onChange={(e)=>handleChangeInput(e, setSearchQuery)} />
+            <div className="w-75 d-flex flex-column">
+                <input className={cx("form-control", {"is-invalid":!activeSearchType && isSearchQueried})} type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
+                       onChange={(e)=>handleChangeInput(e, setSearchQuery, searchQuery)} value={searchQuery}/>
+                <div className="invalid-feedback">Odaberite tip pretrage!</div>
+            </div>
             <SearchDropDown
                 setUrl={setUrl}
+                url={url}
                 activeSearchType={activeSearchType}
                 setIsSearchDisabled={setIsSearchDisabled}
                 currentPage={currentPage}
@@ -63,18 +69,24 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                 setActiveSearchType={setActiveSearchType}
                 setIsSearchQueried={setIsSearchQueried}
                 setParams={setParams}
+                params={params}
                 setSearchQuery={setSearchQuery}
-                />
+                setNumberOfPages = {setNumberOfPages}
+            />
             <div className="d-flex w-100 justify-content-center mt-2">
                 {isSearchDisabled && <GenrePublisherButtons array={genrePublisherArray} setSearchQuery={setSearchQuery}/> }
             </div>
-            {isSearchQueried && <SearchResults />}
+            {isSearchQueried && numberOfPages && <SearchResults numberOfPages={numberOfPages}/>}
         </form>);
 }
 
-const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery,setSearchQuery, setIsSearchQueried})=>{
+const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setIsSearchDisabled, setUrl, url,
+                            setParams, params, currentPage, searchQuery, setSearchQuery, setIsSearchQueried, setNumberOfPages})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
+    //state update
+    useEffect(() => {}, [searchQuery]);
+
     return(
         <div className={styles.buttonContainer}>
             <button type="button" className={cx("btn dropdown-toggle ml-0", styles.button)} onClick={()=>setIsDropDownOpen(!isDropDownOpen)}/>
@@ -82,17 +94,18 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                 {
                     searchValues.map((value, index) =>
                         <a className={cx("dropdown-item", styles.option)} key={value.id}
-                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setSearchQuery)}
+                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery)}
                            style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
                         >{value.label}</a>)
                 }
             </div>
-            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(activeSearchType, setIsSearchQueried)}>Traži!</button>
+            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, params, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages)}>Traži!</button>
         </div>
     );
 }
 
-function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setSearchQuery){
+//switch between different search types
+function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery){
     setActiveSearchType(SEARCH_TYPES[activeSearchType]);
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
@@ -101,7 +114,7 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
                 brojStranice: currentPage,
                 naziv: searchQuery
             };
-            setUrl(baseUrl + routes.strip.path + routeNaziv.path);
+            setUrl(comicsUrl + routes.strip.path + routeNaziv.path);
             setParams(paramObject);
             setIsSearchDisabled(false);
             break;
@@ -109,35 +122,18 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
         case SEARCH_TYPES.SVI:
             const routeSvi = routes.strip.pretraga.svi;
             setIsSearchDisabled(false);
-            setUrl(baseUrl + routes.strip.path + routeSvi.path);
+            setUrl(comicsUrl + routes.strip.path + routeSvi.path);
             setParams({brojStranice: currentPage});
             break;
 
         case SEARCH_TYPES.AUTOR:
             const routeAutor = routes.strip.pretraga.autor;
-            const nameSurname = searchQuery.split(" ");
-            let name = "";
-            let surname = "";
-            if(nameSurname.length === 1){
-                name = nameSurname[0];
-            }
-            else{
-                name = nameSurname[0];
-                surname = nameSurname[1];
-            }
-            const autorParams = {
-                brojStranice: currentPage,
-                ime: name,
-                prezime: surname
-            };
-            setIsSearchDisabled(false);
-            setParams(autorParams);
-            setUrl(baseUrl + routes.strip.path + routeAutor.path);
+            setUrl(comicsUrl + routes.strip.path + routeAutor.path);
             break;
 
         case SEARCH_TYPES.ZANR:
             setIsSearchDisabled(true);
-            setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
+            setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
             setParams({
                 brojStranice: currentPage,
                 id_zanr: searchQuery
@@ -146,7 +142,7 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
 
         case SEARCH_TYPES.IZDAVAC:
             setIsSearchDisabled(true);
-            setUrl(baseUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
+            setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
             setParams({
                 brojStranice: currentPage,
                 id_izdavac: searchQuery
@@ -157,18 +153,35 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
     }
 }
 
-function handleChangeInput(e, setSearchQuery){
+function handleChangeInput(e, setSearchQuery, searchQuery){
     setSearchQuery(e.target.value);
-    console.log(e.target.value)
 }
 
-function handleSearch(activeSearchType, setIsSearchQueried){
-    if(activeSearchType === null){
-        console.log("odaberite tip pretrage")
+//format params and send request
+function handleSearch(url, params, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages){
+
+    setIsSearchQueried(true);
+    let queryParams = params;
+    if(activeSearchType === SEARCH_TYPES.AUTOR){
+        const nameSurname = searchQuery.split(" ");
+        let name = "";
+        let surname = "";
+        if(nameSurname.length === 1){
+            name = nameSurname[0];
+        }
+        else{
+            name = nameSurname[0];
+            surname = nameSurname[1];
+        }
+        const autorParams = {
+            brojStranice: 0,
+            ime: name,
+            prezime: surname
+        };
+        queryParams = autorParams;
     }
-    else{
-        setIsSearchQueried(true);
-    }
+    fetchComics(url, queryParams,setNumberOfPages);
+
 }
 
 const GenrePublisherButtons = ({array, setSearchQuery})=>{
@@ -178,12 +191,12 @@ const GenrePublisherButtons = ({array, setSearchQuery})=>{
     );
 }
 
-const SearchResults = ()=>{
+const SearchResults = ({numberOfPages})=>{
     return(
         <div className="d-flex w-100 flex-column justify-content-center align-items-center">
             <h1 className={styles.title}>Rezultati pretrage</h1>
             <div className="d-flex fixed-bottom justify-content-center">
-                <Pagination numberOfPages={10}/>
+                <Pagination numberOfPages={numberOfPages}/>
             </div>
         </div>
     );
@@ -207,12 +220,15 @@ function fetchGenreOrPublisher(url, params){
     });
 }
 
-function sendRequest(url, params){
+function fetchComics(url, params, setNumberOfPages){
     axios.get(url, {
         params: params
     }).then(res=>{
-        const stripovi = res.data;
-    })
+        setNumberOfPages(res.data.brojStranica);
+        return res.data.stripovi;
+    }).catch(err=>{
+        console.log(err);
+    });
 }
 
 

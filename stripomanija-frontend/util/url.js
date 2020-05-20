@@ -1,4 +1,5 @@
 export const baseUrl = "http://localhost:8086";
+export const comicsUrl = "http://localhost:8083";
 
 export const user = "/user";
 export const catalogue = "/katalog";
