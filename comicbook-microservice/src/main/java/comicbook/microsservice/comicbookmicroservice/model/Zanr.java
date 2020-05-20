@@ -1,5 +1,8 @@
 package comicbook.microsservice.comicbookmicroservice.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.util.List;
@@ -15,6 +18,7 @@ public class Zanr {
 
     //veze
     @OneToMany
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @JoinColumn(name="id_zanr", referencedColumnName = "id")
     private List<Strip> stripovi;
 

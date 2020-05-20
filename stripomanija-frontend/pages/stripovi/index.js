@@ -47,14 +47,20 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
     const [isSearchQueried, setIsSearchQueried] = useState(false);
     const [numberOfPages, setNumberOfPages] = useState(null);
 
-    //temporary - should call api
-    const [genrePublisherArray, setGenrePublisherArray] = useState([{naziv: "marvel", boja: "success", id:0}, {naziv: "dc", boja:"info", id:1}]);
+    const [genreArray, setGenreArray] = useState([]);
+    const [publisherArray, setPublisherArray] = useState([]);
+
+    //fetching every genre and publisher
+    useEffect(()=>{
+        fetchGenreOrPublisher(comicsUrl + routes.zanr.path + routes.zanr.svi.path, setGenreArray);
+        fetchGenreOrPublisher(comicsUrl + routes.izdavac.path + routes.izdavac.svi.path, setPublisherArray);
+    }, []);
 
     return(
         <form className="form-inline my-2 my-lg-0 w-50 mr-3">
             <div className="w-75 d-flex flex-column">
                 <input className={cx("form-control", {"is-invalid":!activeSearchType && isSearchQueried})} type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
-                       onChange={(e)=>handleChangeInput(e, setSearchQuery, searchQuery)} value={searchQuery}/>
+                       onChange={(e)=>handleChangeInput(e, setSearchQuery)}/>
                 <div className="invalid-feedback">Odaberite tip pretrage!</div>
             </div>
             <SearchDropDown
@@ -72,21 +78,30 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                 params={params}
                 setSearchQuery={setSearchQuery}
                 setNumberOfPages = {setNumberOfPages}
+                setGenrePublisherArray={activeSearchType === SEARCH_TYPES.IZDAVAC ? setPublisherArray : setGenreArray}
+                genrePublisherArray={activeSearchType === SEARCH_TYPES.IZDAVAC ? publisherArray : genreArray}
             />
             <div className="d-flex w-100 justify-content-center mt-2">
-                {isSearchDisabled && <GenrePublisherButtons array={genrePublisherArray} setSearchQuery={setSearchQuery}/> }
+                {isSearchDisabled &&
+                <GenrePublisherButtons
+                    array={activeSearchType === SEARCH_TYPES.IZDAVAC ? publisherArray : genreArray}
+                    setSearchQuery={setSearchQuery}
+                    url={url}
+                    setIsSearchQueried={setIsSearchQueried}
+                    activeSearchType={activeSearchType}
+                    setNumberOfPages={setNumberOfPages}
+                /> }
             </div>
             {isSearchQueried && numberOfPages && <SearchResults numberOfPages={numberOfPages}/>}
         </form>);
 }
 
 const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setIsSearchDisabled, setUrl, url,
-                            setParams, params, currentPage, searchQuery, setSearchQuery, setIsSearchQueried, setNumberOfPages})=>{
+                            setParams, params, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setGenrePublisherArray, genrePublisherArray})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
     //state update
     useEffect(() => {}, [searchQuery]);
-
     return(
         <div className={styles.buttonContainer}>
             <button type="button" className={cx("btn dropdown-toggle ml-0", styles.button)} onClick={()=>setIsDropDownOpen(!isDropDownOpen)}/>
@@ -94,28 +109,23 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                 {
                     searchValues.map((value, index) =>
                         <a className={cx("dropdown-item", styles.option)} key={value.id}
-                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery)}
+                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setGenrePublisherArray, genrePublisherArray)}
                            style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
                         >{value.label}</a>)
                 }
             </div>
-            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, params, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages)}>Traži!</button>
+            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages)}>Traži!</button>
         </div>
     );
 }
 
 //switch between different search types
-function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery){
+function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setParams, currentPage, searchQuery, setGenrePublisherArray, genrePublisherArray){
     setActiveSearchType(SEARCH_TYPES[activeSearchType]);
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
             const routeNaziv = routes.strip.pretraga.naziv;
-            const paramObject = {
-                brojStranice: currentPage,
-                naziv: searchQuery
-            };
             setUrl(comicsUrl + routes.strip.path + routeNaziv.path);
-            setParams(paramObject);
             setIsSearchDisabled(false);
             break;
 
@@ -134,34 +144,25 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
         case SEARCH_TYPES.ZANR:
             setIsSearchDisabled(true);
             setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
-            setParams({
-                brojStranice: currentPage,
-                id_zanr: searchQuery
-            });
             break;
 
         case SEARCH_TYPES.IZDAVAC:
             setIsSearchDisabled(true);
             setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
-            setParams({
-                brojStranice: currentPage,
-                id_izdavac: searchQuery
-            });
             break;
 
         default: console.log("blah");
     }
 }
 
-function handleChangeInput(e, setSearchQuery, searchQuery){
+function handleChangeInput(e, setSearchQuery){
     setSearchQuery(e.target.value);
 }
 
 //format params and send request
-function handleSearch(url, params, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages){
-
+function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages){
     setIsSearchQueried(true);
-    let queryParams = params;
+    let queryParams = null;
     if(activeSearchType === SEARCH_TYPES.AUTOR){
         const nameSurname = searchQuery.split(" ");
         let name = "";
@@ -180,14 +181,32 @@ function handleSearch(url, params, activeSearchType, setIsSearchQueried, searchQ
         };
         queryParams = autorParams;
     }
-    fetchComics(url, queryParams,setNumberOfPages);
+    else if(activeSearchType === SEARCH_TYPES.NAZIV){
+        queryParams = {
+            brojStranice: 0,
+            naziv: searchQuery
+        };
+    }
+    else if(activeSearchType === SEARCH_TYPES.ZANR){
+        queryParams = {
+            brojStranice: 0,
+            id_zanr: searchQuery
+        };
+    }
+    else if(activeSearchType === SEARCH_TYPES.IZDAVAC){
+        queryParams = {
+            brojStranice: 0,
+            id_izdavac: searchQuery
+        };
+    }
+    fetchComics(url, queryParams, setNumberOfPages);
 
 }
 
-const GenrePublisherButtons = ({array, setSearchQuery})=>{
+const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages})=>{
     return(
         array.map(value=> <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
-                                  onClick={(e)=>handleChangeInput(e, setSearchQuery)}>{value.naziv}</button>)
+                                  onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setNumberOfPages)}>{value.naziv}</button>)
     );
 }
 
@@ -205,16 +224,14 @@ const SearchResults = ({numberOfPages})=>{
 
 /*     API CALLS        */
 
-function fetchGenreOrPublisher(url, params){
+function fetchGenreOrPublisher(url, setArray){
     const colors = ["success", "info", "danger", "warning"];
-    axios.get(url, {
-        params: params
-    }).then(res=>{
-        const genrePublisherArray = res.data;
-        genrePublisherArray.map((item, index)=>{
+    axios.get(url).then(res=>{
+        let genreArray = res.data;
+        genreArray.map((item, index)=>{
             item.boja = colors[index % colors.length];
         });
-        return genrePublisherArray;
+        setArray(genreArray);
     }).catch(error=>{
         console.log(error);
     });

@@ -65,5 +65,25 @@ export const routes = {
                 params: ["brojStranice", "id_izdavac"]
             }
         }
+    },
+    zanr: {
+        label: "zanrovi",
+        path: "/zanr",
+        novi: {
+            label: "novi zanr",
+            path: "/novi"
+        },
+        svi: {
+            label: "svi zanrovi",
+            path: "/svi"
+        }
+    },
+    izdavac: {
+        label: "izdavaci",
+        path: "/izdavac",
+        svi: {
+            label: "svi izdavaci",
+            path: "/svi"
+        }
     }
 }
