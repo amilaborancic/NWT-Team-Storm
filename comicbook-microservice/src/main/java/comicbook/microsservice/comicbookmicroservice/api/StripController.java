@@ -11,70 +11,87 @@ import comicbook.microsservice.comicbookmicroservice.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-@RestController
+@Controller
 @RequestMapping(value="/strip")
 public class StripController {
 
     private int brojStripovaNaStranici = 5;
-
+    private String jsonTemplate = "jsonTemplate";
     @Autowired
     StripService stripService;
-
     @Autowired
     private RabbitMQProducer producer;
-
     @Autowired
     JwtUtil jwt;
     //get sa paginacijom - svi stripovi
     @GetMapping(value="/svi")
-    public List<Strip> sviStripovi(@Param("brojStranice") int brojStranice){
-        return stripService.sviStripovi(brojStranice, brojStripovaNaStranici);
+    public String sviStripovi(@Param("brojStranice") int brojStranice, Model model){
+        model.addAttribute("stripovi", stripService.sviStripovi(brojStranice, brojStripovaNaStranici));
+        int brojStripova = stripService.brojStripovaUBazi().intValue();
+        model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+        return jsonTemplate;
     }
 
     //jedan konkretan strip, parametar je id stripa
     @GetMapping()
-    public Strip jedanStrip(@Param("id_strip") Long id_strip){
+    public @ResponseBody Strip jedanStrip(@Param("id_strip") Long id_strip){
         return stripService.jedanStrip(id_strip);
     }
 
     //svi stripovi jednog autora sa paginacijom - SEARCH BY AUTHOR funkcionalnost
     @GetMapping(value="/trazi-autor")
-    public List<Strip> stripoviPoAutoru(@Param("ime") String ime, @Param("prezime") String prezime, @Param("brojStranice") int brojStranice){
-        return stripService.stripoviPoAutoru(ime, prezime, brojStranice, brojStripovaNaStranici);
+    public String stripoviPoAutoru(@Param("ime") String ime, @Param("prezime") String prezime, @Param("brojStranice") int brojStranice, Model model){
+
+        model.addAttribute("stripovi", stripService.stripoviPoAutoru(ime, prezime, brojStranice, brojStripovaNaStranici));
+        int brojStripova = stripService.brojStripovaPoAutorIme(ime, prezime).intValue();
+        model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+
+        return jsonTemplate;
     }
 
     //svi stripovi jednog izdavaca sa paginacijom - SEARCH BY PUBLISHER funkcionalnost
     @GetMapping(value="/trazi-izdavac")
-    public List<Strip> stripoviPoIzdavacu(@Param("id_izdavac") Long id_izdavac, @Param("brojStranice") int brojStranice){
-        return stripService.stripoviPoIzdavacu(id_izdavac, brojStranice, brojStripovaNaStranici);
+    public String stripoviPoIzdavacu(@Param("id_izdavac") Long id_izdavac, @Param("brojStranice") int brojStranice, Model model){
+        model.addAttribute("stripovi", stripService.stripoviPoIzdavacu(id_izdavac, brojStranice, brojStripovaNaStranici));
+        int brojStripova = stripService.brojStripovaPoIzdavacu(id_izdavac).intValue();
+        model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+        return jsonTemplate;
     }
 
     //svi stripovi jednog zanra sa paginacijom - SEARCH BY GENRE funkcionalnost
     @GetMapping(value="/trazi-zanr")
-    public List<Strip> stripoviPoZanru(@Param("id_zanr") Long id_zanr, @Param("brojStranice") int brojStranice){
-       return stripService.stripoviPoZanru(id_zanr, brojStranice, brojStripovaNaStranici);
+    public String stripoviPoZanru(@Param("id_zanr") Long id_zanr, @Param("brojStranice") int brojStranice, Model model){
+        model.addAttribute("stripovi", stripService.stripoviPoZanru(id_zanr, brojStranice, brojStripovaNaStranici));
+        int brojStripova = stripService.brojStripovaPoZanru(id_zanr).intValue();
+        model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+        return jsonTemplate;
     }
 
     //svi stripovi sa odredjenim nazivom - SEARCH BY TITLE funkcionalnost
     @GetMapping(value="/trazi-naziv")
-    public List<Strip> stripoviPoNazivu(@Param("naziv") String naziv, @Param("brojStranice") int brojStranice){
-        return stripService.stripoviPoNazivu(naziv, brojStranice, brojStripovaNaStranici);
+    public String stripoviPoNazivu(@Param("naziv") String naziv, @Param("brojStranice") int brojStranice, Model model){
+        model.addAttribute("stripovi", stripService.stripoviPoNazivu(naziv, brojStranice, brojStripovaNaStranici));
+        int brojStripova = stripService.brojStripovaPoNazivu(naziv).intValue();
+        model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+        return jsonTemplate;
     }
 
     //svi stripovi ciji je id poslan kao request body
     @PostMapping(value="/sviPoId", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
+    public @ResponseBody List<Strip> stripoviPoId(@RequestBody StripIdList idStripova){
         return stripService.sviStripoviPoId(idStripova.getIdStripova());
     }
 
 
     @PutMapping(value="/ostavi-rating/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public void ostaviRating(@PathVariable Long id, @RequestBody OcjenaKomentarDTO ocjenaKomentarDTO,@RequestHeader Map<String,String> headers) throws JsonProcessingException {
+    public @ResponseBody void ostaviRating(@PathVariable Long id, @RequestBody OcjenaKomentarDTO ocjenaKomentarDTO,@RequestHeader Map<String,String> headers) throws JsonProcessingException {
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
         Strip strip=stripService.jedanStrip(id);
@@ -84,15 +101,14 @@ public class StripController {
 
     //pomocni endpointi
     @PostMapping(value="/noviStrip")
-    public Long dodajStrip(@RequestBody Strip strip){
+    public @ResponseBody Long dodajStrip(@RequestBody Strip strip){
         return stripService.dodajStrip(strip);
     }
 
     @GetMapping(value="/count")
-    public Long brojStripovaUBazi(){return stripService.brojStripovaUBazi();}
+    public @ResponseBody Long brojStripovaUBazi(){return stripService.brojStripovaUBazi();}
 
     @GetMapping(value="/brojNaStranici")
-    public int brojNaStranici(){return this.brojStripovaNaStranici;}
-
+    public @ResponseBody int brojNaStranici(){return this.brojStripovaNaStranici;}
 
 }

@@ -16,6 +16,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+import static java.lang.StrictMath.round;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -181,4 +182,19 @@ public class StripService {
 		throw new ApiRequestException("Strip sa id-jem " + id.toString() + " ne postoji.");
 	}
 
+	public Long brojStripovaPoZanru(Long idZanr){return stripRepository.countStripByIdZanr(idZanr);}
+	public Long brojStripovaPoIzdavacu(Long idIzdavac){return stripRepository.countStripByIdIzdavac(idIzdavac);}
+
+	public Long brojStripovaPoAutorIme(String ime, String prezime){
+        if(ime == null || prezime == null || ime.equals("") && prezime.equals("")) return 0L;
+        else if(ime.equals("")) return stripRepository.countStripByAutori_PrezimeContains(prezime);
+        else if(prezime.equals("")) return stripRepository.countStripByAutori_ImeContains(ime);
+        return stripRepository.countStripByAutori_ImeContainsAndAutori_PrezimeContains(ime, prezime);
+    }
+    public Long brojStripovaPoNazivu(String naziv){
+        return stripRepository.countStripByNazivContains(naziv);
+    }
+	public int brojStranica(int brojStripova, int brojNaStranici){
+        return (int) round((double)brojStripova/brojNaStranici + 0.5);
+    }
 }
