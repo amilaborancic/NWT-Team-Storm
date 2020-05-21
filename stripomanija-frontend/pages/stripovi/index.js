@@ -113,7 +113,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
 }
 
 const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage,
-                            setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults})=>{
+                            setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults, setSearchQuery})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
     //state update
@@ -125,21 +125,21 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                 {
                     searchValues.map((value, index) =>
                         <a className={cx("dropdown-item", styles.option)} key={value.id}
-                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage)}
+                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage, setNumberOfPages)}
                            style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
                         >{value.label}</a>)
                 }
             </div>
-            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage)}>Traži!</button>
+            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage)}>Traži!</button>
         </div>
     );
 }
 
-const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage})=>{
+const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage, setSearchQuery})=>{
     return(
         array.map(value=>
             <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
-                    onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setNumberOfPages, setSearchResults, currentPage)}>{value.naziv}</button>)
+                    onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setSearchQuery, setNumberOfPages, setSearchResults, currentPage)}>{value.naziv}</button>)
     );
 }
 
@@ -169,9 +169,10 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
 }
 
 //switch between different search types
-function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage){
+function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage, setNumberOfPages){
     setActiveSearchType(SEARCH_TYPES[activeSearchType]);
     setCurrentPage(0);
+    setNumberOfPages(null);
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
             const routeNaziv = routes.strip.pretraga.naziv;
@@ -211,10 +212,13 @@ function handleChangeInput(e, setSearchQuery){
 }
 
 //send request
-function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage){
+function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage){
     setIsSearchQueried(true);
     let queryParams = extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage);
     fetchComics(url, queryParams, setNumberOfPages, setSearchResults);
+    if(activeSearchType === SEARCH_TYPES.IZDAVAC || activeSearchType === SEARCH_TYPES.ZANR){
+        setSearchQuery(searchQuery);
+    }
 }
 
 /*     API CALLS        */
