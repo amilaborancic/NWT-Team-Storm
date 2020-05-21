@@ -71,8 +71,8 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
 		});
-
-		/*Korisnik k1 = new Korisnik((long) 1);
+*/
+		Korisnik k1 = new Korisnik((long) 1);
 		Korisnik k2 = new Korisnik((long) 2);
 		Korisnik k3 = new Korisnik((long) 3);
 		Korisnik k4 = new Korisnik((long) 4);
@@ -80,8 +80,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		korisnikRepozitorij.save(k2);
 		korisnikRepozitorij.save(k3);
 		korisnikRepozitorij.save(k4);
-*/
-/*
+
 		Strip s1 = new Strip((long) 1);
 		Strip s2 = new Strip((long) 2);
 		Strip s3 = new Strip((long) 3);
@@ -119,18 +118,26 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			i++;
 		}
 */
-/*
+
 		Korisnik korisnik = korisnikRepozitorij.findAll().get(1);
 		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(2);
 		Katalog kat1 = new Katalog("Prvi katalog", korisnik.getId());
 		Katalog kat2 = new Katalog("Drugi katalog", korisnik.getId());
-		Katalog kat3 = new Katalog("Dummy za brisanje", korisnik_2.getId());
+		Katalog kat3 = new Katalog("Treći katalog", korisnik_2.getId());
 		Katalog kat4 = new Katalog("Test", korisnik.getId());
+		Katalog kat5 = new Katalog("Pročitani stripovi", korisnik_2.getId());
+		Katalog kat6 = new Katalog("Želim pročitati", korisnik_2.getId());
+		Katalog kat7 = new Katalog("Pročitani stripovi", korisnik.getId());
+		Katalog kat8 = new Katalog("Želim pročitati", korisnik.getId());
 
 		katalogRepositorij.save(kat1);
 		katalogRepositorij.save(kat2);
 		katalogRepositorij.save(kat3);
 		katalogRepositorij.save(kat4);
+		katalogRepositorij.save(kat5);
+		katalogRepositorij.save(kat6);
+		katalogRepositorij.save(kat7);
+		katalogRepositorij.save(kat8);
 
 		//dodavanje stripova
 		List<Strip> stripovi = new ArrayList<>();
@@ -142,7 +149,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		stripovi.add(s6);
 		kat3.setStripovi(stripovi);
 
-		katalogRepositorij.save(kat3);*/
+		katalogRepositorij.save(kat3);
 	}
 
 }

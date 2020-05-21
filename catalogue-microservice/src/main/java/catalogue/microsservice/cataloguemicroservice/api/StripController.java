@@ -7,13 +7,16 @@ import catalogue.microsservice.cataloguemicroservice.service.StripService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import java.util.Collections;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/katalog")
+@CrossOrigin(origins = "http://localhost:3000")
 public class StripController {
 
     private int brojStripovaNaStranici = 5;
@@ -27,7 +30,7 @@ public class StripController {
 
     //stripovi u jednom katalogu sa paginacijom
     @GetMapping(value="/iz-kataloga/{id_katalog}")
-    public List<StripDTO> sviIzJednogKataloga(@PathVariable("id_katalog") Long id_katalog, @Param("brojStranice") int brojStranice){
+    public String sviIzJednogKataloga(@PathVariable("id_katalog") Long id_katalog, @Param("brojStranice") int brojStranice, Model model){
         //provjera postoji li katalog
         katalogService.getKatalog(id_katalog);
         List<Long> idjevi = stripService.sviIzJednogKataloga(id_katalog, brojStranice, brojStripovaNaStranici);
@@ -39,7 +42,11 @@ public class StripController {
         HttpEntity<StripIdsDTO> requestBody = new HttpEntity<>(stripovi, headers);
         //zovemo endpoint iz strip servisa
         ResponseEntity<List> listaStripova = restTemplate.exchange("http://comicbook-service/strip/sviPoId", HttpMethod.POST, requestBody, List.class);
-        return listaStripova.getBody();
+        model.addAttribute("stripovi", listaStripova.getBody());
+
+        int ukupnoStripova = stripService.ukupnoStripova(id_katalog).intValue();
+        model.addAttribute("ukupnoStranica", stripService.brojStranica(ukupnoStripova, brojStripovaNaStranici));
+        return "jsonTemplate";
     }
 
 

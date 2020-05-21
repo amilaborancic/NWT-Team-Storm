@@ -38,7 +38,19 @@ export const routes = {
     },
     katalozi: {
         label: "katalozi",
-        path: `${catalogue}/svi`
+        path: "/katalog",
+        svi:{
+            label:"svi",
+            path:"/svi"
+        },
+        jedan:{
+            label: "jedan katalog",
+            path: "/jedan"
+        },
+        iz_kataloga: {
+            label: "stripovi u katalogu",
+            path: "/iz-kataloga"
+        }
     },
     strip:{
         label:"stripovi",

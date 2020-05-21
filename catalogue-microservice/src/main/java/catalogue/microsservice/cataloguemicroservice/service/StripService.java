@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.StrictMath.round;
+
 @Service
 public class StripService {
     @Autowired
@@ -34,6 +36,14 @@ public class StripService {
 
     public boolean postojiUKatalogu(Long id_strip, Long id_katalog) {
         return stripRepozitorij.existsByIdStripAndKatalozi_Id(id_strip, id_katalog);
+    }
+
+    public Long ukupnoStripova(Long idKatalog){
+        return stripRepozitorij.countStripByKatalozi_Id(idKatalog);
+    }
+
+    public int brojStranica(int brojStripova, int brojNaStranici){
+        return (int) round((double)brojStripova/brojNaStranici + 0.5);
     }
 
 }

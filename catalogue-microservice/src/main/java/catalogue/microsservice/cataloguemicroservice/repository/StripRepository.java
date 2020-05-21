@@ -11,4 +11,5 @@ public interface StripRepository extends JpaRepository<Strip, Long> {
     List<Strip> findByKatalozi_Id(Long id, Pageable pageable);
     Long countAllByKatalozi_Id(Long id);
     boolean existsByIdStripAndKatalozi_Id(Long id_strip, Long id_katalog);
+    Long countStripByKatalozi_Id(Long id);
 }

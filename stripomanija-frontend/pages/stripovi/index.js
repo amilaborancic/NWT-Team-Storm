@@ -145,14 +145,14 @@ const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried
 
 const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried, setSearchResults, searchQuery})=>{
     return(
-        <div className={cx("d-flex w-100 flex-column justify-content-center")}>
+        <div className="d-flex w-100 flex-column justify-content-center">
             <h1 className={styles.title}>Rezultati pretrage</h1>
             <div className="d-flex w-100 mt-4 justify-content-center align-items-start">
                 {searchResults.map(comic=>{
                     let izdanje = "";
                     if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                     return(
-                        <div className={cx("d-flex mx-5")} key={comic.id}>
+                        <div className="d-flex mx-5" key={comic.id}>
                             <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
                         </div>
                     )
