@@ -81,6 +81,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                 setSearchQuery={setSearchQuery}
                 setNumberOfPages={setNumberOfPages}
                 setSearchResults={setSearchResults}
+                setCurrentPage={setCurrentPage}
             />
             <div className="d-flex w-100 justify-content-center mt-2">
                 {isSearchDisabled &&
@@ -92,6 +93,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                     activeSearchType={activeSearchType}
                     setNumberOfPages={setNumberOfPages}
                     setSearchResults={setSearchResults}
+                    currentPage={currentPage}
                 /> }
             </div>
             {isSearchQueried && numberOfPages &&
@@ -110,8 +112,8 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
         </form>);
 }
 
-const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setIsSearchDisabled, setUrl, url,
-                            setParams, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults})=>{
+const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage,
+                            setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
     //state update
@@ -123,7 +125,7 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                 {
                     searchValues.map((value, index) =>
                         <a className={cx("dropdown-item", styles.option)} key={value.id}
-                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl)}
+                           onClick={()=>changeActiveSearchType(searchKeys[index], setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage)}
                            style={{ backgroundColor: activeSearchType && activeSearchType.label === value.label && "orange"}}
                         >{value.label}</a>)
                 }
@@ -133,9 +135,43 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
     );
 }
 
+const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage})=>{
+    return(
+        array.map(value=>
+            <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
+                    onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setNumberOfPages, setSearchResults, currentPage)}>{value.naziv}</button>)
+    );
+}
+
+const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried, setSearchResults, searchQuery})=>{
+    return(
+        <div className={cx("d-flex w-100 flex-column justify-content-center")}>
+            <h1 className={styles.title}>Rezultati pretrage</h1>
+            <div className="d-flex w-100 mt-4 justify-content-center align-items-start">
+                {searchResults.map(comic=>{
+                    let izdanje = "";
+                    if(comic.izdanje) izdanje = `#${comic.izdanje}`;
+                    return(
+                        <div className={cx("d-flex mx-5")} key={comic.id}>
+                            <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
+                        </div>
+                    )
+                })}
+            </div>
+            <div className="d-flex fixed-bottom justify-content-center">
+                <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} numberOfPages={numberOfPages} url={url}
+                            params={extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage)}
+                            setSearchResults={setSearchResults}
+                />
+            </div>
+        </div>
+    );
+}
+
 //switch between different search types
-function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl){
+function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage){
     setActiveSearchType(SEARCH_TYPES[activeSearchType]);
+    setCurrentPage(0);
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
             const routeNaziv = routes.strip.pretraga.naziv;
@@ -152,6 +188,7 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
         case SEARCH_TYPES.AUTOR:
             const routeAutor = routes.strip.pretraga.autor;
             setUrl(comicsUrl + routes.strip.path + routeAutor.path);
+            setIsSearchDisabled(false);
             break;
 
         case SEARCH_TYPES.ZANR:
@@ -168,13 +205,45 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
     }
 }
 
+//onChange event
 function handleChangeInput(e, setSearchQuery){
     setSearchQuery(e.target.value);
 }
 
-//format params and send request
+//send request
 function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage){
     setIsSearchQueried(true);
+    let queryParams = extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage);
+    fetchComics(url, queryParams, setNumberOfPages, setSearchResults);
+}
+
+/*     API CALLS        */
+
+function fetchGenreOrPublisher(url, setArray){
+    const colors = ["success", "info", "danger", "warning"];
+    axios.get(url).then(res=>{
+        let genreArray = res.data;
+        genreArray.map((item, index)=>{
+            item.boja = colors[index % colors.length];
+        });
+        setArray(genreArray);
+    }).catch(error=>{
+        console.log(error);
+    });
+}
+
+function fetchComics(url, params, setNumberOfPages, setSearchResults){
+    axios.get(url, {
+        params: params
+    }).then(res=>{
+        setNumberOfPages(res.data.brojStranica);
+        setSearchResults(res.data.stripovi);
+    }).catch(err=>{
+        console.log(err);
+    });
+}
+
+function extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage){
     let queryParams = null;
     if(activeSearchType === SEARCH_TYPES.AUTOR){
         const nameSurname = searchQuery.split(" ");
@@ -216,65 +285,7 @@ function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, se
             brojStranice: currentPage
         }
     }
-    fetchComics(url, queryParams, setNumberOfPages, setSearchResults);
-
-}
-
-const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults})=>{
-    return(
-        array.map(value=> <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
-                                  onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setNumberOfPages, setSearchResults)}>{value.naziv}</button>)
-    );
-}
-
-const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried, setSearchResults, searchQuery})=>{
-    return(
-        <div className="d-flex w-100 flex-column justify-content-center">
-            <h1 className={styles.title}>Rezultati pretrage</h1>
-            <div className="d-flex w-100 mt-4 justify-content-center align-items-start">
-                {searchResults.map(comic=>{
-                    let izdanje = "";
-                    if(comic.izdanje) izdanje = `#${comic.izdanje}`;
-                    return(
-                        <div className="d-flex mx-5" key={comic.id}>
-                            <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
-                        </div>
-                    )
-                })}
-            </div>
-            <div className="d-flex fixed-bottom justify-content-center">
-                <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} numberOfPages={numberOfPages}
-                            onPageChange={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage)}/>
-            </div>
-        </div>
-    );
-}
-
-
-/*     API CALLS        */
-
-function fetchGenreOrPublisher(url, setArray){
-    const colors = ["success", "info", "danger", "warning"];
-    axios.get(url).then(res=>{
-        let genreArray = res.data;
-        genreArray.map((item, index)=>{
-            item.boja = colors[index % colors.length];
-        });
-        setArray(genreArray);
-    }).catch(error=>{
-        console.log(error);
-    });
-}
-
-function fetchComics(url, params, setNumberOfPages, setSearchResults){
-    axios.get(url, {
-        params: params
-    }).then(res=>{
-        setNumberOfPages(res.data.brojStranica);
-        setSearchResults(res.data.stripovi);
-    }).catch(err=>{
-        console.log(err);
-    });
+    return queryParams;
 }
 
 
