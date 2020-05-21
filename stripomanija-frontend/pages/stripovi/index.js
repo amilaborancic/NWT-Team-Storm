@@ -153,7 +153,9 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
                     if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                     return(
                         <div className="d-flex mx-5" key={comic.id}>
-                            <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
+                            <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`}>
+                                <AddToCatalogueButton  />
+                            </StripThumbnail>
                         </div>
                     )
                 })}
@@ -167,6 +169,13 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
         </div>
     );
 }
+
+const AddToCatalogueButton = ({onClick})=>{
+    return(
+        <button type="button" className={cx("btn btn-info btn-lg btn-block", styles.addToCatButton)} onClick={onClick}>Dodaj u katalog</button>
+    );
+}
+
 
 //switch between different search types
 function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage, setNumberOfPages){

@@ -41,3 +41,6 @@
     cursor: pointer;
 }
 
+.addToCatButton{
+    font-size: 16px !important;
+}

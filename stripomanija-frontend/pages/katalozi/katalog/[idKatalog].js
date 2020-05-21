@@ -53,7 +53,7 @@ const CatalogueBody = ({comicList})=>{
                 if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                 return(
                     <div className="d-flex mx-5" key={comic.id}>
-                        <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
+                        <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} />
                     </div>
                 )
             })}
