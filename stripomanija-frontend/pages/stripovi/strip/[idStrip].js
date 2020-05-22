@@ -17,8 +17,7 @@ class StripDetails extends Component{
             //umjesto 1 ce bit id poslan 
             axios.get('http://localhost:8083/strip?id_strip=1'),
             axios.get('http://localhost:8083/strip/autori/1')
-        ])
-            .then(([comicResponse, autoriResponse]) => {
+        ]).then(([comicResponse, autoriResponse]) => {
                 this.setState({comic : comicResponse.data, autori : autoriResponse.data});
             });
     }
@@ -38,7 +37,9 @@ class StripDetails extends Component{
                             <div className="border md-5 h-200">
                                 <h1 className={styles.comicTitle}>{this.state.comic.naziv}</h1>
                                 <h3 className={styles.comicEpisode}>#{this.state.comic.izdanje}</h3>
-                                <p>By: {this.state.autori.map(autor=><span className="font-weight-bold" key={autor.id}>{autor.ime}, {autor.prezime}</span>)}
+                                <p>By:{" "}
+                                    {this.state.autori.map((autor, index)=>
+                                        <span className="font-weight-bold" key={autor.id}>{autor.ime} {autor.prezime}{index === this.state.autori.length - 1 ? "" : ", "}</span>)}
                                 </p>
                                 <p className={styles.comicRating}>Ukupni rating: {this.state.comic.ukupniRating}</p>
                                 <p className={styles.comicDescription}>{this.state.comic.opis}</p>
