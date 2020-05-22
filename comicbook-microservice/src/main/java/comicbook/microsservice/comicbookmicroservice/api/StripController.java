@@ -5,6 +5,7 @@ import comicbook.microsservice.comicbookmicroservice.DTO.OcjenaKomentarDTO;
 import comicbook.microsservice.comicbookmicroservice.DTO.RatingDTO;
 import comicbook.microsservice.comicbookmicroservice.DTO.StripIdList;
 import comicbook.microsservice.comicbookmicroservice.RabbitMQ.RabbitMQProducer;
+import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.service.StripService;
 import comicbook.microsservice.comicbookmicroservice.util.JwtUtil;

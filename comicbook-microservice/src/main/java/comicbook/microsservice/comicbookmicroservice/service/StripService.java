@@ -4,6 +4,7 @@ import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.grpc.EventSubmission;
 import comicbook.microsservice.comicbookmicroservice.grpc.Events;
+import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.AutorRepository;
 import comicbook.microsservice.comicbookmicroservice.repository.IzdavacRepository;
