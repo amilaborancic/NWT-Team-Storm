@@ -106,6 +106,11 @@ public class StripController {
         return stripService.dodajStrip(strip);
     }
 
+   @GetMapping(value = "/autori/{id}")
+    public @ResponseBody List<Autor> autoriStripa(@PathVariable Long id){
+        return stripService.autoriStripa(id);
+    }
+
     @GetMapping(value="/count")
     public @ResponseBody Long brojStripovaUBazi(){return stripService.brojStripovaUBazi();}
 
