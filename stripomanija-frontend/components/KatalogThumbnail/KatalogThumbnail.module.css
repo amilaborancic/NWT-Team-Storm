@@ -1,7 +1,4 @@
 .container {
-    width: 150px !important;
-    height: 200px !important;
-    background-color: var(--dark-gray-02) !important;
     -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
 }
 .container:hover{
@@ -11,4 +8,10 @@
 
 .container::after{
     -webkit-transition: all 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+}
+
+.wrapper{
+    width: 150px !important;
+    height: 200px !important;
+    background-color: var(--dark-gray-02) !important;
 }

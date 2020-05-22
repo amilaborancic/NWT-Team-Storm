@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface KatalogRepository extends JpaRepository<Katalog, Long> {
-    List<Katalog> findByIdKorisnik(Long id, Pageable pageable); //svi katalozi za jednog usera
+    List<Katalog> findByIdKorisnik(Long id); //svi katalozi za jednog usera
 }

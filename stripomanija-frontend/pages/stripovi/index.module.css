@@ -44,3 +44,7 @@
 .addToCatButton{
     font-size: 16px !important;
 }
+
+.thumbnailContainer{
+    height: 400px;
+}

@@ -29,12 +29,11 @@ public class KatalogService {
     private Long idAdmin = 1000L;
     private Long idLogovanogKorisnika = 500L;
 
-    public List<Katalog> sviKatalozi(Long id_korisnik, int brojStranice, int brojKatalogaNaStranici){
+    public List<Katalog> sviKatalozi(Long id_korisnik){
         //provjera na korisnika
         korisnikService.jedanKorisnik(id_korisnik);
-        int brStr = brojStranice + 1;
-        eventSubmission.submitEvent(id_korisnik, Events.ActionType.GET, "Svi katalozi jednog usera, stranica " + brStr);
-        return katalogRepository.findByIdKorisnik(id_korisnik, PageRequest.of(brojStranice, brojKatalogaNaStranici));
+        eventSubmission.submitEvent(id_korisnik, Events.ActionType.GET, "Svi katalozi jednog usera");
+        return katalogRepository.findByIdKorisnik(id_korisnik);
     }
 
     public Long kreirajKatalog(Katalog katalog){

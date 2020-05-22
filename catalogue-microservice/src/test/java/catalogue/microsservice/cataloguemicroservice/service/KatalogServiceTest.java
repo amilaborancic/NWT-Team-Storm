@@ -28,11 +28,11 @@ class KatalogServiceTest {
     @Test
     void sviKatalozi() {
         //sve okej
-        assertThat(katalogService.sviKatalozi((long) 1, 0, 5)).size().isEqualTo(3);
+        assertThat(katalogService.sviKatalozi((long) 1)).size().isEqualTo(3);
         //nepostojeci korisnik
         ApiRequestException nemaUsera = assertThrows(
                 ApiRequestException.class,
-                ()->katalogService.sviKatalozi((long)123, 0, 5),
+                ()->katalogService.sviKatalozi((long)123),
                 "Trebalo bi baciti"
         );
         assertThat(nemaUsera.getMessage().contains("ne postoji"));

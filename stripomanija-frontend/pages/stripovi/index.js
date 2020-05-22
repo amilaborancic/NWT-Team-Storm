@@ -2,12 +2,14 @@ import React, {useEffect, useState} from "react";
 import styles from "./index.module.css";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import cx from "classnames";
-import {comicsUrl} from "../../util/url";
+import {catalogueUrl, comicsUrl} from "../../util/url";
 import {routes} from "../../util/routes";
 import axios from "axios";
 import Pagination from "../../components/Pagination/Pagination";
 import {SEARCH_TYPES} from "../../util/searchTypes";
 import StripThumbnail from "../../components/StripThumbnail/StripThumbnail";
+import GenericModal from "../../components/GenericModal/GenericModal";
+import CatalogueList from "../../components/CatalogueList/CatalogueList";
 
 const Stripovi = ()=>{
     const [activeSearchType, setActiveSearchType] = useState(null);
@@ -16,31 +18,50 @@ const Stripovi = ()=>{
     const [url, setUrl] = useState("");
     const [params, setParams] = useState([]);
     const [isSearchDisabled, setIsSearchDisabled] = useState(false);
+    const [isAddToCatalogueModalOpen, setIsAddToCatalogueModalOpen] = useState(false);
+    const [catalogueList, setCatalogueList] = useState(null);
+
+    //USER SE VADI IZ TOKENA!
+    const [userId, setUserId] = useState(3);
 
     return(
-        <NavbarContainer>
-            <div className={styles.wrapper}>
-                <CustomSearchBar
-                    setActiveSearchType={setActiveSearchType}
-                    isDropDownOpen={isDropDownOpen}
-                    setIsDropDownOpen={setIsDropDownOpen}
-                    isSearchDisabled={isSearchDisabled}
-                    setIsSearchDisabled={setIsSearchDisabled}
-                    activeSearchType={activeSearchType}
-                    url={url}
-                    setUrl={setUrl}
-                    setSearchQuery={setSearchQuery}
-                    searchQuery={searchQuery}
-                    setParams={setParams}
-                    params={params}
-                />
-            </div>
-        </NavbarContainer>);
+        <>
+            {isAddToCatalogueModalOpen &&
+            <GenericModal modalTitle={"Dodaj u katalog"}
+                          btnText={"Dodaj"}
+                          showModal={()=>setIsAddToCatalogueModalOpen(true)}
+                          closeModal={()=>setIsAddToCatalogueModalOpen(false)}>
+
+                <CatalogueList catalogueList={catalogueList} />
+            </GenericModal>}
+            <NavbarContainer>
+                <div className={styles.wrapper}>
+                    <CustomSearchBar
+                        setActiveSearchType={setActiveSearchType}
+                        isDropDownOpen={isDropDownOpen}
+                        setIsDropDownOpen={setIsDropDownOpen}
+                        isSearchDisabled={isSearchDisabled}
+                        setIsSearchDisabled={setIsSearchDisabled}
+                        activeSearchType={activeSearchType}
+                        url={url}
+                        setUrl={setUrl}
+                        setSearchQuery={setSearchQuery}
+                        searchQuery={searchQuery}
+                        setParams={setParams}
+                        params={params}
+                        setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
+                        setCatalogueList={setCatalogueList}
+                        userId={userId}
+                    />
+                </div>
+            </NavbarContainer>
+        </>
+    );
 }
 
 
-const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled,
-                             isSearchDisabled, url, setUrl, params, setParams, searchQuery, setSearchQuery})=>{
+const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled, userId, setCatalogueList,
+                             isSearchDisabled, url, setUrl, params, setParams, searchQuery, setSearchQuery, setIsAddToCatalogueModalOpen})=>{
 
     const [isSearchQueried, setIsSearchQueried] = useState(false);
     const [numberOfPages, setNumberOfPages] = useState(null);
@@ -108,6 +129,9 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                 searchQuery={searchQuery}
                 setNumberOfPages={setNumberOfPages}
                 setSearchResults={setSearchResults}
+                setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
+                userId={userId}
+                setCatalogueList={setCatalogueList}
             />}
         </form>);
 }
@@ -143,7 +167,8 @@ const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried
     );
 }
 
-const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried, setSearchResults, searchQuery})=>{
+const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried,
+                           setSearchResults, searchQuery,setIsAddToCatalogueModalOpen, userId, setCatalogueList})=>{
     return(
         <div className="d-flex w-100 flex-column justify-content-center">
             <h1 className={styles.title}>Rezultati pretrage</h1>
@@ -152,10 +177,9 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
                     let izdanje = "";
                     if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                     return(
-                        <div className="d-flex mx-5" key={comic.id}>
-                            <StripThumbnail image={comic.slika} title={`${comic.naziv} ${izdanje}`}>
-                                <AddToCatalogueButton  />
-                            </StripThumbnail>
+                        <div className={cx("d-flex mx-5 flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
+                            <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`}/>
+                            <AddToCatalogueButton onClick={()=>setIsAddToCatalogueModalOpen(true)} />
                         </div>
                     )
                 })}
@@ -170,9 +194,15 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
     );
 }
 
+function catalogueModalActions(setIsAddToCatalogueModalOpen, userId, setCatalogueList){
+    setIsAddToCatalogueModalOpen(true);
+    //PRIVREMENO
+    //fetchCatalogues(catalogueUrl + routes.katalozi.path + routes.katalozi.svi.path, {id_korisnik: userId}, setCatalogueList);
+}
+
 const AddToCatalogueButton = ({onClick})=>{
     return(
-        <button type="button" className={cx("btn btn-info btn-lg btn-block", styles.addToCatButton)} onClick={onClick}>Dodaj u katalog</button>
+        <button type="button" className={cx("btn btn-info btn-lg btn-block mt-4", styles.addToCatButton)} onClick={onClick}>Dodaj u katalog</button>
     );
 }
 
@@ -256,6 +286,7 @@ function fetchComics(url, params, setNumberOfPages, setSearchResults){
     });
 }
 
+//get params based on seach type
 function extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage){
     let queryParams = null;
     if(activeSearchType === SEARCH_TYPES.AUTOR){

@@ -11,7 +11,7 @@ const Katalozi = ()=>{
             <div className={styles.wrapper}>
                 {listaKataloga.map(katalog=>
                     <div className={styles.katalog} key={katalog.id}>
-                        <KatalogThumbnail title={katalog.naziv} id={katalog.id}/>
+                        <KatalogThumbnail animated title={katalog.naziv} id={katalog.id}/>
                     </div>
                 )}
             </div>

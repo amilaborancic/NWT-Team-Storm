@@ -37,8 +37,8 @@ public class KatalogController {
 
     //svi katalozi za jednog usera sa paginacijom
     @GetMapping(value="/svi")
-    public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik, @Param("brojStranice") int brojStranice){
-        return katalogService.sviKatalozi(id_korisnik, brojStranice, brojKatalogaNaStranici);
+    public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik){
+        return katalogService.sviKatalozi(id_korisnik);
     }
 
     //kreiranje kataloga za nekog usera
