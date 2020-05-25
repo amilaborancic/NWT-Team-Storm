@@ -35,9 +35,14 @@ public class KatalogController {
     @Autowired
     RestTemplate restTemplate;
 
-    //svi katalozi za jednog usera sa paginacijom
+    //svi katalozi za jednog usera
     @GetMapping(value="/svi")
-    public List<Katalog> sviKatalozi(@Param("id_korisnik") Long id_korisnik){
+    public List<Katalog> sviKatalozi(@RequestHeader Map<String,String> headers){
+        String token = headers.get("authorization").substring(7);
+        String username = jwt.extractUsername(token);
+        //pronadjemo usera
+        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/" + username, UserAuthDTO.class);
+        Long id_korisnik = res.getBody().getId();
         return katalogService.sviKatalozi(id_korisnik);
     }
 
@@ -81,6 +86,7 @@ public class KatalogController {
         katalogService.dodajStripUKatalog(id_strip, id_katalog);
         return "Strip je uspješno dodan u katalog!";
     }
+
 
     //jedan katalog
     @GetMapping(value="/jedan")

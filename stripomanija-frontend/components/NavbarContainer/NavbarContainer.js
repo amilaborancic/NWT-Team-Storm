@@ -3,7 +3,6 @@ import styles from "./NavbarContainer.module.css";
 import cx from "classnames";
 import { useRouter } from 'next/router';
 import {navbarRoutes} from "../../util/routes";
-import axios from "axios";
 
 const NavbarContainer = ({children})=>{
     const router = useRouter();
@@ -26,7 +25,7 @@ const NavbarContainer = ({children})=>{
                         )}
                     </ul>
                 </div>
-                <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} />
+                <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} router={router}/>
             </nav>
             {children}
         </div>
@@ -34,27 +33,22 @@ const NavbarContainer = ({children})=>{
 }
 
 
-const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked})=>{
+const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked, router})=>{
     return(
         <div className={styles.dropdownContainer}>
             <a className={cx("nav-link dropdown-toggle show")} role="button"
                onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>Opcije</a>
             <div className={cx("dropdown-menu", styles.customDropdown, {"show":isDropDownClicked})}>
-                <a className={cx("dropdown-item")} >Odjava</a>
+                <a className={cx("dropdown-item")} onClick={()=>logOut(router)}>Odjava</a>
             </div>
         </div>
     );
 }
 
-const Dummy = ({setIsDropDownClicked,isDropDownClicked})=>{
-    return(
-        <div className={styles.dropdownContainer}>
-            <button type="button" className={cx("btn dropdown-toggle ml-0")}/>
-            <div className={cx("dropdown-menu", {"show": isDropDownClicked}, styles.customDropdown)}>
-                <a className={cx("dropdown-item")} onClick={()=>handleDropDownClick(setIsDropDownClicked, isDropDownClicked)}>fdffff</a>)
-            </div>
-        </div>
-    );
+function logOut(router){
+    localStorage.removeItem("jwt");
+    //navigate to homepage
+    router.push(navbarRoutes.home.path);
 }
 
 const handleDropDownClick = (setIsDropDownClicked, isDropDownClicked)=>{

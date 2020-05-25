@@ -3,10 +3,10 @@
     height: 100vh;
 }
 
-
 .customDropdown {
     position: absolute;
     transform: translate(-60px, 0);
+    cursor: pointer;
 }
 
 .dropdownContainer{
