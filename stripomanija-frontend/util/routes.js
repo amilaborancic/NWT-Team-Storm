@@ -50,6 +50,10 @@ export const routes = {
         iz_kataloga: {
             label: "stripovi u katalogu",
             path: "/iz-kataloga"
+        },
+        novi: {
+            label: "novi katalog",
+            path: "/novi"
         }
     },
     strip:{

@@ -2,12 +2,12 @@ import React, {useEffect, useState} from "react";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import styles from "./index.module.css";
 import KatalogThumbnail from "../../components/KatalogThumbnail/KatalogThumbnail";
-import axios from "axios";
 import {authenticatedApi} from "../../util/url";
 import {routes} from "../../util/routes";
+import {useRouter} from "next/router";
 
 const Katalozi = ()=>{
-    const listaKataloga = [{id:1, naziv:"Captain America"}, {id:2, naziv:"Procitani stripovi"}, {id:3, naziv: "Želim procitati"}];
+    const router = useRouter();
     const [catalogueList, setCatalogueList] = useState(null);
     useEffect(()=>{
         fetchCatalogueList(setCatalogueList);
@@ -34,5 +34,6 @@ function fetchCatalogueList(setCatalogueList){
             console.log(err);
         });
 }
+
 
 export default Katalozi;

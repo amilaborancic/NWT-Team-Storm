@@ -48,19 +48,21 @@ public class KatalogController {
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
-    public Long kreirajKatalog(@RequestBody Katalog katalog, @RequestHeader Map<String,String> headers){
-        //provjera na vlasnika
+    public Katalog kreirajKatalog(@RequestBody Katalog katalog, @RequestHeader Map<String,String> headers){
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
-        Long id_user = katalog.getIdKorisnik();
+        UserAuthDTO user = null;
         if(!isUserAdmin(username)){
-            ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id_user, UserAuthDTO.class);
+            ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/" + username, UserAuthDTO.class);
             if(res.getBody() == null || !res.getBody().getUsername().equals(username)) throw new ApiUnauthorizedException("Nemate privilegiju da kreirate ovaj katalog!");
+            user = res.getBody();
         }
 
-        katalogService.kreirajKatalog(katalog);
-        restTemplate.put("http://catalogue-service/korisnik/update", katalog);
-        return katalog.getId();
+        Katalog novi = new Katalog(katalog.getNaziv(), user.getId());
+        katalogService.kreirajKatalog(novi);
+        restTemplate.put("http://catalogue-service/korisnik/update", novi);
+
+        return novi;
     }
 
     //kreiranje kataloga za nekog usera
