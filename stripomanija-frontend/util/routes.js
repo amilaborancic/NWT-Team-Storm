@@ -102,6 +102,14 @@ export const routes = {
             path: "/svi"
         }
     },
+    autor:{
+        label: "autori",
+        path: "/autor",
+        svi: {
+            path: "/svi",
+            label: "svi autori"
+        }
+    },
     adminPanel:{
         label: "Admin panel",
         path: "/admin"

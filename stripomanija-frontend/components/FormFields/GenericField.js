@@ -5,7 +5,7 @@ const GenericField = ({type, id, label, placeholder, onChange, name, isInvalid, 
     return(
         <div className="form-group">
             <label>{label}</label>
-            <input type={type} className={cx("form-control", {"is-invalid":isInvalid})} id={id} placeholder={placeholder} onChange={onChange} name={name}/>
+            <input type={type} min={0} className={cx("form-control", {"is-invalid":isInvalid})} id={id} placeholder={placeholder} onChange={onChange} name={name}/>
             <div className="col">
                 <small id={`${id}validation`} className="text-danger">
                     {validationMsg}
