@@ -47,6 +47,7 @@ const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked, router})=>{
 
 function logOut(router){
     localStorage.removeItem("jwt");
+    localStorage.removeItem("role");
     //navigate to homepage
     router.push(navbarRoutes.home.path);
 }

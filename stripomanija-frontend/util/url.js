@@ -12,7 +12,7 @@ const authenticatedApi = axios.create({
     baseURL: "http://localhost:8086"
 });
 
-authenticatedApi.interceptors.request.use(function(config){
+authenticatedApi.interceptors.request.use(function(config){g
     config.headers.Authorization = `Bearer ${localStorage.getItem("jwt")}`;
     return config;
 });

@@ -105,15 +105,23 @@ function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
         .then(response=>{
             // save token to local storage
             localStorage.setItem("jwt", response.data.jwt);
+            localStorage.setItem("role", response.data.role);
             setValidationMsg(null);
             setIsInvalid(false);
-            Router.push(navbarRoutes.katalozi.path);
+            //check role
+            if(response.data.role === "ROLE_ADMIN") Router.push(routes.adminPanel.path);
+            else Router.push(navbarRoutes.katalozi.path);
         }).catch(error=>{
-        if(error.response.status === 400){
-            //validacija
-            setIsInvalid(true);
-            setValidationMsg(error.response.data.message);
-        }
+            try{
+                if(error.response.status === 400){
+                    //validacija
+                    setIsInvalid(true);
+                    setValidationMsg(error.response.data.message);
+                }
+            }
+            catch(error){}
+            console.log(error);
+
     });
 }
 

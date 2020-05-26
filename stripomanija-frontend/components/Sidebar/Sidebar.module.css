@@ -1,0 +1,11 @@
+.container{
+    width: 250px;
+    background-color: var(--primary);
+    height: 100vh;
+}
+
+.wrapper{
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+}

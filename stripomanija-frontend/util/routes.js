@@ -101,5 +101,24 @@ export const routes = {
             label: "svi izdavaci",
             path: "/svi"
         }
+    },
+    adminPanel:{
+        label: "Admin panel",
+        path: "/admin"
+    }
+}
+
+export const adminPanelRoutes = {
+    stripovi: {
+        label: "Stripovi",
+        path: "/admin/stripovi"
+    },
+    izdavaci: {
+        label: "Izdavači",
+        path: "/admin/izdavaci"
+    },
+    zanrovi: {
+        label: "Žanrovi",
+        path: "/admin/zanrovi"
     }
 }
