@@ -23,4 +23,5 @@ public class StripKontroler {
 		return stripServis.getOne(id);
 	}
 
+
 }
