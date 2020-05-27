@@ -30,7 +30,7 @@ const Stripovi = ()=>{
                     <h1>Stripovi</h1>
                     <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
                 </div>
-                <div className="d-flex justify-content-around align-items-center mt-5">
+                <div className="d-flex justify-content-around mt-5">
                     {stripList && stripList.map(item=>
                         <div className="mx-2"  key={item.id}>
                             <StripThumbnail image={item.slika} title={item.naziv} animated/>
@@ -50,7 +50,8 @@ const Stripovi = ()=>{
 const NewComicModal = ({isOpen, setIsOpen})=>{
     const [publisherList, setPublisherList] = useState(null);
     const [genreList, setGenreList] = useState(null);
-    const [authorList, setAuthorList] = useState([{id:1, ime: "ami", prezime: "seef"}, {id: 2, ime:"slkm", prezime:"FDN"}]);
+    const [authorList, setAuthorList] = useState([]);
+    const [checkedAuthors, setCheckedAuthors] = useState([]);
     const [newComic, setNewComic] = useState({
         naziv: "",
         opis: "",
@@ -58,7 +59,9 @@ const NewComicModal = ({isOpen, setIsOpen})=>{
         izdanje: null,
         idIzdavac: null,
         idZanr: null,
-        autori: []
+        autori: [],
+        ukupniRating: 1,
+        ukupnoKomentara: 0
     });
 
     useEffect(()=>{
@@ -82,15 +85,15 @@ const NewComicModal = ({isOpen, setIsOpen})=>{
             </div>
             <GenericField type={"number"} placeholder={"Broj izdanja stripa. Za standalone strip ovo polje ostaje prazno."} name={"izdanje"} label={"Izdanje"}
                           onChange={(e)=>handleFieldChange(e, newComic, setNewComic)} />
-            <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"} newComic={newComic} setNewComic={setNewComic}/>
-            <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"} newComic={newComic} setNewComic={setNewComic}/>
-            <CustomCheckboxGroup authorList={authorList} setAuthorList={setAuthorList}/>
+            <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"} newComic={newComic} setNewComic={setNewComic} />
+            <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"} newComic={newComic} setNewComic={setNewComic}  />
+            <CustomCheckboxGroup authorList={authorList} setAuthorList={setAuthorList} checkedAuthors={checkedAuthors} setCheckedAuthors={setCheckedAuthors}/>
+            <button type="button" className="btn btn-danger" onClick={()=>addNewComic(newComic, setNewComic, checkedAuthors, authorList)}>Dodaj strip</button>
         </GenericModal>
     );
 }
 
-const CustomCheckboxGroup = ({authorList, setAuthorList})=>{
-    const [checkedAuthors, setCheckedAuthors] = useState(authorList.map(author=>author.checked));
+const CustomCheckboxGroup = ({authorList, setAuthorList, checkedAuthors, setCheckedAuthors})=>{
 
     return(
         <>
@@ -115,6 +118,13 @@ const CustomCheckboxGroup = ({authorList, setAuthorList})=>{
 }
 
 const CustomSelect = ({title, itemList, name, newComic, setNewComic})=>{
+    useEffect(()=>{
+        setNewComic(prevState=>({
+                ...prevState,
+                [name]: itemList[0].id
+            })
+        )
+    }, [])
     return(
         <div className="form-group">
             <label>{title}</label>
@@ -132,6 +142,22 @@ function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList, c
     let tempArray = checkedAuthors;
     tempArray[index] = !tempArray[index];
     setCheckedAuthors(tempArray);
+}
+
+//send new comic request
+function addNewComic(newComic, setNewComic, checkedAuthors, authorList){
+    //set authors first
+    let comicInformation = newComic;
+    authorList.map((author, index)=>{if(checkedAuthors[index]) comicInformation.autori.push(author)});
+    setNewComic(comicInformation);
+    //send request
+    authenticatedApi.post(routes.strip.path + routes.strip.novi.path, newComic)
+        .then(res=>{
+            console.log(res);
+        })
+        .catch(err=>{
+            console.log(err);
+        });
 }
 
 //fetch genre and publishers

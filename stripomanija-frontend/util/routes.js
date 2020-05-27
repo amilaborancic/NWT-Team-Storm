@@ -80,6 +80,10 @@ export const routes = {
                 path: "/trazi-izdavac",
                 params: ["brojStranice", "id_izdavac"]
             }
+        },
+        novi: {
+            path: "/noviStrip",
+            label: "novi strip"
         }
     },
     zanr: {
