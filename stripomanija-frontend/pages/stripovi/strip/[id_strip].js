@@ -84,9 +84,7 @@ function fetchComicDetails(idStrip, setComic){
 function fetchComicReviews(stripId, setCommentList){
     authenticatedApi.get(routes.rating.path + routes.rating.komentari.path + stripId)
         .then(res=>{
-            console.log(res.data);
             let commentList = Object.entries(res.data);
-            console.log(commentList)
             setCommentList(Object.entries(res.data));
         })
         .catch(err=>{

@@ -1,6 +1,4 @@
 import React from "react";
-import styles from "./Comment.module.css";
-import {user} from "../../util/url";
 
 const Comment = ({username, commentBody})=>{
     return(
@@ -15,5 +13,6 @@ const Comment = ({username, commentBody})=>{
         </div>
     );
 }
+
 
 export default Comment;
