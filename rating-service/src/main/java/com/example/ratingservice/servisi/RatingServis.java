@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.client.RestTemplate;
 
 import javax.transaction.Transactional;
@@ -210,6 +211,14 @@ public class RatingServis {
 			eventSubmission.addEvent(Events.ActionType.GET, "komentari korisnika na strip");
 			return korisnik_komentar;
 		} else throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronadjen!");
+	}
+
+	public List<Integer> ocjeneStripa(Long id){
+		List<Integer> ocjeneStripa=new ArrayList<>();
+		for(Rating r:ratingRepozitorij.findAll()){
+			ocjeneStripa.add(r.getOcjena());
+		}
+		return ocjeneStripa;
 	}
 
 }

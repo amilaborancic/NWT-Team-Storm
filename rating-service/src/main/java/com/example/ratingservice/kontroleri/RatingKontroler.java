@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/rating")
 @RestController
 public class RatingKontroler {
@@ -59,4 +61,23 @@ public class RatingKontroler {
 		return ratingServis.addRating(rating);
 	}
 
+	//vraca ocjene
+	@GetMapping(value = "/ocjene/{id}", produces = "application/json")
+	public @ResponseBody List<Integer> ocjeneStripa(@PathVariable Long id){
+		List<Integer> ocjeneStripa=new ArrayList<>();
+		for(Rating r:ratingServis.findAll()){
+			ocjeneStripa.add(r.getOcjena());
+		}
+		return ocjeneStripa;
+	}
+
+	//vraca komentare
+	@GetMapping(value = "/komentari/{id}", produces = "application/json")
+	public @ResponseBody List<String> komentariStripa(@PathVariable Long id){
+		List<String> komentariStripa=new ArrayList<>();
+		for(Rating r:ratingServis.findAll()){
+			komentariStripa.add(r.getKomentar());
+		}
+		return komentariStripa;
+	}
 }
