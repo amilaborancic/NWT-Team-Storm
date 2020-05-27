@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
 import Sidebar from "../../../components/Sidebar/Sidebar";
-import {authenticatedApi} from "../../../util/url";
+import {authenticatedApi, baseUrl} from "../../../util/url";
 import StripThumbnail from "../../../components/StripThumbnail/StripThumbnail";
 import GenericModal from "../../../components/GenericModal/GenericModal";
 import {routes} from "../../../util/routes";
@@ -23,7 +23,6 @@ const Stripovi = ()=>{
         fetchItems(fetchUrl, params, setStripList, setTotalPages);
     }, []);
 
-
     return(
         <Sidebar>
             <div>
@@ -31,12 +30,17 @@ const Stripovi = ()=>{
                     <h1>Stripovi</h1>
                     <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
                 </div>
-                <div className="d-flex mt-4">
+                <div className="d-flex justify-content-around align-items-center mt-5">
                     {stripList && stripList.map(item=>
-                        <StripThumbnail image={item.slika} title={item.naziv} animated/>
+                        <div className="mx-2"  key={item.id}>
+                            <StripThumbnail image={item.slika} title={item.naziv} animated/>
+                        </div>
                     )}
                 </div>
-                {stripList && <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>}
+                {stripList && totalPages &&
+                <div className="d-flex fixed-bottom justify-content-center">
+                    <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
+                </div>}
             </div>
             <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen}/>
         </Sidebar>
@@ -46,7 +50,7 @@ const Stripovi = ()=>{
 const NewComicModal = ({isOpen, setIsOpen})=>{
     const [publisherList, setPublisherList] = useState(null);
     const [genreList, setGenreList] = useState(null);
-    const [authorList, setAuthorList] = useState([{id:1, ime: "ami", prezime: "seef", checked: false}, {id: 2, ime:"slkm", prezime:"FDN", checked: false}]);
+    const [authorList, setAuthorList] = useState([{id:1, ime: "ami", prezime: "seef"}, {id: 2, ime:"slkm", prezime:"FDN"}]);
     const [newComic, setNewComic] = useState({
         naziv: "",
         opis: "",
@@ -54,7 +58,7 @@ const NewComicModal = ({isOpen, setIsOpen})=>{
         izdanje: null,
         idIzdavac: null,
         idZanr: null,
-        autori: authorList
+        autori: []
     });
 
     useEffect(()=>{
@@ -68,77 +72,66 @@ const NewComicModal = ({isOpen, setIsOpen})=>{
             <GenericField label={"Naziv"} name={"naziv"} placeholder={"Naziv novog stripa"} type={"text"} onChange={(e)=>handleFieldChange(e, newComic, setNewComic)} />
             <div className="form-group">
                 <label>Opis</label>
-                <textarea className="form-control" name={"opis"} placeholder={"Koja je glavna radnja stripa?"} rows="3"/>
+                <textarea className="form-control" name={"opis"} placeholder={"Koja je glavna radnja stripa?"} rows="3"
+                          onChange={(e)=>handleFieldChange(e, newComic, setNewComic)} />
             </div>
             <div className="form-group">
                 <label>Slika</label>
-                <input type="file" className="form-control-file" name={"slika"} aria-describedby="fileHelp" />
-                <small className="form-text text-muted">Odaberite naslovnicu stripa.</small>
+                <textarea className="form-control" name={"slika"} placeholder={"Ovdje stavite putanju do slike."} rows="3"
+                          onChange={(e)=>handleFieldChange(e, newComic, setNewComic)} />
             </div>
-            <GenericField type={"number"} placeholder={"Broj izdanja stripa. Za standalone strip ovo polje ostaje prazno."} name={"izdanje"} label={"Izdanje"} />
-            <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"}/>
-            <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"}/>
+            <GenericField type={"number"} placeholder={"Broj izdanja stripa. Za standalone strip ovo polje ostaje prazno."} name={"izdanje"} label={"Izdanje"}
+                          onChange={(e)=>handleFieldChange(e, newComic, setNewComic)} />
+            <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"} newComic={newComic} setNewComic={setNewComic}/>
+            <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"} newComic={newComic} setNewComic={setNewComic}/>
             <CustomCheckboxGroup authorList={authorList} setAuthorList={setAuthorList}/>
         </GenericModal>
     );
 }
 
 const CustomCheckboxGroup = ({authorList, setAuthorList})=>{
+    const [checkedAuthors, setCheckedAuthors] = useState(authorList.map(author=>author.checked));
+
     return(
         <>
             <label>Autori</label>
-            {authorList.map(author=>
-                <div key={author.id} className="form-group">
-                    <label className="custom-control custom-checkbox" htmlFor={author.id}>
-                        <input type="checkbox" className="custom-control-input"
-                               checked={author.checked}
-                               onChange={(e)=>changeSelectedAuthors(e, setAuthorList, authorList)}
-                               value={author.id}
-                               id={author.id}
-                        />
-                        <span className="custom-control-label" htmlFor={author.id}>{author.ime} {author.prezime} {author.checked ? "true" : "false"}</span>
-                    </label>
-                </div>
-            )}
+            <div className="d-flex flex-wrap">
+                {authorList.map((author, index)=>
+                    <div key={author.id} className="form-group mx-2">
+                        <label className="custom-control custom-checkbox" htmlFor={author.id}>
+                            <input type="checkbox" className="custom-control-input"
+                                   checked={checkedAuthors[index]}
+                                   onChange={(e)=>changeSelectedAuthors(e, setAuthorList, authorList, checkedAuthors, setCheckedAuthors)}
+                                   value={author.id}
+                                   id={author.id}
+                            />
+                            <span className="custom-control-label" htmlFor={author.id}>{author.ime} {author.prezime}</span>
+                        </label>
+                    </div>
+                )}
+            </div>
         </>
     );
 }
 
-function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList){
-    const authorId = parseInt(e.target.value);
-    //search for author first
-    let authorInList = selectedAuthorsList.filter(authorInList=>authorInList.id === authorId);
-    if(authorInList[0].checked){
-        //remove
-        let tempArray = selectedAuthorsList;
-        tempArray.map(author=>{
-            if(author.id === authorId){
-                author.checked = false;
-            }
-        })
-        setSelectedAuthorsList(tempArray);
-    }
-    else{
-        //add
-        let tempArray = selectedAuthorsList;
-        tempArray.map(author=>{
-            if(author.id === authorId){
-                author.checked = true;
-            }
-        })
-        setSelectedAuthorsList(tempArray);
-    }
-}
-
-const CustomSelect = ({title, itemList, name})=>{
+const CustomSelect = ({title, itemList, name, newComic, setNewComic})=>{
     return(
         <div className="form-group">
             <label>{title}</label>
-            <select className="custom-select" name={name}>
-                {itemList && itemList.map(item=><option value={`${item.id}`}>{item.naziv}</option>)}
+            <select className="custom-select" name={name} onChange={(e)=>handleFieldChange(e, newComic, setNewComic)}>
+                {itemList && itemList.map(item=><option key={item.id} value={`${item.id}`}>{item.naziv}</option>)}
             </select>
         </div>
     );
+}
+
+function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList, checkedAuthors, setCheckedAuthors){
+    const authorId = parseInt(e.target.value);
+    //search for author first
+    let index = selectedAuthorsList.findIndex((author)=>author.id === authorId);
+    let tempArray = checkedAuthors;
+    tempArray[index] = !tempArray[index];
+    setCheckedAuthors(tempArray);
 }
 
 //fetch genre and publishers
@@ -150,7 +143,6 @@ function fetchAdditionalResources(url, setArray){
     });
 }
 
-
 //field change function
 function handleFieldChange(e, field, setField){
     const {name, value} = e.target;
@@ -160,7 +152,6 @@ function handleFieldChange(e, field, setField){
         })
     )
 }
-
 
 //fetch items
 function fetchItems(fetchUrl, params, setStripList, setNumberOfPages){

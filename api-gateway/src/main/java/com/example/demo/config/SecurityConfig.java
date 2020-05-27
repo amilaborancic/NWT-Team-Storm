@@ -37,11 +37,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // autorizacija
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/strip/sviPoId", "/user/single/id/**", "/katalog/svi").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/strip/sviPoId", "/user/single/id/**",
+                        "/katalog/svi", "/strip/svi*", "/zanr/svi*", "/izdavac/svi*", "/autor/svi*").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/sign-in", "/user/sign-up", "/authenticate").permitAll()
                 .antMatchers(HttpMethod.POST, "/rating/dodaj-rating", "/strip/sviPoId", "/katalog/novi").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/rating/**","/strip/trazi-autor*","/strip/trazi-zanr*",
-                        "/strip/trazi-izdavac*","/strip/trazi-naziv*","/katalog/**","/zanr/svi","/izdavac/svi","/autor/svi").hasRole("USER")
+                        "/strip/trazi-izdavac*","/strip/trazi-naziv*","/katalog/**").hasRole("USER")
                 .antMatchers(HttpMethod.DELETE,"/katalog/brisanje-kataloga").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
                 .antMatchers(HttpMethod.GET,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")

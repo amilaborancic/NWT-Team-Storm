@@ -13,7 +13,7 @@ const Sidebar = ({children})=>{
                 <h3 className="d-flex font-weight-bold text-white justify-content-center mt-4">ADMIN PANEL</h3>
                 <div className="btn-group-vertical mt-3">
                     {Object.values(adminPanelRoutes).map(route=>
-                        <Link href={`${route.path}`} as={`${route.path}`}>
+                        <Link href={`${route.path}`} as={`${route.path}`} key={route.label}>
                             <button type="button" className={cx("btn btn-primary btn-lg mt-2", {"active":route.path === router.pathname})}>{route.label}</button>
                         </Link>
                     )}

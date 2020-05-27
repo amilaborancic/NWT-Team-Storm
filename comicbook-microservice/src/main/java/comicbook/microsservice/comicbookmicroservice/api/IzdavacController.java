@@ -9,7 +9,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/izdavac")
-@CrossOrigin(origins = "http://localhost:3000")
 public class IzdavacController {
     @Autowired
     IzdavacService izdavacService;

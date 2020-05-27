@@ -2,11 +2,11 @@ import React, {useState} from "react";
 import styles from "./Pagination.module.css";
 import axios from "axios";
 import cx from "classnames";
+import {authenticatedApi} from "../../util/url";
 
 const Pagination = ({numberOfPages, currentPage, setCurrentPage, url, params, setSearchResults})=>{
     const [isLastPageActive, setIsLastPageActive] = useState(false);
     const [isFirstPageActive, setIsFirstPageActive] = useState(true);
-
     //for mapping pages
     let dummyArray = new Array(numberOfPages);
     for(let i=0; i<numberOfPages; i++)
@@ -65,8 +65,7 @@ function setDisabled(pageLabel, setIsFirstPageActive, setIsLastPageActive, total
 }
 
 function fetchNextPage(url, params, setSearchResults){
-    console.log(params)
-    axios.get(url, {
+    authenticatedApi.get(url, {
         params: params
     }).then(res=>{
         setSearchResults(res.data.stripovi);
