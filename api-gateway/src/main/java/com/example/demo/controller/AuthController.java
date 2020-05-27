@@ -14,6 +14,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @CrossOrigin(origins = "http://localhost:3000")
 @RestController
 public class AuthController {
@@ -40,5 +43,13 @@ public class AuthController {
         final String token = jwt.generateToken(userDetails);
         final String role = userDetails.getAuthorities().toArray()[0].toString();
         return ResponseEntity.ok(new AuthenticationResponse(token, role));
+    }
+
+    @PostMapping(value="/loggedUser")
+    public ResponseEntity<?> retrieveUser(@RequestBody Map<String, String> body){
+        String token = body.get("token");
+        Map<String, String> res = new HashMap<>();
+        res.put("username", jwt.extractUsername(token));
+        return ResponseEntity.ok(res);
     }
 }

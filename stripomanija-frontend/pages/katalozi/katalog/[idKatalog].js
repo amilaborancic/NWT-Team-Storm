@@ -4,8 +4,9 @@ import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer
 import axios from "axios";
 import Pagination from "../../../components/Pagination/Pagination";
 import {authenticatedApi} from "../../../util/url";
-import {routes} from "../../../util/routes";
+import {navbarRoutes, routes} from "../../../util/routes";
 import StripThumbnail from "../../../components/StripThumbnail/StripThumbnail";
+import Link from "next/link";
 
 const KatalogDetails = ({ router: { query } })=>{
     const [katalog, setKatalog] = useState(null);
@@ -46,7 +47,12 @@ const KatalogDetails = ({ router: { query } })=>{
 const CatalogueBody = ({comicList})=>{
     return(
         <div className="d-flex w-100 mt-4 justify-content-center align-items-start">
-            {comicList.map(comic=>{
+            {comicList.length === 0 ?
+                <span>
+                    Ovaj katalog je trenutno prazan. <Link href={navbarRoutes.pretraga.path}>Pronađite</Link> strip koji Vam se sviđa i dodajte ga.
+                </span>
+                :
+                comicList.map(comic=>{
                 let izdanje = "";
                 if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                 return(

@@ -106,6 +106,7 @@ function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
             // save token to local storage
             localStorage.setItem("jwt", response.data.jwt);
             localStorage.setItem("role", response.data.role);
+            localStorage.setItem("username", reqBody.username);
             setValidationMsg(null);
             setIsInvalid(false);
             //check role

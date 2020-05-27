@@ -20,6 +20,14 @@ export const routes = {
         label: "Rezultati pretrage",
         path: "/search"
     },
+    user:{
+        path:"/user",
+        label:"user",
+        single:{
+            path:"/single/",
+            label:"single user by username"
+        }
+    },
     stripoviUKatalogu: {
         label: "Stripovi u mom katalogu",
         path: "/katalozi/katalog/[idKatalog]/stripovi" //privremeno
@@ -123,6 +131,10 @@ export const routes = {
         komentari: {
             path: "/komentari-stripa/", //id stripa se ovdje doda
             label:"komentari za strip"
+        },
+        novi: {
+            path:"/dodaj-rating",
+            label:"Novi rating"
         }
     },
     adminPanel:{
