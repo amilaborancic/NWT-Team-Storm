@@ -16,7 +16,6 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/katalog")
-@CrossOrigin(origins = "http://localhost:3000")
 public class StripController {
 
     private int brojStripovaNaStranici = 5;

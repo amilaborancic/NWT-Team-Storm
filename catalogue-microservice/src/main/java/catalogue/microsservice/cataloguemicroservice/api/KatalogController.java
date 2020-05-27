@@ -20,7 +20,6 @@ import java.util.*;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/katalog")
 public class KatalogController {
 

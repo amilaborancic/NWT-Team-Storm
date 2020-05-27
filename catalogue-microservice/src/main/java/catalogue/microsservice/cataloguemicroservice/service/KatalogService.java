@@ -83,7 +83,7 @@ public class KatalogService {
         Katalog katalogic = getKatalog(id_katalog);
         List<Strip> stripoviUKatalogu = katalogic.getStripovi();
         int brojStripovaUKatalogu = stripoviUKatalogu.size();
-        stripoviUKatalogu.removeIf(strip->strip.getIdStrip().equals(id_strip));
+        stripoviUKatalogu.removeIf(strip->strip.getId().equals(id_strip));
         if(stripoviUKatalogu.size() == brojStripovaUKatalogu) {
             eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Strip nije moguce obrisati.");
             return false;

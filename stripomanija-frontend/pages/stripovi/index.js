@@ -2,9 +2,8 @@ import React, {useEffect, useState} from "react";
 import styles from "./index.module.css";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import cx from "classnames";
-import {catalogueUrl, comicsUrl} from "../../util/url";
+import {authenticatedApi} from "../../util/url";
 import {routes} from "../../util/routes";
-import axios from "axios";
 import Pagination from "../../components/Pagination/Pagination";
 import {SEARCH_TYPES} from "../../util/searchTypes";
 import StripThumbnail from "../../components/StripThumbnail/StripThumbnail";
@@ -74,8 +73,8 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
 
     //fetching every genre and publisher
     useEffect(()=>{
-        fetchGenreOrPublisher(comicsUrl + routes.zanr.path + routes.zanr.svi.path, setGenreArray);
-        fetchGenreOrPublisher(comicsUrl + routes.izdavac.path + routes.izdavac.svi.path, setPublisherArray);
+        fetchGenreOrPublisher(routes.zanr.path + routes.zanr.svi.path, setGenreArray);
+        fetchGenreOrPublisher( routes.izdavac.path + routes.izdavac.svi.path, setPublisherArray);
     }, []);
 
 
@@ -178,7 +177,7 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
                     if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                     return(
                         <div className={cx("d-flex mx-5 flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
-                            <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`}/>
+                            <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} id={comic.id}/>
                             <AddToCatalogueButton onClick={()=>setIsAddToCatalogueModalOpen(true)} />
                         </div>
                     )
@@ -215,30 +214,30 @@ function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSear
     switch(SEARCH_TYPES[activeSearchType]){
         case SEARCH_TYPES.NAZIV:
             const routeNaziv = routes.strip.pretraga.naziv;
-            setUrl(comicsUrl + routes.strip.path + routeNaziv.path);
+            setUrl(routes.strip.path + routeNaziv.path);
             setIsSearchDisabled(false);
             break;
 
         case SEARCH_TYPES.SVI:
             const routeSvi = routes.strip.pretraga.svi;
             setIsSearchDisabled(false);
-            setUrl(comicsUrl + routes.strip.path + routeSvi.path);
+            setUrl(routes.strip.path + routeSvi.path);
             break;
 
         case SEARCH_TYPES.AUTOR:
             const routeAutor = routes.strip.pretraga.autor;
-            setUrl(comicsUrl + routes.strip.path + routeAutor.path);
+            setUrl(routes.strip.path + routeAutor.path);
             setIsSearchDisabled(false);
             break;
 
         case SEARCH_TYPES.ZANR:
             setIsSearchDisabled(true);
-            setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.zanr.path);
+            setUrl(routes.strip.path + routes.strip.pretraga.zanr.path);
             break;
 
         case SEARCH_TYPES.IZDAVAC:
             setIsSearchDisabled(true);
-            setUrl(comicsUrl + routes.strip.path + routes.strip.pretraga.izdavac.path);
+            setUrl(routes.strip.path + routes.strip.pretraga.izdavac.path);
             break;
 
         default: console.log("blah");
@@ -264,7 +263,7 @@ function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, se
 
 function fetchGenreOrPublisher(url, setArray){
     const colors = ["success", "info", "danger", "warning"];
-    axios.get(url).then(res=>{
+    authenticatedApi.get(url).then(res=>{
         let genreArray = res.data;
         genreArray.map((item, index)=>{
             item.boja = colors[index % colors.length];
@@ -276,7 +275,7 @@ function fetchGenreOrPublisher(url, setArray){
 }
 
 function fetchComics(url, params, setNumberOfPages, setSearchResults){
-    axios.get(url, {
+    authenticatedApi.get(url, {
         params: params
     }).then(res=>{
         setNumberOfPages(res.data.brojStranica);

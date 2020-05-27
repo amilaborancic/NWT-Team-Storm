@@ -8,15 +8,16 @@ import java.util.List;
 public class Strip {
     @Id
     @Column(name="id")
-    private Long idStrip;
+    private Long id;
 
     @ManyToMany(mappedBy = "stripovi")
     private List<Katalog> katalozi;
-    public Long getIdStrip() { return idStrip; }
+    public Long getId() { return id;}
+    public void setId(Long id) {this.id = id;}
     public List<Katalog> getKatalozi() { return katalozi; }
 
-    public Strip(Long idStrip){
-        this.idStrip = idStrip;
+    public Strip(Long id){
+        this.id = id;
     }
     public Strip(){}
 }

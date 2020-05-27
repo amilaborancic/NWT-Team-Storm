@@ -43,6 +43,7 @@ public class StripController {
     //jedan konkretan strip, parametar je id stripa
     @GetMapping()
     public @ResponseBody Strip jedanStrip(@Param("id_strip") Long id_strip){
+        System.out.println(id_strip);
         return stripService.jedanStrip(id_strip);
     }
 

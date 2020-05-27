@@ -24,7 +24,7 @@ public class StripService {
         List<Long> stripovi = new ArrayList<>();
         //provjera postoji li katalog s proslijedjenim id-jem
         katalogService.getKatalog(id_katalog);
-        stripRepozitorij.findByKatalozi_Id(id_katalog, PageRequest.of(brojStranice, brojStripovaNaStranici)).forEach(strip->stripovi.add(strip.getIdStrip()));
+        stripRepozitorij.findByKatalozi_Id(id_katalog, PageRequest.of(brojStranice, brojStripovaNaStranici)).forEach(strip->stripovi.add(strip.getId()));
         return stripovi;
     }
 
@@ -35,7 +35,7 @@ public class StripService {
     }
 
     public boolean postojiUKatalogu(Long id_strip, Long id_katalog) {
-        return stripRepozitorij.existsByIdStripAndKatalozi_Id(id_strip, id_katalog);
+        return stripRepozitorij.existsByIdAndKatalozi_Id(id_strip, id_katalog);
     }
 
     public Long ukupnoStripova(Long idKatalog){

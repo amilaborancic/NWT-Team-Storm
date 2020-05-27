@@ -63,7 +63,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 
 		//NE BRISATI OVO!!
 		//korisnike dobavljamo od user servisa
-		/*String resourceURL = "http://user-service/user/svi";
+		String resourceURL = "http://user-service/user/svi";
 		ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
 		ObjectMapper mapper = new ObjectMapper();
 		JsonNode root = mapper.readTree(response.getBody());
@@ -71,7 +71,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
 		});
-*/
+/*
 		Korisnik k1 = new Korisnik((long) 1);
 		Korisnik k2 = new Korisnik((long) 2);
 		Korisnik k3 = new Korisnik((long) 3);
@@ -95,9 +95,9 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		stripRepozitorij.save(s4);
 		stripRepozitorij.save(s5);
 		stripRepozitorij.save(s6);
-
+*/
 		/*stripove dobijamo iz strip servisa*/
-		/*
+
 		String urlUkupnoStripova = "http://comicbook-service/strip/count";
 		String urlBrojNaStranici = "http://comicbook-service/strip/brojNaStranici";
 		String urlStripoviNaStranici = "http://comicbook-service/strip/svi";
@@ -108,19 +108,20 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Integer brojNaStranici = mapperStripovi.readTree(String.valueOf(responseBrojNaStranici.getBody())).asInt();
 		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.5);
 		int i=0;
+		System.out.println("sfjnlks");
 		while(i<brojStranica){
 			ResponseEntity<String> stripoviSaStranice = restTemplate.getForEntity(urlStripoviNaStranici + "?brojStranice="+i, String.class);
-			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody());
+			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("stripovi");
 			svi.forEach(strip->{
 				Strip s = new Strip(strip.path("id").asLong());
 				stripRepozitorij.save(s);
 			});
 			i++;
 		}
-*/
 
-		Korisnik korisnik = korisnikRepozitorij.findAll().get(1);
-		Korisnik korisnik_2 = korisnikRepozitorij.findAll().get(2);
+
+		Korisnik korisnik = korisnikRepozitorij.getOne(2L);
+		Korisnik korisnik_2 = korisnikRepozitorij.getOne(3L);
 		Katalog kat1 = new Katalog("Prvi katalog", korisnik.getId());
 		Katalog kat2 = new Katalog("Drugi katalog", korisnik.getId());
 		Katalog kat3 = new Katalog("Treći katalog", korisnik_2.getId());
@@ -139,17 +140,19 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		katalogRepositorij.save(kat7);
 		katalogRepositorij.save(kat8);
 
-		//dodavanje stripova
+		//dodavanje stripova u nekoliko kataloga
 		List<Strip> stripovi = new ArrayList<>();
-		stripovi.add(s1);
-		stripovi.add(s2);
-		stripovi.add(s3);
-		stripovi.add(s4);
-		stripovi.add(s5);
-		stripovi.add(s6);
+		stripovi.add(stripRepozitorij.getOne(2L));
+		stripovi.add(stripRepozitorij.getOne(4L));
+		stripovi.add(stripRepozitorij.getOne(1L));
 		kat3.setStripovi(stripovi);
-
 		katalogRepositorij.save(kat3);
+
+		stripovi = new ArrayList<>();
+		stripovi.add(stripRepozitorij.getOne(3L));
+		kat1.setStripovi(stripovi);
+		katalogRepositorij.save(kat1);
+
 	}
 
 }

@@ -84,6 +84,9 @@ export const routes = {
         novi: {
             path: "/noviStrip",
             label: "novi strip"
+        },
+        jedan:{
+            path: "/stripovi/strip/"
         }
     },
     zanr: {
@@ -112,6 +115,14 @@ export const routes = {
         svi: {
             path: "/svi",
             label: "svi autori"
+        }
+    },
+    rating:{
+        path:"/rating",
+        label:"rating",
+        komentari: {
+            path: "/komentari-stripa/", //id stripa se ovdje doda
+            label:"komentari za strip"
         }
     },
     adminPanel:{

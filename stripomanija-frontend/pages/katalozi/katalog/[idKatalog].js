@@ -1,11 +1,9 @@
 import React, {useEffect, useState} from "react";
 import {useRouter, withRouter} from "next/router";
 import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
-import styles from "./index.module.css";
-import cx from "classnames";
 import axios from "axios";
 import Pagination from "../../../components/Pagination/Pagination";
-import {catalogueUrl} from "../../../util/url";
+import {authenticatedApi} from "../../../util/url";
 import {routes} from "../../../util/routes";
 import StripThumbnail from "../../../components/StripThumbnail/StripThumbnail";
 
@@ -17,8 +15,8 @@ const KatalogDetails = ({ router: { query } })=>{
 
     useEffect(()=>{
         if(query.idKatalog){
-            axios.get(catalogueDetailsUrl, {params: {id_katalog: query.idKatalog}}).then(res=>{setKatalog(res.data)}).catch(err=>{console.log(err)});
-            axios.get(catalogueComicsUrl + `/${query.idKatalog}`, {params: {brojStranice: currentPage}})
+            authenticatedApi.get(catalogueDetailsUrl, {params: {id_katalog: query.idKatalog}}).then(res=>{setKatalog(res.data)}).catch(err=>{console.log(err)});
+            authenticatedApi.get(catalogueComicsUrl + `/${query.idKatalog}`, {params: {brojStranice: currentPage}})
                 .then(res=>{
                     setComicList(res.data.stripovi);
                     console.log(res.data.stripovi)
@@ -61,8 +59,8 @@ const CatalogueBody = ({comicList})=>{
     );
 }
 
-const catalogueDetailsUrl = catalogueUrl + routes.katalozi.path + routes.katalozi.jedan.path;
-const catalogueComicsUrl = catalogueUrl + routes.katalozi.path + routes.katalozi.iz_kataloga.path;
+const catalogueDetailsUrl = routes.katalozi.path + routes.katalozi.jedan.path;
+const catalogueComicsUrl = routes.katalozi.path + routes.katalozi.iz_kataloga.path;
 
 // API CALLS
 function getCatalogue(url, params, setter){

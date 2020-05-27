@@ -1,6 +1,5 @@
 import React, {useState} from "react";
 import styles from "./Pagination.module.css";
-import axios from "axios";
 import cx from "classnames";
 import {authenticatedApi} from "../../util/url";
 

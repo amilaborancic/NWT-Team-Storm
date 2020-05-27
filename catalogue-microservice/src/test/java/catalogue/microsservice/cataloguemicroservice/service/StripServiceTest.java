@@ -35,7 +35,7 @@ class StripServiceTest {
     @Test
     void jedanStrip(){
         //sve okej
-        assertThat(stripService.jedanStrip((long) 1).getIdStrip()).isEqualTo(1);
+        assertThat(stripService.jedanStrip((long) 1).getId()).isEqualTo(1);
         //strip ne postoji
         ApiRequestException nemaStripa = assertThrows(
                 ApiRequestException.class,

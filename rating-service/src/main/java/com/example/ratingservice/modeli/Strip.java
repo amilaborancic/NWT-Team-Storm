@@ -20,6 +20,7 @@ public class Strip {
 	
 	
 	public Strip() {}
+	public Strip(Long id){this.id = id;}
 	public Long getId() {
 		return id;
 	}
