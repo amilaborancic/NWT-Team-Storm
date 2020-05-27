@@ -15,8 +15,8 @@ export default function Home() {
 
     return (
         <>
-            {isRegisterModalOpen && <RegistrationModal setIsRegisterModalOpen={setIsRegisterModalOpen}/>}
-            {isLoginModalOpen && <LoginModal setIsLoginModalOpen={setIsLoginModalOpen}/>}
+            {isRegisterModalOpen && <RegistrationModal isRegisterModalOpen={isRegisterModalOpen} setIsRegisterModalOpen={setIsRegisterModalOpen}/>}
+            {isLoginModalOpen && <LoginModal isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>}
             <div className={styles.container}>
                 <Head>
                     <title>Stripomanija</title>
@@ -36,7 +36,7 @@ export default function Home() {
 }
 
 //ne radi jos
-const RegistrationModal = ({setIsRegisterModalOpen})=>{
+const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen})=>{
     const [validationMsg, setValidationMsg] = useState(null);
 
     //role povuci sa apija!!
@@ -52,7 +52,7 @@ const RegistrationModal = ({setIsRegisterModalOpen})=>{
 
     return(<GenericModal modalTitle={"Registracija"}
                          closeModal={()=>setIsRegisterModalOpen(false)}
-                         showModal={()=>setIsRegisterModalOpen(true)}
+                         showModal={isRegisterModalOpen}
                          bottomText={"Želimo Vam ugodno iskustvo na Stripomaniji!"}
                          btnText={"Registruj me!"}
         >
@@ -68,7 +68,7 @@ const RegistrationModal = ({setIsRegisterModalOpen})=>{
     );
 }
 
-const LoginModal = ({setIsLoginModalOpen})=>{
+const LoginModal = ({setIsLoginModalOpen, isLoginModalOpen})=>{
     const [validationMsg, setValidationMsg] = useState(null);
     const [isInvalid, setIsInvalid] = useState(false);
     const [user, setUser] = useState({
@@ -80,7 +80,7 @@ const LoginModal = ({setIsLoginModalOpen})=>{
         <GenericModal
             modalTitle={"Prijava"}
             btnText={"Predaj"}
-            showModal={()=>setIsLoginModalOpen(true)}
+            showModal={isLoginModalOpen}
             closeModal={()=>setIsLoginModalOpen(false)}>
             <GenericField id={"usernameLogin"} name={"username"} label={"Username"} placeholder={"Vaš username"} type={"text"} isInvalid={isInvalid} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"sifraLogin"} name={"password"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} isInvalid={isInvalid} validationMsg={validationMsg} onChange={(e)=>handleFieldChange(e, user, setUser)}/>

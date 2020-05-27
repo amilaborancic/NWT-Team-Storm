@@ -6,13 +6,14 @@ import GenericModal from "../../../components/GenericModal/GenericModal";
 import {routes} from "../../../util/routes";
 import Pagination from "../../../components/Pagination/Pagination";
 import GenericField from "../../../components/FormFields/GenericField";
-import axios from "axios";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 
 const Stripovi = ()=>{
     const [stripList, setStripList] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    const [isToastOpen, setIsToastOpen] = useState(false);
     const [currentPage, setCurrentPage] = useState(0);
     const [params, setParams] = useState({
         brojStranice: currentPage
@@ -42,12 +43,14 @@ const Stripovi = ()=>{
                     <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
                 </div>}
             </div>
-            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen}/>
+            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
+            <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
+
         </Sidebar>
     );
 }
 
-const NewComicModal = ({isOpen, setIsOpen})=>{
+const NewComicModal = ({isOpen, setIsOpen, setIsToastOpen})=>{
     const [publisherList, setPublisherList] = useState(null);
     const [genreList, setGenreList] = useState(null);
     const [authorList, setAuthorList] = useState([]);
@@ -88,7 +91,7 @@ const NewComicModal = ({isOpen, setIsOpen})=>{
             <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"} newComic={newComic} setNewComic={setNewComic} />
             <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"} newComic={newComic} setNewComic={setNewComic}  />
             <CustomCheckboxGroup authorList={authorList} setAuthorList={setAuthorList} checkedAuthors={checkedAuthors} setCheckedAuthors={setCheckedAuthors}/>
-            <button type="button" className="btn btn-danger" onClick={()=>addNewComic(newComic, setNewComic, checkedAuthors, authorList)}>Dodaj strip</button>
+            <button type="button" className="btn btn-danger" onClick={()=>addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen)}>Dodaj strip</button>
         </GenericModal>
     );
 }
@@ -145,7 +148,7 @@ function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList, c
 }
 
 //send new comic request
-function addNewComic(newComic, setNewComic, checkedAuthors, authorList){
+function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen){
     //set authors first
     let comicInformation = newComic;
     authorList.map((author, index)=>{if(checkedAuthors[index]) comicInformation.autori.push(author)});
@@ -154,9 +157,25 @@ function addNewComic(newComic, setNewComic, checkedAuthors, authorList){
     authenticatedApi.post(routes.strip.path + routes.strip.novi.path, newComic)
         .then(res=>{
             console.log(res);
+            //close modal, show toast
+            setIsOpen(false);
+            setIsToastOpen(true);
+            //reset comic object
+            setNewComic({
+                naziv: "",
+                opis: "",
+                slika: "",
+                izdanje: null,
+                idIzdavac: null,
+                idZanr: null,
+                autori: [],
+                ukupniRating: 1,
+                ukupnoKomentara: 0
+            });
         })
         .catch(err=>{
             console.log(err);
+            //validation messages!
         });
 }
 
