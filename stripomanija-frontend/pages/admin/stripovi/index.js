@@ -9,6 +9,7 @@ import GenericField from "../../../components/FormFields/GenericField";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 import styles from "./index.module.css";
 import cx from "classnames";
+import Spinner from "react-bootstrap/Spinner";
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 
@@ -27,28 +28,29 @@ const Stripovi = ()=>{
     }, []);
 
     return(
-        <Sidebar>
-            <div>
-                <div className="d-flex justify-content-between w-100">
-                    <h1>Stripovi</h1>
-                    <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
+        <>
+            <Sidebar>
+                <div>
+                    <div className="d-flex justify-content-between w-100">
+                        <h1>Stripovi</h1>
+                        <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
+                    </div>
+                    <div className="d-flex justify-content-around mt-5">
+                        {stripList && stripList.map(item=>
+                            <div className={"mx-2"}  key={item.id}>
+                                <StripThumbnail image={item.slika} title={item.naziv} animated/>
+                            </div>
+                        )}
+                    </div>
+                    {stripList && totalPages &&
+                    <div className="d-flex mt-3 justify-content-center">
+                        <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
+                    </div>}
                 </div>
-                <div className="d-flex justify-content-around mt-5">
-                    {stripList && stripList.map(item=>
-                        <div className={"mx-2"}  key={item.id}>
-                            <StripThumbnail image={item.slika} title={item.naziv} animated/>
-                        </div>
-                    )}
-                </div>
-                {stripList && totalPages &&
-                <div className="d-flex mt-3 justify-content-center">
-                    <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
-                </div>}
-            </div>
-            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
-            <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
-
-        </Sidebar>
+                <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
+                <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
+            </Sidebar>
+        </>
     );
 }
 

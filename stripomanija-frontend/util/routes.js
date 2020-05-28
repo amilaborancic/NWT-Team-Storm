@@ -3,7 +3,7 @@ import {catalogue, user} from "./url";
 export const navbarRoutes = {
     home: {
         label: "Home",
-        path: "/"
+        path: "/profil"
     },
     pretraga: {
         label: "Pretraga stripova",
