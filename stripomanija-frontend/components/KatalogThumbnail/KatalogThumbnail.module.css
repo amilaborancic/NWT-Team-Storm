@@ -17,7 +17,7 @@
 }
 
 
-@media(max-width: 450px){
+@media(max-width: 749px){
     .wrapper{
         width: 100px !important;
         height: 150px !important;
