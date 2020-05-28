@@ -74,6 +74,10 @@ export const routes = {
         brisi_strip:{
             label:"brisanje stripa iz kataloga",
             path:"/brisanje-stripa"
+        },
+        brisi_katalog:{
+            label:"obrisi katalog",
+            path:"/brisanje-kataloga"
         }
     },
     strip:{
@@ -127,6 +131,10 @@ export const routes = {
         svi: {
             label: "svi izdavaci",
             path: "/svi"
+        },
+        novi: {
+            label: "novi izdavac",
+            path: "/novi"
         }
     },
     autor:{

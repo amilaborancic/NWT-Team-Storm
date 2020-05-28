@@ -2,7 +2,7 @@ import React, {useState, useEffect} from "react";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import styles from "./index.module.css";
 import KatalogThumbnail from "../../components/KatalogThumbnail/KatalogThumbnail";
-import {authenticatedApi} from "../../util/url";
+import {authenticatedApi, catalogue} from "../../util/url";
 import {routes} from "../../util/routes";
 import {useRouter} from "next/router";
 import cx from "classnames";
@@ -11,16 +11,6 @@ import GenericModal from "../../components/GenericModal/GenericModal";
 import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const Profile = ()=>{
-    return(
-        <NavbarContainer>
-            <div className="d-flex">
-                <UserDetails/>
-                <Katalozi/>
-            </div>
-        </NavbarContainer>);
-}
-
-const UserDetails = ()=>{
     const [user, setUser] = useState({
         id: null,
         role: {
@@ -32,10 +22,20 @@ const UserDetails = ()=>{
         email: "",
         ukupno_reviewa: null
     });
+
     useEffect(()=>{
         fetchUserDetails(setUser);
     }, []);
+    return(
+        <NavbarContainer>
+            <div className="d-flex">
+                <UserDetails user={user}/>
+                <Katalozi user={user}/>
+            </div>
+        </NavbarContainer>);
+}
 
+const UserDetails = ({user})=>{
     return(
         <div className={cx("flex-column w-25 text-left px-4 py-4", styles.infoContainer)}>
             <h1>Info</h1>
@@ -48,7 +48,7 @@ const UserDetails = ()=>{
     );
 }
 
-const Katalozi = ()=>{
+const Katalozi = ({user})=>{
     const router = useRouter();
     const [catalogueList, setCatalogueList] = useState(null);
     //creating a new catalogue
@@ -58,7 +58,7 @@ const Katalozi = ()=>{
     })
     //validation message
     const [isToastOpen, setIsToastOpen] = useState(false);
-
+    const [toast, setToast] = useState(null);
 
     useEffect(()=>{
         fetchCatalogueList(setCatalogueList);
@@ -71,8 +71,9 @@ const Katalozi = ()=>{
             </div>
             <div className={cx(styles.wrapper, "flex-wrap")}>
                 {catalogueList && catalogueList.map(katalog=>
-                    <div className="mx-3 my-2" key={katalog.id}>
+                    <div className="d-flex flex-column mx-3 my-2" key={katalog.id}>
                         <KatalogThumbnail animated title={katalog.naziv} id={katalog.id}/>
+                        <button type="button" className="btn btn-primary" onClick={()=>deleteCatalogue(katalog, user, setIsToastOpen, setToast)}>Obriši</button>
                     </div>
                 )}
             </div>
@@ -80,12 +81,36 @@ const Katalozi = ()=>{
                           bottomText={"Dobro organizovan katalog olakšava pronalazak dobrih stripova :D"}>
                 <GenericField type="text" label={"Naziv"} placeholder={"Dajte ime Vašem novom katalogu!"} name={"naziv"} onChange={(e)=>handleFieldChange(e, newCatalogue, setNewCatalogue)}/>
                 <div className="d-flex w-100 justify-content-end">
-                    <button type="button" className="btn btn-success" onClick={()=>createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setNewCatalogue)}>Kreiraj</button>
+                    <button type="button" className="btn btn-success"
+                            onClick={()=>createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setNewCatalogue, setToast)}>Kreiraj</button>
                 </div>
             </GenericModal>
-            <ToastMessage title={"Potvrda"} message={"Uspješno ste kreirali novi katalog!"} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
+            {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>}
         </div>
     );
+}
+
+function deleteCatalogue(catalogue, user, setIsToastOpen, setToast){
+    authenticatedApi.delete(routes.katalozi.path + routes.katalozi.brisi_katalog.path, {
+        data:{
+            idKorisnik: user.id,
+            idKatalog: catalogue.id
+        }
+    })
+        .then(res=>{
+            setIsToastOpen(true);
+            setToast({
+                type:"success",
+                message: "Uspješno ste obrisali katalog " + catalogue.naziv + "."
+            })
+        })
+        .catch(err=>{
+            setToast({
+                type: "danger",
+                message: "Došlo je do greške!"
+            });
+            setIsToastOpen(true);
+        })
 }
 
 function fetchUserDetails(setUser){
@@ -117,18 +142,27 @@ function handleFieldChange(e, catalogue, setCatalogue){
     )
 }
 
-function createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setCatalogue){
+function createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setCatalogue, setToast){
     authenticatedApi.post(routes.katalozi.path + routes.katalozi.novi.path, newCatalogue)
         .then(res=>{
             console.log(res)
             setIsOpen(false);
             setIsToastOpen(true);
+            setToast({
+                type:"success",
+                message:"Uspješno ste kreirali novi katalog!"
+            })
             setCatalogue({
                 naziv: ""
             });
         })
         .catch(err=>{
             console.log(err);
+            setIsToastOpen(true);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške!"
+            })
         });
 }
 

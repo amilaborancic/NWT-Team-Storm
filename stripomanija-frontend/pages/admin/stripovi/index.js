@@ -7,6 +7,8 @@ import {routes} from "../../../util/routes";
 import Pagination from "../../../components/Pagination/Pagination";
 import GenericField from "../../../components/FormFields/GenericField";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import styles from "./index.module.css";
+import cx from "classnames";
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 
@@ -33,7 +35,7 @@ const Stripovi = ()=>{
                 </div>
                 <div className="d-flex justify-content-around mt-5">
                     {stripList && stripList.map(item=>
-                        <div className="mx-2"  key={item.id}>
+                        <div className={"mx-2"}  key={item.id}>
                             <StripThumbnail image={item.slika} title={item.naziv} animated/>
                         </div>
                     )}
@@ -97,7 +99,6 @@ const NewComicModal = ({isOpen, setIsOpen, setIsToastOpen})=>{
 }
 
 const CustomCheckboxGroup = ({authorList, setAuthorList, checkedAuthors, setCheckedAuthors})=>{
-
     return(
         <>
             <label>Autori</label>
@@ -138,6 +139,8 @@ const CustomSelect = ({title, itemList, name, newComic, setNewComic})=>{
     );
 }
 
+
+//select authors from list
 function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList, checkedAuthors, setCheckedAuthors){
     const authorId = parseInt(e.target.value);
     //search for author first

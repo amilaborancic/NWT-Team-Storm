@@ -91,7 +91,7 @@ const LoginModal = ({setIsLoginModalOpen, isLoginModalOpen})=>{
     );
 }
 
-function handleFieldChange(e, user, setUser){
+export function handleFieldChange(e, user, setUser){
     const {name, value} = e.target;
     setUser(prevState=>({
             ...prevState,
