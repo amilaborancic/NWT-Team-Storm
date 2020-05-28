@@ -6,7 +6,6 @@ import SidebarContainer from "../../components/Sidebar/Sidebar";
 const AdminPanel = ()=>{
     return(
         <SidebarContainer>
-            scscc
         </SidebarContainer>
     );
 }

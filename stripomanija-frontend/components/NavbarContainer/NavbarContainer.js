@@ -45,9 +45,10 @@ const DropDownMenu = ({setIsDropDownClicked, isDropDownClicked, router})=>{
     );
 }
 
-function logOut(router){
+export const logOut = (router)=>{
     localStorage.removeItem("jwt");
     localStorage.removeItem("role");
+    localStorage.removeItem("username");
     //navigate to homepage
     router.push(navbarRoutes.home.path);
 }
