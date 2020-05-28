@@ -13,5 +13,5 @@
 .wrapper{
     width: 150px !important;
     height: 200px !important;
-    background-color: var(--dark-gray-02) !important;
+    background-color: var(--primary) !important;
 }

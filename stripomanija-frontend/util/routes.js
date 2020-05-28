@@ -5,13 +5,13 @@ export const navbarRoutes = {
         label: "Home",
         path: "/"
     },
-    katalozi: {
-        label: "Moji katalozi",
-        path: "/katalozi"
-    },
     pretraga: {
         label: "Pretraga stripova",
         path:"/stripovi"
+    },
+    profil:{
+        label: "Moj profil",
+        path:"/profil"
     }
 }
 
@@ -26,6 +26,10 @@ export const routes = {
         single:{
             path:"/single/",
             label:"single user by username"
+        },
+        details:{
+            path:"/name/",
+            label:"user details"
         }
     },
     stripoviUKatalogu: {

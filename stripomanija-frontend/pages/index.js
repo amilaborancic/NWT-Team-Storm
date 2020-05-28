@@ -111,7 +111,7 @@ function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
             setIsInvalid(false);
             //check role
             if(response.data.role === "ROLE_ADMIN") Router.push(routes.adminPanel.path);
-            else Router.push(navbarRoutes.katalozi.path);
+            else Router.push(navbarRoutes.profil.path);
         }).catch(error=>{
             try{
                 if(error.response.status === 400){

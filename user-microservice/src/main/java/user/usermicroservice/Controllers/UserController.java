@@ -41,8 +41,15 @@ public class UserController {
     @Autowired
     JwtUtil jwt;
     @GetMapping("/{id}")
-    public Optional<User> getUser(@PathVariable Long id){
+    public Optional<User> getUser(@PathVariable Long id, @RequestHeader Map<String, String> headers){
+        isUserPriviledged(id, headers, "Nemate privilegiju za ovu akciju!");
         return userServis.findUserById(id);
+    }
+
+    @GetMapping("/name/{username}")
+    public User getByUsername(@PathVariable String username, @RequestHeader Map<String, String> headers){
+        isUserPriviledged(username, headers, "Nemate privilegiju za ovu akciju!");
+        return userServis.singleUser(username);
     }
 
     @PostMapping(value = "/sign-in")
@@ -76,15 +83,6 @@ public class UserController {
         //rabbitmq
         User singleUser=userServis.singleUser(user.getUserName());
         producer.send(user.getId().toString());
-
-        //sinhrona
-        /*
-        //katalozi
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-        HttpEntity<Long> entity = new HttpEntity<>(user.getId(), headers);
-        ResponseEntity<Long> res = restTemplate.postForEntity("http://catalogue-service/katalog/new", entity, Long.class);*/
         return user.getId();
     }
 
@@ -92,12 +90,6 @@ public class UserController {
     public void updateUser(@RequestBody UserRatingDTO userRatingInfo, @RequestHeader Map<String,String> headers) {
         isUserPriviledged(userRatingInfo.getId(), headers, "Nemate privilegiju da updateujete ovaj rating!");
         userServis.updateUser(userRatingInfo);
-    }
-
-    //pomocne metode
-    @GetMapping("/userName/{name}")
-    public Long getIdByUserName(@PathVariable String name){
-        return userServis.findUserByUserName(name).getId();
     }
 
     @GetMapping("/single/{name}")
@@ -132,14 +124,22 @@ public class UserController {
     @GetMapping(value="/naziv-role/{username}")
     public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
 
-    private void isUserPriviledged(Long id, Map<String, String> headers, String errorMsg){
-        System.out.println(headers.keySet());
+    private String extractUsernameFromHeaders(Map<String, String> headers){
         String token = headers.get("authorization").substring(7);
-        System.out.println(token);
-        String username = jwt.extractUsername(token);
+        return jwt.extractUsername(token);
+    }
+
+    private void isUserPriviledged(Long id, Map<String, String> headers, String errorMsg){
+        String username = extractUsernameFromHeaders(headers);
         User logovani_user = userServis.singleUser(username);
         Long id_logovanog = logovani_user.getId();
         String role = logovani_user.getRole().getRoleName().toString();
         if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !id.equals(id_logovanog)) throw new ApiUnauthorizedException(errorMsg);
+    }
+    private void isUserPriviledged(String username, Map<String, String> headers, String errorMsg){
+        String usernameFromToken = extractUsernameFromHeaders(headers);
+        User logovani_user = userServis.singleUser(username);
+        String role = logovani_user.getRole().getRoleName().toString();
+        if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !username.equals(usernameFromToken)) throw new ApiUnauthorizedException(errorMsg);
     }
 }
