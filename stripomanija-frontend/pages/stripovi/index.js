@@ -8,34 +8,38 @@ import Pagination from "../../components/Pagination/Pagination";
 import {SEARCH_TYPES} from "../../util/searchTypes";
 import StripThumbnail from "../../components/StripThumbnail/StripThumbnail";
 import GenericModal from "../../components/GenericModal/GenericModal";
-import CatalogueList from "../../components/CatalogueList/CatalogueList";
+import ToastMessage from "../../components/ToastMessage/ToastMessage";
 
 const Stripovi = ()=>{
+    //search drop down menu
     const [activeSearchType, setActiveSearchType] = useState(null);
     const [isDropDownOpen, setIsDropDownOpen] = useState(false);
+    //search functionality
     const [searchQuery, setSearchQuery] = useState("");
+    const [isSearchDisabled, setIsSearchDisabled] = useState(false);
+    //sending requests
     const [url, setUrl] = useState("");
     const [params, setParams] = useState([]);
-    const [isSearchDisabled, setIsSearchDisabled] = useState(false);
+    //add comic to catalogue
     const [isAddToCatalogueModalOpen, setIsAddToCatalogueModalOpen] = useState(false);
     const [catalogueList, setCatalogueList] = useState(null);
-
-    //USER SE VADI IZ TOKENA!
-    const [userId, setUserId] = useState(3);
-
+    const [comic, setComic] = useState(null);
+    //toast message
+    const [toast, setToast] = useState(null);
+    const [toastIsOpen, setToastIsOpen] = useState(false);
     return(
         <>
-            {isAddToCatalogueModalOpen &&
-            <GenericModal modalTitle={"Dodaj u katalog"}
-                          btnText={"Dodaj"}
-                          showModal={()=>setIsAddToCatalogueModalOpen(true)}
-                          closeModal={()=>setIsAddToCatalogueModalOpen(false)}>
-
-                <CatalogueList catalogueList={catalogueList} />
-                <div className="d-flex w-100 justify-content-end">
-                    <button type="button" className="btn btn-primary">Dodaj!</button>
-                </div>
-            </GenericModal>}
+            {isAddToCatalogueModalOpen && <AddToCatalogueModal
+                isModalOpen={isAddToCatalogueModalOpen}
+                setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
+                catalogueList={catalogueList}
+                setCatalogueList={setCatalogueList}
+                comic={comic}
+                setToast={setToast}
+                toastIsOpen={toastIsOpen}
+                setToastIsOpen={setToastIsOpen}
+            />}
+            {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={toastIsOpen} setIsOpen={setToastIsOpen}/>}
             <NavbarContainer>
                 <div className={styles.wrapper}>
                     <CustomSearchBar
@@ -53,7 +57,7 @@ const Stripovi = ()=>{
                         params={params}
                         setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
                         setCatalogueList={setCatalogueList}
-                        userId={userId}
+                        setComic={setComic}
                     />
                 </div>
             </NavbarContainer>
@@ -61,9 +65,56 @@ const Stripovi = ()=>{
     );
 }
 
+//ADD COMICBOOK TO CATALOGUE
+const AddToCatalogueModal = ({setIsAddToCatalogueModalOpen, catalogueList, setCatalogueList, isModalOpen, comic, setToast, setToastIsOpen})=>{
+    const [activeCatalogue, setActiveCatalogue] = useState(null);
 
-const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled, userId, setCatalogueList,
-                             isSearchDisabled, url, setUrl, params, setParams, searchQuery, setSearchQuery, setIsAddToCatalogueModalOpen})=>{
+    return(
+        <GenericModal modalTitle={"Dodaj u katalog"}
+                      btnText={"Dodaj"}
+                      showModal={isModalOpen}
+                      closeModal={()=>setIsAddToCatalogueModalOpen(false)}>
+            <CatalogueList catalogueList={catalogueList} activeCatalogue={activeCatalogue} setActiveCatalogue={setActiveCatalogue} setCatalogueList={setCatalogueList} />
+            <div className="d-flex w-100 justify-content-end">
+                <button type="button" className="btn btn-primary" onClick={()=>addComicToCatalogue(comic, activeCatalogue, setIsAddToCatalogueModalOpen, setToast, setToastIsOpen)}>Dodaj!</button>
+            </div>
+        </GenericModal>
+    );
+}
+
+//LIST OF CATALOGUES
+const CatalogueList = ({catalogueList, activeCatalogue, setCatalogueList, setActiveCatalogue})=>{
+    useEffect(()=>{
+        fetchCatalogues(setCatalogueList, setActiveCatalogue);
+    }, []);
+    return(
+        <div className={cx("d-flex form-group flex-wrap", styles.modal)}>
+            {catalogueList && activeCatalogue && catalogueList.map((catalogue)=>
+                <div className="d-flex flex-column">
+                    <div key={catalogue.id} className={cx(["d-flex flex-column mx-2 my-1 align-items-center", activeCatalogue.id === catalogue.id ? styles.activeKat : ""])}
+                         onClick={()=>changeSelectedCatalogue(catalogue.id, activeCatalogue, setActiveCatalogue, catalogueList)}>
+                        <div className={cx("card text-white", styles.katalogContainer)}>
+                            <div className="card-body">
+                                <h5 className="card-title">{catalogue.naziv}</h5>
+                            </div>
+                        </div>
+                    </div>
+                    {activeCatalogue.id === catalogue.id && <span className="text-primary text-center">Odabrani katalog</span>}
+                </div>
+            )}
+        </div>
+    );
+}
+
+//update selected catalogue
+function changeSelectedCatalogue(catId, activeCatalogue, setActiveCatalogue, catalogueList){
+    let newActiveCatInd = catalogueList.findIndex(cat=>parseInt(cat.id) === parseInt(catId));
+    setActiveCatalogue(catalogueList[newActiveCatInd]);
+}
+
+//SEARCH FUNCTIONALITY
+const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled, setCatalogueList,
+                             isSearchDisabled, url, setUrl, params, setParams, searchQuery, setSearchQuery, setIsAddToCatalogueModalOpen, setComic})=>{
 
     const [isSearchQueried, setIsSearchQueried] = useState(false);
     const [numberOfPages, setNumberOfPages] = useState(null);
@@ -132,12 +183,13 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                 setNumberOfPages={setNumberOfPages}
                 setSearchResults={setSearchResults}
                 setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
-                userId={userId}
                 setCatalogueList={setCatalogueList}
+                setComic={setComic}
             />}
         </form>);
 }
 
+//SELECT SEARCH TYPE
 const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage,
                             setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults, setSearchQuery})=>{
     const searchValues = Object.values(SEARCH_TYPES);
@@ -161,6 +213,7 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
     );
 }
 
+//RENDER GENRE OR PUBLISHER BUTTONS
 const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage, setSearchQuery})=>{
     return(
         array.map(value=>
@@ -169,8 +222,9 @@ const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried
     );
 }
 
+//SEARCH RESULTS
 const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberOfPages, currentPage, url, activeSearchType, setIsSearchQueried,
-                           setSearchResults, searchQuery,setIsAddToCatalogueModalOpen, userId, setCatalogueList})=>{
+                           setSearchResults, searchQuery,setIsAddToCatalogueModalOpen, setComic})=>{
     return(
         <div className="d-flex w-100 flex-column justify-content-center">
             <h1 className={styles.title}>Rezultati pretrage</h1>
@@ -181,7 +235,7 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
                     return(
                         <div className={cx("d-flex mx-5 flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
                             <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} id={comic.id}/>
-                            <AddToCatalogueButton onClick={()=>setIsAddToCatalogueModalOpen(true)} />
+                            <button type="button" className={cx("btn btn-info btn-lg btn-block mt-4", styles.addToCatButton)} onClick={()=>{setIsAddToCatalogueModalOpen(true); setComic(comic);}}>Dodaj u katalog</button>
                         </div>
                     )
                 })}
@@ -195,19 +249,6 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
         </div>
     );
 }
-
-function catalogueModalActions(setIsAddToCatalogueModalOpen, userId, setCatalogueList){
-    setIsAddToCatalogueModalOpen(true);
-    //PRIVREMENO
-    //fetchCatalogues(catalogueUrl + routes.katalozi.path + routes.katalozi.svi.path, {id_korisnik: userId}, setCatalogueList);
-}
-
-const AddToCatalogueButton = ({onClick})=>{
-    return(
-        <button type="button" className={cx("btn btn-info btn-lg btn-block mt-4", styles.addToCatButton)} onClick={onClick}>Dodaj u katalog</button>
-    );
-}
-
 
 //switch between different search types
 function changeActiveSearchType(activeSearchType, setActiveSearchType, setIsSearchDisabled, setUrl, setCurrentPage, setNumberOfPages){
@@ -262,6 +303,8 @@ function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, se
     }
 }
 
+
+
 /*     API CALLS        */
 
 function fetchGenreOrPublisher(url, setArray){
@@ -286,6 +329,45 @@ function fetchComics(url, params, setNumberOfPages, setSearchResults){
     }).catch(err=>{
         console.log(err);
     });
+}
+
+function fetchCatalogues(setCatalogueList,setActiveCatalogue){
+    authenticatedApi.get(routes.user.path + routes.user.single.path + localStorage.getItem("username"))
+        .then(response=>{
+            authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path,{
+                params: {id_korisnik: response.data.id},
+            }).then(res=>{
+                setCatalogueList(res.data);
+                setActiveCatalogue(res.data[0]);
+            }).catch(err=>{
+                console.log(err);
+            })
+        })
+        .catch(err=>{console.log(err)});
+}
+
+function addComicToCatalogue(comic, catalogue, setIsModalOpen, setToast, setToastIsOpen){
+    authenticatedApi.put(routes.katalozi.path + routes.katalozi.dodaj_strip.path, {
+        id_strip: comic.id,
+        id_katalog: catalogue.id
+    })
+        .then(res=>{
+            setToast({
+                type: "success",
+                message: "Uspješno ste dodali strip " + comic.naziv + " u katalog " + catalogue.naziv + "."
+            });
+            console.log(res);
+            setToastIsOpen(true);
+            setIsModalOpen(false);
+        })
+        .catch(err=>{
+            setToast({
+                type: "danger",
+                message: "Došlo je do greške!"
+            });
+            setToastIsOpen(true);
+            setIsModalOpen(false);
+        });
 }
 
 //get params based on seach type

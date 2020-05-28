@@ -62,6 +62,10 @@ export const routes = {
         novi: {
             label: "novi katalog",
             path: "/novi"
+        },
+        dodaj_strip:{
+            label:"dodavanje stripa",
+            path:"/dodavanje-stripa"
         }
     },
     strip:{
