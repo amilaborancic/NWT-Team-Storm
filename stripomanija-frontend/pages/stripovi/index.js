@@ -90,8 +90,8 @@ const CatalogueList = ({catalogueList, activeCatalogue, setCatalogueList, setAct
     return(
         <div className={cx("d-flex form-group flex-wrap", styles.modal)}>
             {catalogueList && activeCatalogue && catalogueList.map((catalogue)=>
-                <div className="d-flex flex-column">
-                    <div key={catalogue.id} className={cx(["d-flex flex-column mx-2 my-1 align-items-center", activeCatalogue.id === catalogue.id ? styles.activeKat : ""])}
+                <div className="d-flex flex-column" key={catalogue.id}>
+                    <div className={cx(["d-flex flex-column mx-2 my-1 align-items-center", activeCatalogue.id === catalogue.id ? styles.activeKat : ""])}
                          onClick={()=>changeSelectedCatalogue(catalogue.id, activeCatalogue, setActiveCatalogue, catalogueList)}>
                         <div className={cx("card text-white", styles.katalogContainer)}>
                             <div className="card-body">
@@ -303,8 +303,6 @@ function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, se
     }
 }
 
-
-
 /*     API CALLS        */
 
 function fetchGenreOrPublisher(url, setArray){
@@ -337,6 +335,7 @@ function fetchCatalogues(setCatalogueList,setActiveCatalogue){
             authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path,{
                 params: {id_korisnik: response.data.id},
             }).then(res=>{
+                console.log(res.data);
                 setCatalogueList(res.data);
                 setActiveCatalogue(res.data[0]);
             }).catch(err=>{

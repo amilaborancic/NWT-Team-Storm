@@ -66,6 +66,10 @@ export const routes = {
         dodaj_strip:{
             label:"dodavanje stripa",
             path:"/dodavanje-stripa"
+        },
+        brisi_strip:{
+            label:"brisanje stripa iz kataloga",
+            path:"/brisanje-stripa"
         }
     },
     strip:{

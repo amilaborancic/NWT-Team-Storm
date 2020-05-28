@@ -1,0 +1,12 @@
+.thumbnailContainer{
+    height: 400px;
+}
+
+.deleteBtn{
+    background-color: var(--crimson);
+    color: white;
+}
+
+.deleteBtn:hover{
+    color: white;
+}
