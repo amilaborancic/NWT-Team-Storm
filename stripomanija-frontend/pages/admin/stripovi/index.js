@@ -41,7 +41,7 @@ const Stripovi = ()=>{
                     )}
                 </div>
                 {stripList && totalPages &&
-                <div className="d-flex fixed-bottom justify-content-center">
+                <div className="d-flex mt-3 justify-content-center">
                     <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
                 </div>}
             </div>

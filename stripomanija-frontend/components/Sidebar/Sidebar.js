@@ -21,7 +21,7 @@ const Sidebar = ({children})=>{
                         )}
                     </div>
                 </div>
-                <button type="button" className="btn btn-primary btn-lg mt-2" onClick={()=>logOut(router)}>Odjava</button>
+                <button type="button" onClick={()=>logOut(router)} className="btn btn-primary btn-lg" >Odjava</button>
 
             </div>
             <div className="d-flex flex-column w-100 p-4">

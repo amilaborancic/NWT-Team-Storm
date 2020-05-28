@@ -143,6 +143,10 @@ export const routes = {
         svi: {
             path: "/svi",
             label: "svi autori"
+        },
+        novi: {
+            path:"/novi",
+            label:"novi autor"
         }
     },
     rating:{
@@ -159,7 +163,7 @@ export const routes = {
     },
     adminPanel:{
         label: "Admin panel",
-        path: "/admin"
+        path: "/admin/stripovi"
     }
 }
 
@@ -175,5 +179,9 @@ export const adminPanelRoutes = {
     zanrovi: {
         label: "Žanrovi",
         path: "/admin/zanrovi"
+    },
+    autori: {
+        label: "Autori",
+        path: "/admin/autori"
     }
 }
