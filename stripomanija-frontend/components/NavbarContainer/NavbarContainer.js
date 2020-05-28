@@ -2,21 +2,23 @@ import React, {useState} from "react";
 import styles from "./NavbarContainer.module.css";
 import cx from "classnames";
 import { useRouter } from 'next/router';
-import {navbarRoutes} from "../../util/routes";
+import {navbarRoutes, routes} from "../../util/routes";
 
 const NavbarContainer = ({children})=>{
     const router = useRouter();
     const [isDropDownClicked, setIsDropDownClicked] = useState(false);
+    const [isOptionMenuClicked, setIsOptionMenuClicked] = useState(false);
 
     return(
         <div className={styles.container}>
-            <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
+            <nav className="navbar navbar-expand-lg navbar-dark bg-primary" >
                 <a className="navbar-brand">STRIPOMANIJA</a>
-                <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01"
-                        aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+                <button className="navbar-toggler" type="button" data-toggle="collapse"
+                        data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation" onClick={()=>setIsOptionMenuClicked(!isOptionMenuClicked)}>
+                    <span className="navbar-toggler-icon"/>
                 </button>
-
-                <div className="collapse navbar-collapse" id="navbarColor01">
+                <div className={cx("collapse navbar-collapse", {"show":isOptionMenuClicked})} id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
                         {Object.values(navbarRoutes).map(route=>
                             <li className={cx("nav-item", {"active": router.pathname === route.path})} key={route.path}>
@@ -24,8 +26,8 @@ const NavbarContainer = ({children})=>{
                             </li>
                         )}
                     </ul>
+                    <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} router={router}/>
                 </div>
-                <DropDownMenu isDropDownClicked={isDropDownClicked} setIsDropDownClicked={setIsDropDownClicked} router={router}/>
             </nav>
             {children}
         </div>
@@ -50,7 +52,7 @@ export const logOut = (router)=>{
     localStorage.removeItem("role");
     localStorage.removeItem("username");
     //navigate to homepage
-    router.push(navbarRoutes.home.path);
+    router.push(routes.home.path);
 }
 
 const handleDropDownClick = (setIsDropDownClicked, isDropDownClicked)=>{

@@ -1,10 +1,6 @@
 import {catalogue, user} from "./url";
 
 export const navbarRoutes = {
-    home: {
-        label: "Home",
-        path: "/profil"
-    },
     pretraga: {
         label: "Pretraga stripova",
         path:"/stripovi"
@@ -16,6 +12,10 @@ export const navbarRoutes = {
 }
 
 export const routes = {
+    home:{
+        label:"home",
+        path:"/"
+    },
     searchStripovi: {
         label: "Rezultati pretrage",
         path: "/search"

@@ -28,7 +28,7 @@ const Profile = ()=>{
     }, []);
     return(
         <NavbarContainer>
-            <div className="d-flex">
+            <div className={cx("d-flex", styles.container)}>
                 <UserDetails user={user}/>
                 <Katalozi user={user}/>
             </div>
@@ -37,13 +37,13 @@ const Profile = ()=>{
 
 const UserDetails = ({user})=>{
     return(
-        <div className={cx("flex-column w-25 text-left px-4 py-4", styles.infoContainer)}>
-            <h1>Info</h1>
-            <h4 className="mt-4">Ime i prezime</h4>
-            <h1 className="mt-3 ml-3">{user.ime} {user.prezime}</h1>
-            <h4 className="mt-4">Email</h4>
-            <h3 className="mt-3 ml-3">{user.email}</h3>
-            <h4 className="mt-4">Ukupno {user.ukupno_reviewa} ostavljenih recenzija </h4>
+        <div className={styles.infoContainer}>
+            <p className={cx(styles.infoTitle)}>Info</p>
+            <p className={styles.infoText}>Ime i prezime</p>
+            <p className={styles.infoTextSmall}>{user.ime} {user.prezime}</p>
+            <p className={styles.infoText}>Email</p>
+            <p className={styles.infoTextSmall}>{user.email}</p>
+            <p className={styles.infoText}>Ukupno {user.ukupno_reviewa} ostavljenih recenzija </p>
         </div>
     );
 }
@@ -66,7 +66,7 @@ const Katalozi = ({user})=>{
     return(
         <div className={cx("d-flex flex-column w-75", styles.katalogContainer)}>
             <div className={cx(styles.wrapper, "justify-content-center align-items-center")}>
-                <h1 className="d-flex justify-content-center align-items-center">Moji katalozi</h1>
+                <p className={cx("d-flex justify-content-center align-items-center", styles.katTitle)}>Moji katalozi</p>
                 <button type="button" className={cx("ml-4", styles.newButton)} onClick={()=>setIsOpen(true)}>+</button>
             </div>
             <div className={cx(styles.wrapper, "flex-wrap")}>

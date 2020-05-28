@@ -1,3 +1,4 @@
+
 .wrapper {
     margin: 20px;
     display: flex;
@@ -5,11 +6,13 @@
 
 .infoContainer{
     min-height: calc(100vh - 60px);
-   /* border: 5px solid;
-    border-image-source: linear-gradient(45deg, var(--primary),var(--warning));
-    border-image-slice: 1;*/
+    width: 25%;
+    padding-left: 25px;
     border-top-right-radius: 50px;
+    flex-direction: column;
+    text-align: left;
     color:white;
+    padding-top: 10px;
     background-image: linear-gradient(0deg, var(--warning),var(--primary));
 }
 
@@ -17,6 +20,27 @@
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+.infoTitle{
+    font-weight: bold;
+    font-size: 30px;
+}
+
+
+.katTitle{
+    font-size: 35px;
+    font-weight: bold;
+}
+
+.infoText{
+    font-weight: bold;
+    font-size: 25px;
+}
+
+.infoTextSmall{
+    font-size: 20px;
+    margin-left: 20px;
 }
 
 .newButton{
@@ -45,4 +69,48 @@
 
 .katalogContainer{
     margin-left: 20px;
+}
+
+@media(max-width: 450px){
+    .container{
+        flex-direction: column;
+    }
+    .infoContainer{
+        min-height: 100px !important;
+        width: 100vw !important;
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 50px;
+        padding-left: 15px;
+    }
+    .infoText{
+        font-size: 15px;
+        margin-top: 0px !important;
+    }
+    .infoTitle{
+        font-size: 20px;
+    }
+    .infoTextSmall{
+        font-size: 12px;
+        margin-top: 0px !important;
+    }
+    .katTitle{
+        font-size: 25px;
+        font-weight: bold;
+    }
+    .newButton{
+        font-size: 20px;
+        width:30px;
+        height:30px;
+        margin-left: 10px!important;
+    }
+    .wrapper{
+        align-items: baseline !important;
+        justify-content: center;
+        margin: 0;
+    }
+    .katalogContainer{
+        margin-left: 0;
+        align-self: center;
+        margin-top: 10px;
+    }
 }

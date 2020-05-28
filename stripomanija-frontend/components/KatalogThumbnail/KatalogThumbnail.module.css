@@ -15,3 +15,12 @@
     height: 200px !important;
     background-color: var(--dark-gray-02) !important;
 }
+
+
+@media(max-width: 450px){
+    .wrapper{
+        width: 100px !important;
+        height: 150px !important;
+        background-color: var(--dark-gray-02) !important;
+    }
+}

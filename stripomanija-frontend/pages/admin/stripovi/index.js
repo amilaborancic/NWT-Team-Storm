@@ -1,15 +1,12 @@
 import React, {useEffect, useState} from "react";
 import Sidebar from "../../../components/Sidebar/Sidebar";
-import {authenticatedApi, baseUrl} from "../../../util/url";
+import {authenticatedApi} from "../../../util/url";
 import StripThumbnail from "../../../components/StripThumbnail/StripThumbnail";
 import GenericModal from "../../../components/GenericModal/GenericModal";
 import {routes} from "../../../util/routes";
 import Pagination from "../../../components/Pagination/Pagination";
 import GenericField from "../../../components/FormFields/GenericField";
-import ToastMessage from "../../../components/ToastMessage/ToastMessage";
-import styles from "./index.module.css";
-import cx from "classnames";
-import Spinner from "react-bootstrap/Spinner";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";;
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 

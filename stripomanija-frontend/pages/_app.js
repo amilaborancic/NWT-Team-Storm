@@ -3,9 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import "../public/bootstrap.theme.min.css";
 import "./global.css";
 import Router from 'next/router';
-import axios from "axios";
 import {AuthProvider} from "../util/AuthProvider";
-import Spinner from "react-bootstrap/Spinner";
 import PageLoader from "../components/PageLoader/PageLoader";
 
 // eslint-disable-next-line react/prop-types
