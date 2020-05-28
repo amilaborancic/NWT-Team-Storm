@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import styles from "./CatalogueList.module.css";
 import axios from "axios";
-import {catalogueUrl} from "../../util/url";
+import {authenticatedApi, catalogueUrl} from "../../util/url";
 import {routes} from "../../util/routes";
 import cx from "classnames";
 
@@ -11,13 +11,13 @@ const CatalogueList = ({setSelectedCatalogue})=>{
     const [idUser, setIdUser] = useState(3);
     const [activeRadio, setActiveRadio] = useState(null);
     useEffect(()=>{
-        fetchCatalogues(catalogueUrl + routes.katalozi.path + routes.katalozi.svi.path, {id_korisnik: idUser}, setCatalogueList, setActiveRadio);
+        fetchCatalogues(routes.katalozi.path + routes.katalozi.svi.path, {id_korisnik: idUser}, setCatalogueList, setActiveRadio);
     }, []);
 
     return(
-        <div className="d-flex form-group">
+        <div className={cx("d-flex form-group flex-wrap", styles.modal)}>
             {catalogueList && activeRadio && catalogueList.map((catalogue)=>
-                <div key={catalogue.id} className="d-flex flex-column mx-3 align-items-center">
+                <div key={catalogue.id} className="d-flex flex-column mx-3 align-items-center my-1">
                     <div className={cx("card text-white mb-3", styles.container)}>
                         <div className="card-body">
                             <h5 className="card-title">{catalogue.naziv}</h5>
@@ -36,7 +36,7 @@ const CatalogueList = ({setSelectedCatalogue})=>{
 }
 
 function fetchCatalogues(url, params, setCatalogueList, setActiveRadio){
-    axios.get(url, {
+    authenticatedApi.get(url, {
         params: params
     }).then(res=>{
         setCatalogueList(res.data);

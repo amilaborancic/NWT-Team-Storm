@@ -133,11 +133,13 @@ public class UserController {
     public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
 
     private void isUserPriviledged(Long id, Map<String, String> headers, String errorMsg){
+        System.out.println(headers.keySet());
         String token = headers.get("authorization").substring(7);
+        System.out.println(token);
         String username = jwt.extractUsername(token);
         User logovani_user = userServis.singleUser(username);
         Long id_logovanog = logovani_user.getId();
         String role = logovani_user.getRole().getRoleName().toString();
-        if(!role.equals(RoleName.ROLE_ADMIN.toString()) && id != id_logovanog) throw new ApiUnauthorizedException(errorMsg);
+        if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !id.equals(id_logovanog)) throw new ApiUnauthorizedException(errorMsg);
     }
 }

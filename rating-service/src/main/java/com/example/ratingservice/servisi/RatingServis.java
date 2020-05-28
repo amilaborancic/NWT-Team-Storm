@@ -95,7 +95,7 @@ public class RatingServis {
 		ratingRepozitorij.save(rating);
 	}
 
-	public String addRating(Rating rating) throws JsonMappingException, JsonProcessingException {
+	public String addRating(Rating rating, String accessToken) throws JsonMappingException, JsonProcessingException {
 
 		// provjera
 		if (rating.getOcjena() < 1 || rating.getOcjena() > 5)
@@ -103,8 +103,15 @@ public class RatingServis {
 
 		if (rating.getKorisnik() == null || rating.getStrip() == null)
 			throw new ApiRequestException("Nepotpun zahtjev!");
+
+		//authorizazion header
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_JSON);
+		headers.set("Authorization", "Bearer "+ accessToken);
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+
 		// dodano zbog exceptiona
-		ResponseEntity<Long> korisnici = restTemplate.getForEntity("http://user-service/user/count", Long.class);
+		ResponseEntity<Long> korisnici = restTemplate.exchange("http://user-service/user/count", HttpMethod.GET, entity, Long.class);
 		ResponseEntity<Long> stripovi = restTemplate.getForEntity("http://comicbook-service/strip/count", Long.class);
 
 		// provjera
@@ -125,7 +132,7 @@ public class RatingServis {
 
 		// user-rating
 		url = "http://user-service/user/" + rating.getKorisnik().getId();
-		ResponseEntity<String> response_korisnik = restTemplate.getForEntity(url, String.class);
+		ResponseEntity<String> response_korisnik = restTemplate.exchange(url, HttpMethod.GET, entity, String.class);
 		mapper = new ObjectMapper();
 		root = mapper.readTree(response_korisnik.getBody());
 		// podaci o korisniku
@@ -137,7 +144,7 @@ public class RatingServis {
 		List<Rating> rating_lista = ratingRepozitorij.findAll();
 		for (Rating r : rating_lista) {
 			if (r.getKorisnik().getId() == korisnik_id && r.getStrip().getId() == strip_id)
-				throw new ApiRequestException("Korisnik je vec ostavio rating na dati strip.");
+				throw new ApiRequestException("Već ste ostavili recenziju na ovaj strip.");
 		}
 
 		// logika za rating
@@ -175,14 +182,16 @@ public class RatingServis {
 
 		// update strip
 		url = "http://comicbook-service/strip/update-rating";
-		HttpHeaders headers = new HttpHeaders();
+		headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		//headers.set("Authorization", "Bearer "+ accessToken);
 		HttpEntity<StripInfoRating> requestEntity = new HttpEntity<StripInfoRating>(strip_r, headers);
 		restTemplate.put(url, requestEntity);
 		// update korisnik
 		url = "http://user-service/user/update-rating";
 		headers = new HttpHeaders();
 		headers.add("Accept", MediaType.APPLICATION_JSON_VALUE);
+		headers.set("Authorization", "Bearer "+ accessToken);
 		HttpEntity<KorisnikInfoRating> requestBody = new HttpEntity<KorisnikInfoRating>(korisnik_r, headers);
 		restTemplate.put(url, requestBody);
 		stripRepozitorij.save(strip);

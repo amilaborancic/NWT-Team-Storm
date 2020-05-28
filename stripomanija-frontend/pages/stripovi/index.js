@@ -32,6 +32,9 @@ const Stripovi = ()=>{
                           closeModal={()=>setIsAddToCatalogueModalOpen(false)}>
 
                 <CatalogueList catalogueList={catalogueList} />
+                <div className="d-flex w-100 justify-content-end">
+                    <button type="button" className="btn btn-primary">Dodaj!</button>
+                </div>
             </GenericModal>}
             <NavbarContainer>
                 <div className={styles.wrapper}>

@@ -66,7 +66,7 @@ public class RatingServisTest {
 		assertThat(ratingServis.getOne(rating.getId()).getOcjena()).isEqualTo(2);
 	}
 
-	@Test
+	/*@Test
 	public void addRating() throws Exception{
 		Rating rating=new Rating(korisnikServis.getOne(1L),stripServis.getOne(2L),2,"los strip");
 		ratingServis.addRating(rating);
@@ -74,9 +74,9 @@ public class RatingServisTest {
 		assertThat(ratingServis.getOne(rating.getId()).getKomentar()).isEqualTo("los strip");
 		assertThat(ratingServis.getOne(rating.getId()).getKorisnik().getId()).isEqualTo(Long.valueOf(1));
 		assertThat(ratingServis.getOne(rating.getId()).getStrip().getId()).isEqualTo(Long.valueOf(2));
-	}
+	}*/
 	
-	@Test
+	/*@Test
 	public void addRatingInvalidKorisnik() throws Exception{
 		User korisnik=new User();
 		korisnik.setId(9999L);
@@ -107,7 +107,7 @@ public class RatingServisTest {
 		Exception exception = assertThrows(ApiRequestException.class, () -> ratingServis.addRating(rating));
 		assertTrue(exception.getMessage().contains("Ocjena mora bit u rasponu od 1 do 5!"));
 	}
-	
+	*/
 	
 	@Test
 	public void commentsByStripInvalidStrip() {

@@ -7,11 +7,15 @@ import {routes} from "../../../util/routes";
 import BeautyStars from "beauty-stars";
 import Comment from "../../../components/Comment/Comment";
 import GenericModal from "../../../components/GenericModal/GenericModal";
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 
 const StripDetails = ({ router: { query } })=>{
     const [comic, setComic] = useState({});
     const [commentList, setCommentList] = useState([]);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
+    const [isToastMessageOpen, setIsToastMessageOpen] = useState(false);
+    const [toastText, setToastText] = useState("");
+    const [toastType, setToastType] = useState("success");
     const [newRateReview, setNewRateReview] = useState({
         korisnik: {
             id:null
@@ -44,7 +48,14 @@ const StripDetails = ({ router: { query } })=>{
                         <RightPart commentList={commentList} comic={comic}  setIsRatingModalOpen={setIsRatingModalOpen}/>
                     </>}
                 </div>
-                <NewRateReviewModal isRatingModalOpen={isRatingModalOpen} setIsRatingModalOpen={setIsRatingModalOpen} newRateReview={newRateReview} setNewRateReview={setNewRateReview} />
+                <NewRateReviewModal isRatingModalOpen={isRatingModalOpen} setIsRatingModalOpen={setIsRatingModalOpen}
+                                    newRateReview={newRateReview}
+                                    setNewRateReview={setNewRateReview}
+                                    setIsToastOpen={setIsToastMessageOpen}
+                                    setToastText={setToastText}
+                                    setToastType={setToastType}
+                />
+                <ToastMessage setIsOpen={setIsToastMessageOpen} isOpen={isToastMessageOpen} type={toastType} message={toastText}/>
             </>
         </NavbarContainer>
     )
@@ -86,7 +97,7 @@ const CommentSection = ({commentList, comic, setIsRatingModalOpen})=>{
                     )}
             </div>
             <div className="d-flex w-100 justify-content-end mt-2">
-                <button type="button" className="btn btn-info" onClick={()=>setIsRatingModalOpen(true)}>Ostavite recenziju!</button>
+                <button type="button" className="btn btn-info" onClick={()=>setIsRatingModalOpen(true)}>Ostavite recenziju</button>
             </div>
         </>
     );
@@ -106,7 +117,7 @@ const LeftPart = ({comic})=>{
     );
 }
 
-const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateReview, setNewRateReview})=>{
+const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateReview, setNewRateReview, setIsToastOpen, setToastType, setToastText})=>{
     const [ocjena, setOcjena] = useState(0);
     return(
         <GenericModal showModal={isRatingModalOpen}
@@ -123,14 +134,14 @@ const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateRev
                           onChange={(e)=>handleFieldChange(e, newRateReview, setNewRateReview)} />
             </div>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-info" onClick={()=>rateReview(ocjena, newRateReview, setNewRateReview)}>Ok</button>
+                <button type="button" className="btn btn-info" onClick={()=>rateReview(ocjena, newRateReview, setNewRateReview, setIsRatingModalOpen, setIsToastOpen, setToastType, setToastText)}>Ok</button>
             </div>
         </GenericModal>
     );
 }
 
 //leave a review
-function rateReview(ocjena, newRateReview, setNewRateReview){
+function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, setIsToastOpen, setToastType, setToastText){
     let obj = newRateReview;
     obj.ocjena = ocjena;
     setNewRateReview(obj);
@@ -141,14 +152,34 @@ function rateReview(ocjena, newRateReview, setNewRateReview){
             newObj.korisnik = {id:res.data.id};
             setNewRateReview(newObj);
             //send post for new rating
-            authenticatedApi.post(routes.rating.path + routes.rating.novi.path, {
-                newRateReview
-            }).then(res=>{
-                console.log(res)
-            }).catch(err=>{console.log(err)})
+            console.log(newRateReview);
+            authenticatedApi.post(routes.rating.path + routes.rating.novi.path, newRateReview).then(res=>{
+                //close modal, show toast
+                setIsModalOpen(false);
+                setIsToastOpen(true);
+                setToastType("success");
+                setToastText(res);
+                //reset state
+                setNewRateReview({
+                    korisnik:{id:newRateReview.korisnik.id},
+                    strip: {id:null},
+                    ocjena: null,
+                    komentar: ""
+                });
+            }).catch(err=>{
+                console.log(err.response);
+                setIsModalOpen(false);
+                setIsToastOpen(true);
+                setToastText(err.response.data.message);
+                setToastType("danger");
+            })
         })
         .catch(err=>{
             console.log(err);
+            setIsModalOpen(false);
+            setIsToastOpen(true);
+            setToastText(err.response.data.message);
+            setToastType("danger");
         });
 }
 
@@ -170,7 +201,6 @@ function fetchComicDetails(idStrip, setComic){
         }
     })
         .then(res=>{
-            console.log(res.data);
             setComic(res.data);
         })
         .catch(err=>{
@@ -181,7 +211,6 @@ function fetchComicDetails(idStrip, setComic){
 function fetchComicReviews(stripId, setCommentList){
     authenticatedApi.get(routes.rating.path + routes.rating.komentari.path + stripId)
         .then(res=>{
-            let commentList = Object.entries(res.data);
             setCommentList(Object.entries(res.data));
         })
         .catch(err=>{

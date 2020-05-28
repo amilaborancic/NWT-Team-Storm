@@ -56,8 +56,9 @@ public class RatingKontroler {
 
 	// kreiranje novog ratinga - komunicira sa user i strip ms
 	@PostMapping(value = "/dodaj-rating", consumes = "application/json")
-	public String addRating(@RequestBody @Valid Rating rating) throws Exception {
-		return ratingServis.addRating(rating);
+	public String addRating(@RequestBody @Valid Rating rating, @RequestHeader Map<String, String> headers) throws Exception {
+		String token = headers.get("authorization").substring(7);
+		return ratingServis.addRating(rating, token);
 	}
 
 	//vraca ocjene

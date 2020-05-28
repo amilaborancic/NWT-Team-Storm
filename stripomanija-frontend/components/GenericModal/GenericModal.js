@@ -8,11 +8,9 @@ const GenericModal = ({children, modalTitle, closeModal, showModal, bottomText})
             <Modal.Header closeButton>
                 <Modal.Title>{modalTitle}</Modal.Title>
             </Modal.Header>
-
             <ModalBody text={bottomText}>
                 {children}
             </ModalBody>
-
         </Modal>
     );
 }

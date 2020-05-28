@@ -3,3 +3,26 @@
     width: 120px !important;
     height: 150px !important;
 }
+
+.modal{
+    max-height: 450px;
+    overflow-y: scroll;
+}
+
+.modal::-webkit-scrollbar-track
+{
+    border-radius: 5px;
+    background-color: #F5F5F5;
+}
+
+.modal::-webkit-scrollbar
+{
+    width: 7px;
+    background-color: #F5F5F5;
+}
+
+.modal::-webkit-scrollbar-thumb
+{
+    border-radius: 5px;
+    background-color:var(--primary);
+}
