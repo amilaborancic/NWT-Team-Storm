@@ -43,10 +43,13 @@
 
 .addToCatButton{
     font-size: 16px !important;
+    margin-top: 20px;
 }
 
 .thumbnailContainer{
     height: 400px;
+    margin-left: 20px;
+    margin-right: 20px;
 }
 
 .katalogContainer{
@@ -82,4 +85,69 @@
 .activeKat{
     border: 3px solid var(--primary);
     border-radius: 7px;
+}
+
+.searchContainer{
+    width: 75%;
+}
+
+.formStyle{
+    width: 50%;
+}
+.wrapResults{}
+
+@media(max-width: 749px){
+    .wrapResults{
+        flex-wrap: wrap;
+        margin-bottom: 40px;
+    }
+    .wrapper{
+        margin: 10px;
+    }
+    .formStyle{
+        width: 100%;
+    }
+    .searchDropdown{
+        transform: translateX(-160px);
+    }
+    .buttonContainer{
+        max-height: 38px;
+        align-items: center;
+    }
+    .button{
+        font-size: 12px !important;
+    }
+    .thumbnailContainer{
+        height: 350px;
+        width: 100px;
+    }
+    .addToCatButton{
+        margin-top: 10px;
+        font-size: 10px !important;
+    }
+
+}
+
+@media(min-width: 750px) and (max-width: 1024px){
+    .wrapper {
+        margin-top: 20px;
+    }
+    .searchContainer{
+        width: 100%;
+    }
+    .formStyle{
+        width: 100%;
+    }
+    .searchDropdown{
+        transform: translateX(-160px);
+    }
+    .wrapResults{
+        flex-wrap: wrap;
+        justify-content: left !important;
+        margin-bottom: 20px;
+    }
+    .thumbnailContainer{
+        margin-top: 20px;
+    }
+
 }

@@ -23,7 +23,8 @@ import java.util.Map;
 @RequestMapping(value="/strip")
 public class StripController {
 
-    private int brojStripovaNaStranici = 5;
+    private int brojStripovaNaStranici = 6;
+
     private String jsonTemplate = "jsonTemplate";
     @Autowired
     StripService stripService;

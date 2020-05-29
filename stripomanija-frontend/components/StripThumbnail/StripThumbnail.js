@@ -10,7 +10,7 @@ const StripThumbnail = ({children, image, title, animated, id})=>{
         <Link href={`${routes.strip.jedan.path}[id_strip]`} as={`${routes.strip.jedan.path}${id}`}>
             <div className={cx(classList)}>
                 <img src={image} className={cx("my-3",styles.image)}/>
-                <h4 className={styles.cursor}>{title}</h4>
+                <h5 className={styles.cursor}>{title}</h5>
                 {children}
             </div>
         </Link>

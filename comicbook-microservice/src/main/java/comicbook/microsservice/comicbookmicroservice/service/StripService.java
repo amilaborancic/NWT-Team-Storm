@@ -196,7 +196,7 @@ public class StripService {
         return stripRepository.countStripByNazivContains(naziv);
     }
 	public int brojStranica(int brojStripova, int brojNaStranici){
-        return (int) round((double)brojStripova/brojNaStranici + 0.5);
+        return (int) round((double)brojStripova/brojNaStranici + 0.4);
     }
 	
     public List<Autor> autoriStripa(Long id){

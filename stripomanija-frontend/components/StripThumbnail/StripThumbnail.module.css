@@ -23,3 +23,13 @@
 .wrapper {
     width: 150px;
 }
+
+@media(max-width: 749px){
+    .wrapper{
+        width:100px;
+    }
+    .image {
+        width: 100px;
+        height: 150px;
+    }
+}

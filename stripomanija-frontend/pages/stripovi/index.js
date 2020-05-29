@@ -58,6 +58,8 @@ const Stripovi = ()=>{
                         setIsAddToCatalogueModalOpen={setIsAddToCatalogueModalOpen}
                         setCatalogueList={setCatalogueList}
                         setComic={setComic}
+                        setToast={setToast}
+                        setToastIsOpen={setToastIsOpen}
                     />
                 </div>
             </NavbarContainer>
@@ -113,7 +115,7 @@ function changeSelectedCatalogue(catId, activeCatalogue, setActiveCatalogue, cat
 }
 
 //SEARCH FUNCTIONALITY
-const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled, setCatalogueList,
+const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen, activeSearchType, setIsSearchDisabled, setCatalogueList, setToast, setToastIsOpen,
                              isSearchDisabled, url, setUrl, params, setParams, searchQuery, setSearchQuery, setIsAddToCatalogueModalOpen, setComic})=>{
 
     const [isSearchQueried, setIsSearchQueried] = useState(false);
@@ -127,36 +129,40 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
 
     //fetching every genre and publisher
     useEffect(()=>{
-        fetchGenreOrPublisher(routes.zanr.path + routes.zanr.svi.path, setGenreArray);
-        fetchGenreOrPublisher( routes.izdavac.path + routes.izdavac.svi.path, setPublisherArray);
+        fetchGenreOrPublisher(routes.zanr.path + routes.zanr.svi.path, setGenreArray, setToast, setToastIsOpen);
+        fetchGenreOrPublisher( routes.izdavac.path + routes.izdavac.svi.path, setPublisherArray, setToast, setToastIsOpen);
     }, []);
 
 
     return(
-        <form className="form-inline my-2 my-lg-0 w-50 mr-3">
-            <div className="w-75 d-flex flex-column">
-                <input className={cx("form-control", {"is-invalid":!activeSearchType && isSearchQueried})} type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
-                       onChange={(e)=>handleChangeInput(e, setSearchQuery)}/>
-                <div className="invalid-feedback">Odaberite tip pretrage!</div>
+        <form className={cx("form-group my-2", styles.formStyle)}>
+            <div className="d-flex">
+                <div className={cx("d-flex flex-column", styles.searchContainer)}>
+                    <input className={cx("form-control", {"is-invalid":!activeSearchType && isSearchQueried})} type="text" disabled={isSearchDisabled} placeholder="Pretraga stripova"
+                           onChange={(e)=>handleChangeInput(e, setSearchQuery)}/>
+                    <div className="invalid-feedback">Odaberite tip pretrage!</div>
+                </div>
+                <SearchDropDown
+                    setUrl={setUrl}
+                    url={url}
+                    activeSearchType={activeSearchType}
+                    setIsSearchDisabled={setIsSearchDisabled}
+                    currentPage={currentPage}
+                    isDropDownOpen={isDropDownOpen}
+                    setIsDropDownOpen={setIsDropDownOpen}
+                    searchQuery={searchQuery}
+                    setActiveSearchType={setActiveSearchType}
+                    setIsSearchQueried={setIsSearchQueried}
+                    setParams={setParams}
+                    params={params}
+                    setSearchQuery={setSearchQuery}
+                    setNumberOfPages={setNumberOfPages}
+                    setSearchResults={setSearchResults}
+                    setCurrentPage={setCurrentPage}
+                    setToastIsOpen={setToastIsOpen}
+                    setToast={setToast}
+                />
             </div>
-            <SearchDropDown
-                setUrl={setUrl}
-                url={url}
-                activeSearchType={activeSearchType}
-                setIsSearchDisabled={setIsSearchDisabled}
-                currentPage={currentPage}
-                isDropDownOpen={isDropDownOpen}
-                setIsDropDownOpen={setIsDropDownOpen}
-                searchQuery={searchQuery}
-                setActiveSearchType={setActiveSearchType}
-                setIsSearchQueried={setIsSearchQueried}
-                setParams={setParams}
-                params={params}
-                setSearchQuery={setSearchQuery}
-                setNumberOfPages={setNumberOfPages}
-                setSearchResults={setSearchResults}
-                setCurrentPage={setCurrentPage}
-            />
             <div className="d-flex w-100 justify-content-center mt-2">
                 {isSearchDisabled &&
                 <GenrePublisherButtons
@@ -190,7 +196,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
 }
 
 //SELECT SEARCH TYPE
-const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage,
+const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage, setToast, setToastIsOpen,
                             setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults, setSearchQuery})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
@@ -208,7 +214,8 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                         >{value.label}</a>)
                 }
             </div>
-            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button" onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage)}>Traži!</button>
+            <button className={cx("btn my-2 my-sm-0", styles.button)} type="button"
+                    onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen)}>Traži!</button>
         </div>
     );
 }
@@ -227,15 +234,15 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
                            setSearchResults, searchQuery,setIsAddToCatalogueModalOpen, setComic})=>{
     return(
         <div className="d-flex w-100 flex-column justify-content-center">
-            <h1 className={styles.title}>Rezultati pretrage</h1>
-            <div className="d-flex w-100 mt-4 justify-content-center align-items-start">
+            <h2 className={styles.title}>Rezultati pretrage</h2>
+            <div className={cx("d-flex w-100 mt-4 justify-content-center", styles.wrapResults)}>
                 {searchResults.map(comic=>{
                     let izdanje = "";
                     if(comic.izdanje) izdanje = `#${comic.izdanje}`;
                     return(
-                        <div className={cx("d-flex mx-5 flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
+                        <div className={cx("d-flex flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
                             <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} id={comic.id}/>
-                            <button type="button" className={cx("btn btn-info btn-lg btn-block mt-4", styles.addToCatButton)} onClick={()=>{setIsAddToCatalogueModalOpen(true); setComic(comic);}}>Dodaj u katalog</button>
+                            <button type="button" className={cx("btn btn-info btn-lg btn-block", styles.addToCatButton)} onClick={()=>{setIsAddToCatalogueModalOpen(true); setComic(comic);}}>Dodaj u katalog</button>
                         </div>
                     )
                 })}
@@ -294,10 +301,10 @@ function handleChangeInput(e, setSearchQuery){
 }
 
 //send request
-function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage){
+function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen){
     setIsSearchQueried(true);
     let queryParams = extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage);
-    fetchComics(url, queryParams, setNumberOfPages, setSearchResults);
+    fetchComics(url, queryParams, setNumberOfPages, setSearchResults, setToast, setToastIsOpen);
     if(activeSearchType === SEARCH_TYPES.IZDAVAC || activeSearchType === SEARCH_TYPES.ZANR){
         setSearchQuery(searchQuery);
     }
@@ -305,7 +312,7 @@ function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, se
 
 /*     API CALLS        */
 
-function fetchGenreOrPublisher(url, setArray){
+function fetchGenreOrPublisher(url, setArray, setToast, setToastIsOpen){
     const colors = ["success", "info", "danger", "warning"];
     authenticatedApi.get(url).then(res=>{
         let genreArray = res.data;
@@ -315,17 +322,28 @@ function fetchGenreOrPublisher(url, setArray){
         setArray(genreArray);
     }).catch(error=>{
         console.log(error);
+        setToast({
+            type:"danger",
+            message: comicbookServiceOfflineError
+        });
+        setToastIsOpen(true);
     });
 }
 
-function fetchComics(url, params, setNumberOfPages, setSearchResults){
+function fetchComics(url, params, setNumberOfPages, setSearchResults, setToast, setToastIsOpen){
     authenticatedApi.get(url, {
         params: params
     }).then(res=>{
+        console.log(res.data.brojStranica)
         setNumberOfPages(res.data.brojStranica);
         setSearchResults(res.data.stripovi);
     }).catch(err=>{
         console.log(err);
+        setToast({
+            type: "danger",
+            message: comicbookServiceOfflineError
+        });
+        setToastIsOpen(true);
     });
 }
 
@@ -415,5 +433,6 @@ function extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, s
     return queryParams;
 }
 
+const comicbookServiceOfflineError = "Servis za stripove je offline.";
 
 export default Stripovi;
