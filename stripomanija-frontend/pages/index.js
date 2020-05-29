@@ -8,10 +8,13 @@ import axios from "axios";
 import {baseUrl} from "../util/url";
 import {navbarRoutes, routes} from "../util/routes";
 import Router from 'next/router';
+import {useWindowDimensions} from "../components/hooks/useWindowDimensions";
 
 export default function Home() {
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+    const [windowDimensions, setWindowDimensions] = useState({});
+    useWindowDimensions(windowDimensions, setWindowDimensions);
 
     return (
         <>
@@ -23,23 +26,29 @@ export default function Home() {
                     <link rel="icon" href="/favicon.ico" />
                 </Head>
                 <div className={styles.upperSection}>
-                    <div>STRIPOMANIJA</div>
-                    <div className={styles.buttons}>
-                        <button type="button" className={cx("btn btn-primary btn-lg", styles.button)}
-                                onClick={()=>setIsRegisterModalOpen(true)}>Registracija</button>
-                        <button type="button" className={cx("btn btn-primary btn-lg", styles.space, styles.button)} onClick={()=>setIsLoginModalOpen(true)}>Login</button>
-                    </div>
+                    <div className={styles.title}>STRIPOMANIJA</div>
+                    {windowDimensions.width > 1200 && <Buttons setIsRegisterModalOpen={setIsRegisterModalOpen} setIsLoginModalOpen={setIsLoginModalOpen} />}
                 </div>
+                {windowDimensions.width <= 1199 && <Buttons setIsRegisterModalOpen={setIsRegisterModalOpen} setIsLoginModalOpen={setIsLoginModalOpen} />}
             </div>
         </>
     )
 }
 
-//ne radi jos
+
+const Buttons = ({setIsRegisterModalOpen, setIsLoginModalOpen})=>{
+    return(
+        <div className={styles.buttons}>
+        <button type="button" className={cx("btn btn-primary btn-lg", styles.button)}
+                onClick={()=>setIsRegisterModalOpen(true)}>Registracija</button>
+        <button type="button" className={cx("btn btn-primary btn-lg", styles.space, styles.button)} onClick={()=>setIsLoginModalOpen(true)}>Login</button>
+    </div>
+    );
+}
+
 const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen})=>{
     const [validationMsg, setValidationMsg] = useState(null);
 
-    //role povuci sa apija!!
     const [user, setUser] = useState({
         ime: "",
         prezime: "",

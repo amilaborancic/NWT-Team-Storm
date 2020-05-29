@@ -31,7 +31,7 @@ const KatalogDetails = ({ router: { query } })=>{
                 })
                 .catch(err=>{console.log(err)});
         }
-    }, [query.idKatalog]);
+    }, [query.idKatalog, comicList]);
 
     return(
         <NavbarContainer>

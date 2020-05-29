@@ -21,15 +21,63 @@
 .buttons{
     display: flex;
     justify-content: center;
-    position: absolute;
-    bottom: -20px;
 }
 
 .button{
     width: 150px;
 }
+.buttonGroupContainer {}
+.title{}
 
-.buttonGroupContainer {
-
+@media(max-width: 749px){
+    .upperSection{
+        height: 200px;
+        align-items: center
+    }
+    .title{
+        font-size: 50px;
+    }
+    .buttons{
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        height: 200px;
+        width: 100%;
+        margin-top: 50px;
+    }
+    .space{
+        margin:0;
+    }
 }
 
+@media(min-width: 750px) and (max-width: 1199px){
+    .title{
+        font-size: 100px;
+    }
+    .upperSection{
+        height: 40%;
+        align-items: center
+    }
+    .buttons{
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-between;
+        height: 250px;
+        width: 100%;
+        margin-top: 20%;
+    }
+    .button{
+        font-size: 30px !important;
+        width: 200px;
+    }
+    .space{
+        margin:0;
+    }
+}
+
+@media(min-width: 1200px){
+    .buttons{
+        position: absolute;
+        bottom: -20px;
+    }
+}
