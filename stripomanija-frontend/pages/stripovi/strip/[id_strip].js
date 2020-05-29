@@ -8,6 +8,8 @@ import BeautyStars from "beauty-stars";
 import Comment from "../../../components/Comment/Comment";
 import GenericModal from "../../../components/GenericModal/GenericModal";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import cx from "classnames";
+import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
 
 const StripDetails = ({ router: { query } })=>{
     const [comic, setComic] = useState({});
@@ -16,6 +18,8 @@ const StripDetails = ({ router: { query } })=>{
     const [isToastMessageOpen, setIsToastMessageOpen] = useState(false);
     const [toastText, setToastText] = useState("");
     const [toastType, setToastType] = useState("success");
+    const [windowDimensions, setWindowDimensions] = useState({});
+    useWindowDimensions(windowDimensions, setWindowDimensions);
     const [newRateReview, setNewRateReview] = useState({
         korisnik: {
             id:null
@@ -40,14 +44,18 @@ const StripDetails = ({ router: { query } })=>{
 
     return(
         <NavbarContainer>
-            <>
-                <div className="d-flex mx-4 mt-2">
+            <div className={styles.wrapper}>
+                <div className={cx("d-flex mt-2", styles.container)}>
                     {comic &&
                     <>
                         <LeftPart comic={comic}/>
-                        <RightPart commentList={commentList} comic={comic}  setIsRatingModalOpen={setIsRatingModalOpen}/>
+                        <RightPart commentList={commentList} comic={comic}  setIsRatingModalOpen={setIsRatingModalOpen} windowDimensions={windowDimensions}/>
                     </>}
                 </div>
+                {windowDimensions.width >= 750 && windowDimensions.width <= 1024 &&
+                <div className={styles.commentSection}>
+                    <CommentSection comic={comic} commentList={commentList} setIsRatingModalOpen={setIsRatingModalOpen} />
+                </div>}
                 <NewRateReviewModal isRatingModalOpen={isRatingModalOpen} setIsRatingModalOpen={setIsRatingModalOpen}
                                     newRateReview={newRateReview}
                                     setNewRateReview={setNewRateReview}
@@ -56,18 +64,18 @@ const StripDetails = ({ router: { query } })=>{
                                     setToastType={setToastType}
                 />
                 <ToastMessage setIsOpen={setIsToastMessageOpen} isOpen={isToastMessageOpen} type={toastType} message={toastText}/>
-            </>
+            </div>
         </NavbarContainer>
     )
 
 }
 
-const RightPart = ({comic, commentList, setIsRatingModalOpen})=>{
+const RightPart = ({comic, commentList, setIsRatingModalOpen, windowDimensions})=>{
     return(
-        <div className="w-50" style={{marginLeft:"7%"}}>
-            <h1 className="display-3">
+        <div className={cx(styles.descriptionContainer)}>
+            <h2 className="display-4">
                 <strong>{comic.naziv}</strong>
-            </h1>
+            </h2>
             <p style={{fontSize: "20px"}}>Autori:
                 {comic.autori && comic.autori.map((autor, index) => {
                     let comma = ",";
@@ -79,7 +87,7 @@ const RightPart = ({comic, commentList, setIsRatingModalOpen})=>{
             <p className="text-muted" style={{fontSize: "20px"}}>
                 {comic.opis}
             </p>
-            <CommentSection comic={comic} commentList={commentList} setIsRatingModalOpen={setIsRatingModalOpen} />
+            {(windowDimensions.width > 1024 || windowDimensions.width <= 749) && <CommentSection comic={comic} commentList={commentList} setIsRatingModalOpen={setIsRatingModalOpen} />}
         </div>
     );
 }
@@ -87,15 +95,13 @@ const RightPart = ({comic, commentList, setIsRatingModalOpen})=>{
 const CommentSection = ({commentList, comic, setIsRatingModalOpen})=>{
     return(
         <>
-            <div>
-                <h3>Komentari</h3>
-                {comic.ukupnoKomentara === 0 ? "Trenutno nema komentara na ovaj strip." : commentList &&
-                    commentList.map(valuePair=>
-                        <div key={valuePair[0]} className="mt-2">
-                            <Comment username={valuePair[0]} commentBody={valuePair[1]} />
-                        </div>
-                    )}
-            </div>
+            <h3>Komentari</h3>
+            {comic.ukupnoKomentara === 0 ? "Trenutno nema komentara na ovaj strip." : commentList &&
+                commentList.map(valuePair=>
+                    <div key={valuePair[0]} className="mt-2">
+                        <Comment username={valuePair[0]} commentBody={valuePair[1]} />
+                    </div>
+                )}
             <div className="d-flex w-100 justify-content-end mt-2">
                 <button type="button" className="btn btn-info" onClick={()=>setIsRatingModalOpen(true)}>Ostavite recenziju</button>
             </div>
@@ -105,10 +111,10 @@ const CommentSection = ({commentList, comic, setIsRatingModalOpen})=>{
 
 const LeftPart = ({comic})=>{
     return(
-        <div className="ml-5">
+        <div className={styles.leftPart}>
             <img src={comic.slika} className={styles.img}/>
-            <div className="d-flex align-items-baseline mt-2">
-                <h4>Ocjena:</h4>
+            <div className="d-flex align-items-baseline mt-3">
+                <h3>Ocjena:</h3>
                 <div className="mx-2">
                     <BeautyStars size={20} value={comic.ukupniRating} inactiveColor={"#ccc"}/>
                 </div>

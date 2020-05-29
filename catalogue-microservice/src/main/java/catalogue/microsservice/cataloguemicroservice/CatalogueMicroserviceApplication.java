@@ -149,7 +149,12 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		katalogRepositorij.save(kat3);
 
 		stripovi = new ArrayList<>();
+		stripovi.add(stripRepozitorij.getOne(1L));
+		stripovi.add(stripRepozitorij.getOne(2L));
 		stripovi.add(stripRepozitorij.getOne(3L));
+		stripovi.add(stripRepozitorij.getOne(4L));
+		stripovi.add(stripRepozitorij.getOne(5L));
+		stripovi.add(stripRepozitorij.getOne(6L));
 		kat1.setStripovi(stripovi);
 		katalogRepositorij.save(kat1);
 
