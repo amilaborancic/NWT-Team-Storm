@@ -18,7 +18,7 @@ import java.util.List;
 @RequestMapping("/katalog")
 public class StripController {
 
-    private int brojStripovaNaStranici = 5;
+    private int brojStripovaNaStranici = 6;
 
     @Autowired
     StripService stripService;

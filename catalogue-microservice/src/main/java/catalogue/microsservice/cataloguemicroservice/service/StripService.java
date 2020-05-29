@@ -43,7 +43,7 @@ public class StripService {
     }
 
     public int brojStranica(int brojStripova, int brojNaStranici){
-        return (int) round((double)brojStripova/brojNaStranici + 0.5);
+        return (int) round((double)brojStripova/brojNaStranici + 0.4);
     }
 
 }
