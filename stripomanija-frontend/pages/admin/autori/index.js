@@ -8,6 +8,8 @@ import {handleFieldChange} from "../../index";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 import {authenticatedApi} from "../../../util/url";
 import {routes} from "../../../util/routes";
+import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
+import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
 
 
 
@@ -20,19 +22,53 @@ const Autori = ()=>{
         ime: "",
         prezime: ""
     });
+    const [windowDimensions, setWindowDimensions] = useState({});
+    useWindowDimensions(windowDimensions, setWindowDimensions);
 
     useEffect(()=>{
         fetchAuthors(setAuthorList);
     }, [authorList]);
 
     return(
+        windowDimensions.width <= 749 ?
+        <NavbarContainer admin>
+            <Body
+                authorList={authorList}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+                newAuthor={newAuthor}
+                setNewAuthor={setNewAuthor}
+                setIsToastOpen={setIsToastOpen}
+                setToast={setToast}
+                toast={toast}
+                isToastOpen={isToastOpen}
+            />
+        </NavbarContainer>
+            :
         <Sidebar>
-            <div className="d-flex flex-column">
+            <Body
+                authorList={authorList}
+                setIsOpen={setIsOpen}
+                isOpen={isOpen}
+                newAuthor={newAuthor}
+                setNewAuthor={setNewAuthor}
+                setIsToastOpen={setIsToastOpen}
+                setToast={setToast}
+                toast={toast}
+                isToastOpen={isToastOpen}
+            />
+        </Sidebar>
+    );
+}
+
+const Body = ({authorList, setIsOpen, isOpen, newAuthor, setNewAuthor, setIsToastOpen, setToast, toast, isToastOpen})=>{
+    return(
+        <div className={styles.container}>
+            <div className={cx("d-flex flex-column", styles.titleRow)}>
                 <h1>Autori</h1>
                 <button type="button" className={cx("btn btn-success", styles.newBtn)} onClick={()=>setIsOpen(true)}>Novi autor</button>
             </div>
             <div className="d-flex mt-5">
-
                 <ul className="list-group">
                     {authorList.map(author=>
                         <li key={author.id} className="list-group-item d-flex justify-content-between align-items-center">
@@ -51,10 +87,9 @@ const Autori = ()=>{
             </GenericModal>
             }
             {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>}
-        </Sidebar>
+        </div>
     );
 }
-
 
 function fetchAuthors(setAuthors){
     authenticatedApi.get(routes.autor.path + routes.autor.svi.path)

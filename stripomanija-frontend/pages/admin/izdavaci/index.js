@@ -8,6 +8,8 @@ import GenericModal from "../../../components/GenericModal/GenericModal";
 import GenericField from "../../../components/FormFields/GenericField";
 import {handleFieldChange} from "../../index";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
+import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
 
 
 const Izdavaci = ()=>{
@@ -18,27 +20,60 @@ const Izdavaci = ()=>{
     const [newPublisher, setNewPublisher] = useState({
         naziv: ""
     });
+    const [windowDims, setWindowDims] = useState({});
+    useWindowDimensions(windowDims, setWindowDims);
 
     useEffect(()=>{
         fetchPublishers(setPublisherList);
     }, [publisherList]);
 
     return(
-        <Sidebar>
-            <div className="d-flex flex-column">
+        windowDims.width <= 749 ?
+            <NavbarContainer admin>
+                <Body
+                    isToastOpen={isToastOpen}
+                    setIsToastOpen={setIsToastOpen}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    setToast={setToast}
+                    newPublisher={newPublisher}
+                    publisherList={publisherList}
+                    setNewPublisher={setNewPublisher}
+                    toast={toast}
+                />
+            </NavbarContainer>
+            :
+            <Sidebar>
+                <Body
+                    isToastOpen={isToastOpen}
+                    setIsToastOpen={setIsToastOpen}
+                    isOpen={isOpen}
+                    setIsOpen={setIsOpen}
+                    setToast={setToast}
+                    newPublisher={newPublisher}
+                    publisherList={publisherList}
+                    setNewPublisher={setNewPublisher}
+                    toast={toast}
+                />
+            </Sidebar>
+    );
+}
+
+const Body = ({publisherList, setIsOpen, isOpen, newPublisher, setNewPublisher, setIsToastOpen, isToastOpen, setToast, toast})=>{
+    return(
+        <div className={styles.container}>
+            <div className={cx("d-flex flex-column", styles.titleRow)}>
                 <h1>Izdavači</h1>
                 <button type="button" className={cx("btn btn-success", styles.newBtn)} onClick={()=>setIsOpen(true)}>Novi izdavač</button>
             </div>
             <div className="d-flex mt-5">
-                {publisherList.map(publisher=>
-                    <div className={"mx-2"} key={publisher.id}>
-                        <div className={cx("card border-danger mb-3")}>
-                            <div className="card-body">
-                                <h4 className="card-title text-center text-primary">{publisher.naziv}</h4>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <ul className="list-group">
+                    {publisherList.map(publisher=>
+                        <li key={publisher.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            {publisher.naziv}
+                        </li>
+                    )}
+                </ul>
             </div>
             {isOpen &&
             <GenericModal modalTitle={"Novi izdavač"} closeModal={()=>setIsOpen(false)} showModal={isOpen}>
@@ -49,7 +84,7 @@ const Izdavaci = ()=>{
             </GenericModal>
             }
             {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>}
-        </Sidebar>
+        </div>
     );
 }
 

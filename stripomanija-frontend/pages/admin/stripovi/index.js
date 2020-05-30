@@ -6,7 +6,11 @@ import GenericModal from "../../../components/GenericModal/GenericModal";
 import {routes} from "../../../util/routes";
 import Pagination from "../../../components/Pagination/Pagination";
 import GenericField from "../../../components/FormFields/GenericField";
-import ToastMessage from "../../../components/ToastMessage/ToastMessage";;
+import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
+import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
+import styles from "./index.module.css";
+import cx from "classnames";
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 
@@ -19,34 +23,69 @@ const Stripovi = ()=>{
         brojStranice: currentPage
     })
     const [totalPages, setTotalPages] = useState(null);
+    const [windowDimensions, setWindowDimensions] = useState({});
+    useWindowDimensions(windowDimensions, setWindowDimensions);
 
     useEffect(()=>{
         fetchItems(fetchUrl, params, setStripList, setTotalPages);
     }, []);
 
     return(
-        <>
+        windowDimensions.width <= 749 ?
+            <NavbarContainer admin>
+                <PanelBody
+                    setIsOpen={setIsOpen}
+                    isOpen={isOpen}
+                    setIsToastOpen={setIsToastOpen}
+                    params={params}
+                    setCurrentPage={setCurrentPage}
+                    currentPage={currentPage}
+                    isToastOpen={isToastOpen}
+                    stripList={stripList}
+                    setStripList={setStripList}
+                    totalPages={totalPages}
+                />
+            </NavbarContainer>
+            :
             <Sidebar>
-                <div>
-                    <div className="d-flex justify-content-between w-100">
-                        <h1>Stripovi</h1>
-                        <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
-                    </div>
-                    <div className="d-flex justify-content-around mt-5">
-                        {stripList && stripList.map(item=>
-                            <div className={"mx-2"}  key={item.id}>
-                                <StripThumbnail image={item.slika} title={item.naziv} animated/>
-                            </div>
-                        )}
-                    </div>
-                    {stripList && totalPages &&
-                    <div className="d-flex mt-3 justify-content-center">
-                        <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
-                    </div>}
-                </div>
-                <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
-                <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
+                <PanelBody
+                    setIsOpen={setIsOpen}
+                    isOpen={isOpen}
+                    setIsToastOpen={setIsToastOpen}
+                    params={params}
+                    setCurrentPage={setCurrentPage}
+                    currentPage={currentPage}
+                    isToastOpen={isToastOpen}
+                    stripList={stripList}
+                    setStripList={setStripList}
+                    totalPages={totalPages}
+                />
             </Sidebar>
+    );
+}
+
+const PanelBody = ({stripList, setStripList, setIsOpen, isOpen, totalPages, currentPage, setCurrentPage, params, setIsToastOpen, isToastOpen})=>{
+    return(
+        <>
+            <div>
+                <div className={cx("d-flex justify-content-between w-100", styles.titleRow)}>
+                    <h2>Stripovi</h2>
+                    <button type="button" className="btn btn-success btn-lg" onClick={()=>setIsOpen(true)}>Novi strip</button>
+                </div>
+                <div className={cx("d-flex justify-content-around mt-5", styles.comicContainer)}>
+                    {stripList && stripList.map(item=>
+                        <div className={"mx-2"}  key={item.id}>
+                            <StripThumbnail image={item.slika} title={item.naziv} animated/>
+                        </div>
+                    )}
+                </div>
+                {stripList && totalPages &&
+                <div className="d-flex mt-3 justify-content-center">
+                    <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
+                </div>}
+            </div>
+            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
+            <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
         </>
     );
 }

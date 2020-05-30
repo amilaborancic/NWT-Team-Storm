@@ -2,9 +2,9 @@ import React, {useState} from "react";
 import styles from "./NavbarContainer.module.css";
 import cx from "classnames";
 import { useRouter } from 'next/router';
-import {navbarRoutes, routes} from "../../util/routes";
+import {adminPanelRoutes, navbarRoutes, routes} from "../../util/routes";
 
-const NavbarContainer = ({children})=>{
+const NavbarContainer = ({children, admin})=>{
     const router = useRouter();
     const [isDropDownClicked, setIsDropDownClicked] = useState(false);
     const [isOptionMenuClicked, setIsOptionMenuClicked] = useState(false);
@@ -12,7 +12,7 @@ const NavbarContainer = ({children})=>{
     return(
         <div className={styles.container}>
             <nav className="navbar navbar-expand-lg navbar-dark bg-primary" >
-                <a className="navbar-brand">STRIPOMANIJA</a>
+                <a className="navbar-brand">{admin ? "ADMIN PANEL" : "STRIPOMANIJA"}</a>
                 <button className="navbar-toggler" type="button" data-toggle="collapse"
                         data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation" onClick={()=>setIsOptionMenuClicked(!isOptionMenuClicked)}>
@@ -20,7 +20,7 @@ const NavbarContainer = ({children})=>{
                 </button>
                 <div className={cx("collapse navbar-collapse", {"show":isOptionMenuClicked})} id="navbarSupportedContent">
                     <ul className="navbar-nav mr-auto">
-                        {Object.values(navbarRoutes).map(route=>
+                        {Object.values(admin ? adminPanelRoutes : navbarRoutes).map(route=>
                             <li className={cx("nav-item", {"active": router.pathname === route.path})} key={route.path}>
                                 <a className="nav-link" href={route.path}>{route.label}</a>
                             </li>

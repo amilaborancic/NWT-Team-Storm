@@ -8,6 +8,8 @@ import GenericModal from "../../../components/GenericModal/GenericModal";
 import GenericField from "../../../components/FormFields/GenericField";
 import {handleFieldChange} from "../../index";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
+import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
+import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
 
 const Zanrovi = ()=>{
     const [isOpen, setIsOpen] = useState(false);
@@ -17,26 +19,59 @@ const Zanrovi = ()=>{
     const [newGenre, setNewGenre] = useState({
         naziv: ""
     });
+    const [windowDims, setWindowDims] = useState({});
+    useWindowDimensions(windowDims, setWindowDims);
 
     useEffect(()=>{
         fetchGenre(setGenreList);
     }, [genreList]);
     return(
+        windowDims.width <= 749 ?
+        <NavbarContainer admin>
+            <Body
+                isToastOpen={isToastOpen}
+                setIsToastOpen={setIsToastOpen}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                setToast={setToast}
+                newGenre={newGenre}
+                genreList={genreList}
+                setNewGenre={setNewGenre}
+                toast={toast}
+            />
+        </NavbarContainer>
+            :
         <Sidebar>
-            <div className="d-flex flex-column">
+            <Body
+                isToastOpen={isToastOpen}
+                setIsToastOpen={setIsToastOpen}
+                isOpen={isOpen}
+                setIsOpen={setIsOpen}
+                setToast={setToast}
+                newGenre={newGenre}
+                genreList={genreList}
+                setNewGenre={setNewGenre}
+                toast={toast}
+            />
+        </Sidebar>
+    );
+}
+
+const Body = ({genreList, setIsOpen, isOpen, newGenre, setNewGenre, setIsToastOpen, setToast, toast, isToastOpen})=>{
+    return(
+        <div className={styles.container}>
+            <div className={cx("d-flex flex-column", styles.titleRow)}>
                 <h1>Žanrovi</h1>
                 <button type="button" className={cx("btn btn-success", styles.newBtn)} onClick={()=>setIsOpen(true)}>Novi žanr</button>
             </div>
             <div className="d-flex mt-5">
-                {genreList.map(genre=>
-                    <div className={"mx-2"} key={genre.id}>
-                        <div className={cx("card border-danger mb-3")}>
-                            <div className="card-body">
-                                <h4 className="card-title text-center text-primary">{genre.naziv}</h4>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                <ul className="list-group">
+                    {genreList.map(genre=>
+                        <li key={genre.id} className="list-group-item d-flex justify-content-between align-items-center">
+                            {genre.naziv}
+                        </li>
+                    )}
+                </ul>
             </div>
             {isOpen &&
             <GenericModal modalTitle={"Novi žanr"} closeModal={()=>setIsOpen(false)} showModal={isOpen}>
@@ -47,7 +82,7 @@ const Zanrovi = ()=>{
             </GenericModal>
             }
             {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>}
-        </Sidebar>
+        </div>
     );
 }
 

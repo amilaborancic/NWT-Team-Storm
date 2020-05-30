@@ -1,3 +1,22 @@
 .thumbnailContainer{
     height: 400px;
 }
+
+.comicContainer{}
+.titleRow{}
+
+@media(max-width: 749px){
+    .comicContainer{
+        flex-wrap: wrap;
+        margin: 0 20px 20px 20px;
+    }
+    .titleRow{
+        padding: 20px 20px 0 20px;
+    }
+}
+
+@media(min-width: 750px) and (max-width: 1024px){
+    .comicContainer{
+        flex-wrap: wrap;
+    }
+}

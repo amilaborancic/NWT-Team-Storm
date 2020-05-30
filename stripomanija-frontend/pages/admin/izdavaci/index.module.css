@@ -5,3 +5,18 @@
 .newBtn{
     width: 120px;
 }
+
+.titleRow{}
+
+.container{
+}
+
+@media(max-width: 749px){
+    .titleRow{
+        margin-top: 20px;
+    }
+    .container{
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+}

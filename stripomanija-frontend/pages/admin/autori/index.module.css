@@ -1,0 +1,12 @@
+.container{}
+.titleRow{}
+
+@media(max-width: 749px){
+    .container{
+        margin-right: 10px;
+        margin-left:10px;
+    }
+    .titleRow{
+        margin-top: 20px;
+    }
+}

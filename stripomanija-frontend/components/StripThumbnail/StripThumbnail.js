@@ -5,16 +5,29 @@ import {routes} from "../../util/routes";
 import Link from "next/link";
 
 const StripThumbnail = ({children, image, title, animated, id})=>{
-    const classList = ["d-flex flex-column", animated ? styles.container : "", styles.wrapper];
+    const privileged = isUserPriviledged();
     return(
-        <Link href={`${routes.strip.jedan.path}[id_strip]`} as={`${routes.strip.jedan.path}${id}`}>
-            <div className={cx(classList)}>
-                <img src={image} className={cx("my-3",styles.image)}/>
-                <h5 className={styles.cursor}>{title}</h5>
-                {children}
-            </div>
-        </Link>
+        privileged ?
+            <Link href={`${routes.strip.jedan.path}[id_strip]`} as={`${routes.strip.jedan.path}${id}`}>
+                <ThumbnailBody animated={animated} image={image} title={title}>{children}</ThumbnailBody>
+            </Link>
+            :
+            <ThumbnailBody animated={animated} image={image} title={title}>{children}</ThumbnailBody>
     );
+}
+
+const ThumbnailBody = ({animated, image, title, children})=>{
+    return(
+        <div className={cx(["d-flex flex-column", animated ? styles.container : "", styles.wrapper])}>
+            <img src={image} className={cx("my-3",styles.image)}/>
+            <h5 className={styles.cursor}>{title}</h5>
+            {children}
+        </div>
+    );
+}
+
+const isUserPriviledged = ()=>{
+    return localStorage.getItem("role") === "ROLE_USER";
 }
 
 export default StripThumbnail;
