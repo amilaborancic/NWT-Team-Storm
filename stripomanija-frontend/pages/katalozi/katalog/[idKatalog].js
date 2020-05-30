@@ -53,7 +53,7 @@ const KatalogDetails = ({ router: { query } })=>{
 
 const CatalogueBody = ({comicList, catalogue, setToast, setToastIsOpen})=>{
     return(
-        <div className={cx("d-flex w-100 mt-4 justify-content-center align-items-start", styles.catalogueBody)}>
+        <div className={cx("d-flex w-100 mt-4 align-items-start", styles.catalogueBody)}>
             {comicList.length === 0 ?
                 <span>
                     Ovaj katalog je trenutno prazan. <Link href={navbarRoutes.pretraga.path}>Pronađite</Link> strip koji Vam se sviđa i dodajte ga.

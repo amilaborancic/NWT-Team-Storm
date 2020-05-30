@@ -1,4 +1,5 @@
 .catalogueBody{
+    justify-content: center;
 }
 
 .bottom{
@@ -37,9 +38,11 @@
     }
 }
 
-@media(min-width: 750px) and (max-width: 1024px){
+@media(min-width: 750px) and (max-width: 1280px){
     .catalogueBody{
         flex-wrap: wrap;
+        justify-content: flex-start;
+        padding: 0 30px 30px 0;
     }
     .deleteBtn{
         background-color: var(--crimson);
@@ -47,5 +50,9 @@
     }
     .deleteBtn:hover{
         color: white;
+    }
+    .thumbnailContainer{
+        height: 370px;
+        margin-top: 10px;
     }
 }

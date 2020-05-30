@@ -65,7 +65,7 @@ const Katalozi = ({user})=>{
     }, [catalogueList]);
     return(
         <div className={cx("d-flex flex-column w-75", styles.katalogContainer)}>
-            <div className={cx(styles.wrapper, "justify-content-center align-items-center")}>
+            <div className={cx(styles.wrapper, "justify-content-center")}>
                 <p className={cx("d-flex justify-content-center align-items-center", styles.katTitle)}>Moji katalozi</p>
                 <button type="button" className={cx("ml-4", styles.newButton)} onClick={()=>setIsOpen(true)}>+</button>
             </div>
