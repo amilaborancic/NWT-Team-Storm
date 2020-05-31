@@ -2,7 +2,7 @@ import React, {useEffect, useState} from "react";
 import cx from "classnames";
 import styles from "./ToastMessage.module.css";
 
-const ToastMessage = ({message, title, type, isOpen, setIsOpen})=>{
+const ToastMessage = ({message, type, isOpen, setIsOpen})=>{
     const [show, setShow] = useState("");
 
     useEffect(()=>{

@@ -22,14 +22,26 @@ const KatalogDetails = ({ router: { query } })=>{
 
     useEffect(()=>{
         if(query.idKatalog){
-            authenticatedApi.get(catalogueDetailsUrl, {params: {id_katalog: query.idKatalog}}).then(res=>{setKatalog(res.data)}).catch(err=>{console.log(err)});
+            authenticatedApi.get(catalogueDetailsUrl, {params: {id_katalog: query.idKatalog}}).then(res=>{setKatalog(res.data)})
+                .catch(err=>{
+                    console.log(err);
+                    setToast({
+                        type:"danger",
+                        message: "Došlo je do greške prilikom dobavljanja informacija o katalogu."
+                    })
+                });
             authenticatedApi.get(catalogueComicsUrl + `/${query.idKatalog}`, {params: {brojStranice: currentPage}})
                 .then(res=>{
                     setComicList(res.data.stripovi);
-                    console.log(res.data.stripovi)
                     setTotalPages(res.data.ukupnoStranica);
                 })
-                .catch(err=>{console.log(err)});
+                .catch(err=>{
+                    console.log(err);
+                    setToast({
+                        type:"danger",
+                        message:"Došlo je do greške prilikom dobavljanja stripova u katalogu."
+                    })
+                });
         }
     }, [query.idKatalog, comicList]);
 
@@ -102,13 +114,5 @@ function deleteComicFromCatalogue(comic, catalogue, setToast, setIsToastOpen){
         });
 }
 
-function getCatalogue(url, params, setter){
-    axios.get(url, {params})
-        .then(res=>{
-            setter(res.data);
-        }).catch(err=>{
-        console.log(err)
-    })
-}
 
 export default withRouter(KatalogDetails);

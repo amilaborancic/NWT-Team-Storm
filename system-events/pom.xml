@@ -140,5 +140,6 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>events-docker</finalName>
 	</build>
 </project>

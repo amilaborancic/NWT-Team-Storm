@@ -113,7 +113,7 @@ function addNewPublisher(publisher, setPublisher, setIsToastOpen, setToast, setI
             setIsModalOpen(false);
             setToast({
                 type:"danger",
-                message: "Došlo je do greške!"
+                message: "Došlo je do greške prilikom dobavljanja izdavača!"
             });
             setIsToastOpen(true);
         })

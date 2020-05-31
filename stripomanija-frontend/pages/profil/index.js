@@ -49,7 +49,6 @@ const UserDetails = ({user})=>{
 }
 
 const Katalozi = ({user})=>{
-    const router = useRouter();
     const [catalogueList, setCatalogueList] = useState(null);
     //creating a new catalogue
     const [isOpen, setIsOpen] = useState(false);
@@ -61,7 +60,7 @@ const Katalozi = ({user})=>{
     const [toast, setToast] = useState(null);
 
     useEffect(()=>{
-        fetchCatalogueList(setCatalogueList);
+        fetchCatalogueList(setCatalogueList, setToast, setIsToastOpen);
     }, [catalogueList]);
     return(
         <div className={cx("d-flex flex-column w-75", styles.katalogContainer)}>
@@ -113,22 +112,33 @@ function deleteCatalogue(catalogue, user, setIsToastOpen, setToast){
         })
 }
 
-function fetchUserDetails(setUser){
+function fetchUserDetails(setUser, setToast, setIsToastOpen){
     authenticatedApi(routes.user.path + routes.user.details.path + localStorage.getItem("username"))
         .then(res=>{
-            console.log(res.data);
             setUser(res.data);
         })
-        .catch(err=>{console.log(err)});
+        .catch(err=>{
+            console.log(err);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške prilikom dobavljanja informacija o korisniku."
+            });
+            setIsToastOpen(true);
+        });
 }
 
-function fetchCatalogueList(setCatalogueList){
+function fetchCatalogueList(setCatalogueList, setToast, setIsToastOpen){
     authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path)
         .then(res=>{
             setCatalogueList(res.data);
         })
         .catch(err=>{
             console.log(err);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške prilikom dobavljanja kataloga!"
+            });
+            setIsToastOpen(true);
         });
 }
 
@@ -145,13 +155,12 @@ function handleFieldChange(e, catalogue, setCatalogue){
 function createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setCatalogue, setToast){
     authenticatedApi.post(routes.katalozi.path + routes.katalozi.novi.path, newCatalogue)
         .then(res=>{
-            console.log(res)
             setIsOpen(false);
             setIsToastOpen(true);
             setToast({
                 type:"success",
                 message:"Uspješno ste kreirali novi katalog!"
-            })
+            });
             setCatalogue({
                 naziv: ""
             });
@@ -162,7 +171,7 @@ function createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setCatalogu
             setToast({
                 type:"danger",
                 message:"Došlo je do greške!"
-            })
+            });
         });
 }
 

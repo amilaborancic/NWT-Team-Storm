@@ -117,7 +117,7 @@ function addNewAuthor(author, setAuthor, setIsToastOpen, setToast, setIsModalOpe
             setIsModalOpen(false);
             setToast({
                 type:"danger",
-                message: "Došlo je do greške!"
+                message: "Došlo je do greške pilikom dobavljanja autora!"
             });
             setIsToastOpen(true);
         })

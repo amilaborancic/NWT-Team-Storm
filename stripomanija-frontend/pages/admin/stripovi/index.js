@@ -17,17 +17,21 @@ const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 const Stripovi = ()=>{
     const [stripList, setStripList] = useState(null);
     const [isOpen, setIsOpen] = useState(false);
+    //feedback
     const [isToastOpen, setIsToastOpen] = useState(false);
+    const [toast, setToast] = useState(null);
+
     const [currentPage, setCurrentPage] = useState(0);
     const [params, setParams] = useState({
         brojStranice: currentPage
     })
     const [totalPages, setTotalPages] = useState(null);
     const [windowDimensions, setWindowDimensions] = useState({});
+
     useWindowDimensions(windowDimensions, setWindowDimensions);
 
     useEffect(()=>{
-        fetchItems(fetchUrl, params, setStripList, setTotalPages);
+        fetchItems(fetchUrl, params, setStripList, setTotalPages, setIsToastOpen, setToast);
     }, []);
 
     return(
@@ -44,6 +48,8 @@ const Stripovi = ()=>{
                     stripList={stripList}
                     setStripList={setStripList}
                     totalPages={totalPages}
+                    toast={toast}
+                    setToast={setToast}
                 />
             </NavbarContainer>
             :
@@ -59,12 +65,14 @@ const Stripovi = ()=>{
                     stripList={stripList}
                     setStripList={setStripList}
                     totalPages={totalPages}
+                    toast={toast}
+                    setToast={setToast}
                 />
             </Sidebar>
     );
 }
 
-const PanelBody = ({stripList, setStripList, setIsOpen, isOpen, totalPages, currentPage, setCurrentPage, params, setIsToastOpen, isToastOpen})=>{
+const PanelBody = ({stripList, setStripList, setIsOpen, isOpen, totalPages, currentPage, setCurrentPage, params, setIsToastOpen, isToastOpen, toast, setToast})=>{
     return(
         <>
             <div>
@@ -84,13 +92,13 @@ const PanelBody = ({stripList, setStripList, setIsOpen, isOpen, totalPages, curr
                     <Pagination url={fetchUrl} currentPage={currentPage} setCurrentPage={setCurrentPage} setSearchResults={setStripList} params={params} numberOfPages={totalPages}/>
                 </div>}
             </div>
-            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen}/>
-            <ToastMessage title={"Potvrda"} message={"Uspješno ste dodali novi strip."} type={"success"} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>
+            <NewComicModal isOpen={isOpen} setIsOpen={setIsOpen} setIsToastOpen={setIsToastOpen} setToast={setToast}/>
+            {toast && <ToastMessage message={toast.message} type={toast.type} isOpen={isToastOpen} setIsOpen={setIsToastOpen}/>}
         </>
     );
 }
 
-const NewComicModal = ({isOpen, setIsOpen, setIsToastOpen})=>{
+const NewComicModal = ({isOpen, setIsOpen, setIsToastOpen, setToast})=>{
     const [publisherList, setPublisherList] = useState(null);
     const [genreList, setGenreList] = useState(null);
     const [authorList, setAuthorList] = useState([]);
@@ -131,7 +139,7 @@ const NewComicModal = ({isOpen, setIsOpen, setIsToastOpen})=>{
             <CustomSelect title="Izdavač" itemList={publisherList} name={"idIzdavac"} newComic={newComic} setNewComic={setNewComic} />
             <CustomSelect title="Žanr" itemList={genreList} name={"idZanr"} newComic={newComic} setNewComic={setNewComic}  />
             <CustomCheckboxGroup authorList={authorList} setAuthorList={setAuthorList} checkedAuthors={checkedAuthors} setCheckedAuthors={setCheckedAuthors}/>
-            <button type="button" className="btn btn-danger" onClick={()=>addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen)}>Dodaj strip</button>
+            <button type="button" className="btn btn-danger" onClick={()=>addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen, setToast)}>Dodaj strip</button>
         </GenericModal>
     );
 }
@@ -189,7 +197,7 @@ function changeSelectedAuthors(e, setSelectedAuthorsList, selectedAuthorsList, c
 }
 
 //send new comic request
-function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen){
+function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpen, setIsToastOpen, setToast){
     //set authors first
     let comicInformation = newComic;
     authorList.map((author, index)=>{if(checkedAuthors[index]) comicInformation.autori.push(author)});
@@ -213,10 +221,19 @@ function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpe
                 ukupniRating: 1,
                 ukupnoKomentara: 0
             });
+            setToast({
+                type:"success",
+                message: "Uspješno ste dodali novi strip!"
+            });
         })
         .catch(err=>{
             console.log(err);
-            //validation messages!
+            setToast({
+                type:"danger",
+                message: "Došlo je do greške prilikom kreiranja novog stripa."
+            });
+            setIsToastOpen(true);
+            setIsOpen(false);
         });
 }
 
@@ -240,13 +257,18 @@ function handleFieldChange(e, field, setField){
 }
 
 //fetch items
-function fetchItems(fetchUrl, params, setStripList, setNumberOfPages){
+function fetchItems(fetchUrl, params, setStripList, setNumberOfPages, setIsToastOpen, setToast){
     authenticatedApi.get(fetchUrl, {
         params: params
     }).then(res=>{
         setStripList(res.data.stripovi);
         setNumberOfPages(res.data.brojStranica);
     }).catch(err=>{
+        setIsToastOpen(true);
+        setToast({
+           type:"danger",
+           message: "Došlo je do greške prilikom dobavljanja stripova!"
+        });
         console.log(err);
     });
 }
