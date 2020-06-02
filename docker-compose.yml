@@ -1,0 +1,96 @@
+version: "3"
+services:
+  discovery:
+    container_name: eureka-docker
+    image: eureka-docker
+    restart: always
+    build:
+      context: ./eureka
+      dockerfile: Dockerfile
+    expose:
+      - 8761
+    ports:
+      - 8761:8761
+  api-gateway:
+    image: gateway-docker
+    container_name: gateway-docker
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    expose:
+      - 8086
+    ports:
+      - 8086:8086
+    restart: on-failure
+    depends_on:
+      - discovery
+      - user-service
+  user-service:
+    image: user-docker
+    container_name: user-docker
+    build:
+      context: ./user-microservice
+      dockerfile: Dockerfile
+    expose:
+      - 8085
+    ports:
+      - 8085:8085
+    restart: on-failure
+    depends_on:
+      - discovery
+  comicbook-service:
+    image: comicbook-docker
+    container_name: comicbook-docker
+    build:
+      context: ./comicbook-microservice
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 8083
+    ports:
+      - 8083:8083
+    depends_on:
+      - discovery
+  catalogue-service:
+    image: catalogue-docker
+    container_name: catalogue-docker
+    build:
+      context: ./catalogue-microservice
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 8082
+    ports:
+      - 8082:8082
+    depends_on:
+      - discovery
+      - user-service
+      - comicbook-service
+  rating-service:
+    image: rating-service
+    container_name: rating-service
+    build:
+      context: ./rating-service
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - discovery
+      - comicbook-service
+      - user-service
+  system-events:
+    image: events-docker
+    container_name: events-docker
+    build:
+      context: ./system-events
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 8084
+    ports:
+      - 8084:8084
+    depends_on:
+      - discovery
