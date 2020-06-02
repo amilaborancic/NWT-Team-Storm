@@ -138,6 +138,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>catalogue-docker</finalName>
 	</build>
 
 </project>

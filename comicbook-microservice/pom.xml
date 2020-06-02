@@ -124,6 +124,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
+		<finalName>comicbook-docker</finalName>
 	</build>
 
 </project>
