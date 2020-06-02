@@ -9,17 +9,20 @@ import {baseUrl} from "../util/url";
 import {navbarRoutes, routes} from "../util/routes";
 import Router from 'next/router';
 import {useWindowDimensions} from "../components/hooks/useWindowDimensions";
+import ToastMessage from "../components/ToastMessage/ToastMessage";
 
 export default function Home() {
     const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
     const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
     const [windowDimensions, setWindowDimensions] = useState({});
     useWindowDimensions(windowDimensions, setWindowDimensions);
+    const [toast, setToast] = useState({});
+    const [isToastOpen, setIsToastOpen] = useState(false);
 
     return (
         <>
             {isRegisterModalOpen && <RegistrationModal isRegisterModalOpen={isRegisterModalOpen} setIsRegisterModalOpen={setIsRegisterModalOpen}/>}
-            {isLoginModalOpen && <LoginModal isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>}
+            {isLoginModalOpen && <LoginModal setToast={setToast} setIsToastOpen={setIsToastOpen} isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>}
             <div className={styles.container}>
                 <Head>
                     <title>Stripomanija</title>
@@ -31,6 +34,7 @@ export default function Home() {
                 </div>
                 {windowDimensions.width <= 1199 && <Buttons setIsRegisterModalOpen={setIsRegisterModalOpen} setIsLoginModalOpen={setIsLoginModalOpen} />}
             </div>
+            <ToastMessage isOpen={isToastOpen} setIsOpen={setIsToastOpen} type={toast.type} message={toast.message}/>
         </>
     )
 }
@@ -77,7 +81,7 @@ const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen})=>{
     );
 }
 
-const LoginModal = ({setIsLoginModalOpen, isLoginModalOpen})=>{
+const LoginModal = ({setIsLoginModalOpen, isLoginModalOpen, setIsToastOpen, setToast})=>{
     const [validationMsg, setValidationMsg] = useState(null);
     const [isInvalid, setIsInvalid] = useState(false);
     const [user, setUser] = useState({
@@ -94,7 +98,7 @@ const LoginModal = ({setIsLoginModalOpen, isLoginModalOpen})=>{
             <GenericField id={"usernameLogin"} name={"username"} label={"Username"} placeholder={"Vaš username"} type={"text"} isInvalid={isInvalid} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"sifraLogin"} name={"password"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} isInvalid={isInvalid} validationMsg={validationMsg} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-primary" onClick={()=> handleLoginRequest(baseUrl + routes.authenticate.path, user, setValidationMsg, setIsInvalid)}>Predaj</button>
+                <button type="button" className="btn btn-primary" onClick={()=> handleLoginRequest(baseUrl + routes.authenticate.path, user, setValidationMsg, setIsInvalid, setIsToastOpen, setToast)}>Predaj</button>
             </div>
         </GenericModal>
     );
@@ -109,7 +113,7 @@ export function handleFieldChange(e, user, setUser){
     )
 }
 
-function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
+function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid, setIsToastOpen, setToast){
     axios.post(url, reqBody)
         .then(response=>{
             // save token to local storage
@@ -131,23 +135,32 @@ function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid){
             }
             catch(error){}
             console.log(error);
-
+            setIsToastOpen(true);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške!"
+            });
     });
 }
 
-function handleRegistrationRequest(url,reqBody, setValidationMsg){
+function handleRegistrationRequest(url,reqBody, setValidationMsg, setIsToastOpen, setToast){
     axios.post(url, reqBody)
         .then(response=>{
             setValidationMsg(null);
             Router.push(navbarRoutes.katalozi.path);
         }).catch(error=>{
         try{
-            console.log(error)
+            console.log(error);
             let errorObj = error.response.data;
             setValidationMsg(errorObj.message);
         }
         catch (e) {
             console.log(e);
+            setIsToastOpen(true);
+            setToast({
+                type:"danger",
+                message: "Došlo je do greške!"
+            });
         }
     });
 }

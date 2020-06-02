@@ -76,7 +76,14 @@ const AddToCatalogueModal = ({setIsAddToCatalogueModalOpen, catalogueList, setCa
                       btnText={"Dodaj"}
                       showModal={isModalOpen}
                       closeModal={()=>setIsAddToCatalogueModalOpen(false)}>
-            <CatalogueList catalogueList={catalogueList} activeCatalogue={activeCatalogue} setActiveCatalogue={setActiveCatalogue} setCatalogueList={setCatalogueList} />
+            <CatalogueList
+                setIsToastOpen={setToastIsOpen}
+                setToast={setToast}
+                catalogueList={catalogueList}
+                activeCatalogue={activeCatalogue}
+                setActiveCatalogue={setActiveCatalogue}
+                setCatalogueList={setCatalogueList}
+            />
             <div className="d-flex w-100 justify-content-end">
                 <button type="button" className="btn btn-primary" onClick={()=>addComicToCatalogue(comic, activeCatalogue, setIsAddToCatalogueModalOpen, setToast, setToastIsOpen)}>Dodaj!</button>
             </div>
@@ -85,9 +92,9 @@ const AddToCatalogueModal = ({setIsAddToCatalogueModalOpen, catalogueList, setCa
 }
 
 //LIST OF CATALOGUES
-const CatalogueList = ({catalogueList, activeCatalogue, setCatalogueList, setActiveCatalogue})=>{
+const CatalogueList = ({catalogueList, activeCatalogue, setCatalogueList, setActiveCatalogue, setToast, setIsToastOpen})=>{
     useEffect(()=>{
-        fetchCatalogues(setCatalogueList, setActiveCatalogue);
+        fetchCatalogues(setCatalogueList, setActiveCatalogue, setToast, setIsToastOpen);
     }, []);
     return(
         <div className={cx("d-flex form-group flex-wrap", styles.modal)}>
@@ -347,17 +354,21 @@ function fetchComics(url, params, setNumberOfPages, setSearchResults, setToast, 
     });
 }
 
-function fetchCatalogues(setCatalogueList,setActiveCatalogue){
+function fetchCatalogues(setCatalogueList,setActiveCatalogue, setToast, setIsToastOpen){
     authenticatedApi.get(routes.user.path + routes.user.single.path + localStorage.getItem("username"))
         .then(response=>{
             authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path,{
                 params: {id_korisnik: response.data.id},
             }).then(res=>{
-                console.log(res.data);
                 setCatalogueList(res.data);
                 setActiveCatalogue(res.data[0]);
             }).catch(err=>{
                 console.log(err);
+                setIsToastOpen(true);
+                setToast({
+                    type:"danger",
+                    message:"Katalog servis je offline."
+                })
             })
         })
         .catch(err=>{console.log(err)});

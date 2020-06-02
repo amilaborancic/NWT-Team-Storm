@@ -5,6 +5,7 @@ import comicbook.microsservice.comicbookmicroservice.service.AutorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.http.HttpHeaders;
 import java.util.List;
 
 @RestController

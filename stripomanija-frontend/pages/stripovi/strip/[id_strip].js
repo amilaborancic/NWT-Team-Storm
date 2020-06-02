@@ -15,11 +15,10 @@ const StripDetails = ({ router: { query } })=>{
     const [comic, setComic] = useState({});
     const [commentList, setCommentList] = useState([]);
     const [isRatingModalOpen, setIsRatingModalOpen] = useState(false);
-    const [isToastMessageOpen, setIsToastMessageOpen] = useState(false);
-    const [toastText, setToastText] = useState("");
-    const [toastType, setToastType] = useState("success");
     const [windowDimensions, setWindowDimensions] = useState({});
     useWindowDimensions(windowDimensions, setWindowDimensions);
+    const [toast, setToast] = useState({});
+    const [isToastOpen, setIsToastOpen] = useState(false);
     const [newRateReview, setNewRateReview] = useState({
         korisnik: {
             id:null
@@ -34,8 +33,8 @@ const StripDetails = ({ router: { query } })=>{
     useEffect(()=>{
         if(query.id_strip){
             //fetch details
-            fetchComicDetails(query.id_strip, setComic);
-            fetchComicReviews(query.id_strip, setCommentList);
+            fetchComicDetails(query.id_strip, setComic, setToast, setIsToastOpen);
+            fetchComicReviews(query.id_strip, setCommentList, setToast, setIsToastOpen);
             setNewRateReview(prevState => ({...prevState,
                 strip: {id:parseInt(query.id_strip)}
             }));
@@ -59,11 +58,10 @@ const StripDetails = ({ router: { query } })=>{
                 <NewRateReviewModal isRatingModalOpen={isRatingModalOpen} setIsRatingModalOpen={setIsRatingModalOpen}
                                     newRateReview={newRateReview}
                                     setNewRateReview={setNewRateReview}
-                                    setIsToastOpen={setIsToastMessageOpen}
-                                    setToastText={setToastText}
-                                    setToastType={setToastType}
+                                    setIsToastOpen={setIsToastOpen}
+                                    setToast={setToast}
                 />
-                <ToastMessage setIsOpen={setIsToastMessageOpen} isOpen={isToastMessageOpen} type={toastType} message={toastText}/>
+                <ToastMessage setIsOpen={setIsToastOpen} isOpen={isToastOpen} type={toast.type} message={toast.message}/>
             </div>
         </NavbarContainer>
     )
@@ -123,7 +121,7 @@ const LeftPart = ({comic})=>{
     );
 }
 
-const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateReview, setNewRateReview, setIsToastOpen, setToastType, setToastText})=>{
+const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateReview, setNewRateReview, setIsToastOpen, setToast})=>{
     const [ocjena, setOcjena] = useState(0);
     return(
         <GenericModal showModal={isRatingModalOpen}
@@ -140,14 +138,14 @@ const NewRateReviewModal = ({setIsRatingModalOpen, isRatingModalOpen, newRateRev
                           onChange={(e)=>handleFieldChange(e, newRateReview, setNewRateReview)} />
             </div>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-info" onClick={()=>rateReview(ocjena, newRateReview, setNewRateReview, setIsRatingModalOpen, setIsToastOpen, setToastType, setToastText)}>Ok</button>
+                <button type="button" className="btn btn-info" onClick={()=>rateReview(ocjena, newRateReview, setNewRateReview, setIsRatingModalOpen, setIsToastOpen, setToast)}>Ok</button>
             </div>
         </GenericModal>
     );
 }
 
 //leave a review
-function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, setIsToastOpen, setToastType, setToastText){
+function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, setIsToastOpen, setToast){
     let obj = newRateReview;
     obj.ocjena = ocjena;
     setNewRateReview(obj);
@@ -163,8 +161,10 @@ function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, set
                 //close modal, show toast
                 setIsModalOpen(false);
                 setIsToastOpen(true);
-                setToastType("success");
-                setToastText(res);
+                setToast({
+                    type:"success",
+                    message:"Uspješno ste ostavili recenziju!"
+                });
                 //reset state
                 setNewRateReview({
                     korisnik:{id:newRateReview.korisnik.id},
@@ -173,19 +173,22 @@ function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, set
                     komentar: ""
                 });
             }).catch(err=>{
-                console.log(err.response);
                 setIsModalOpen(false);
                 setIsToastOpen(true);
-                setToastText(err.response.data.message);
-                setToastType("danger");
+                setToast({
+                    type: "danger",
+                    message: err.response.data.message
+                });
             })
         })
         .catch(err=>{
             console.log(err);
             setIsModalOpen(false);
             setIsToastOpen(true);
-            setToastText(err.response.data.message);
-            setToastType("danger");
+            setToast({
+                type:"danger",
+                message:err.response.data.message
+            });
         });
 }
 
@@ -200,7 +203,7 @@ function handleFieldChange(e, field, setField){
     )
 }
 
-function fetchComicDetails(idStrip, setComic){
+function fetchComicDetails(idStrip, setComic, setToast, setIsToastOpen){
     authenticatedApi.get(routes.strip.path, {
         params:{
             id_strip: idStrip
@@ -211,16 +214,26 @@ function fetchComicDetails(idStrip, setComic){
         })
         .catch(err=>{
             console.log(err);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške prilikom dobavljanja detalja o stripu."
+            });
+            setIsToastOpen(true);
         })
 }
 
-function fetchComicReviews(stripId, setCommentList){
+function fetchComicReviews(stripId, setCommentList, setIsToastOpen, setToast){
     authenticatedApi.get(routes.rating.path + routes.rating.komentari.path + stripId)
         .then(res=>{
             setCommentList(Object.entries(res.data));
         })
         .catch(err=>{
             console.log(err);
+            setToast({
+                type:"danger",
+                message:"Došlo je do greške prilikom dobavljanja informacija o recenzijama stripa."
+            });
+            setIsToastOpen(true);
         });
 }
 

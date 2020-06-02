@@ -18,7 +18,6 @@ public class AutorService {
     @Autowired
     private EventSubmission eventSubmission;
     private Long idAdmin = 1000L;
-    private Long idLogovanogKorisnika = 500L;
 
     public List<Autor> sviAutori(){
         eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi autori");
