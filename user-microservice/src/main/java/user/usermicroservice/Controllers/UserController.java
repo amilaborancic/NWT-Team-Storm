@@ -142,4 +142,11 @@ public class UserController {
         String role = logovani_user.getRole().getRoleName().toString();
         if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !username.equals(usernameFromToken)) throw new ApiUnauthorizedException(errorMsg);
     }
+
+    //for other services
+    @GetMapping(value="/role")
+    public User userRole(@RequestHeader Map<String, String> headers){
+        String username = extractUsernameFromHeaders(headers);
+        return userServis.singleUser(username);
+    }
 }

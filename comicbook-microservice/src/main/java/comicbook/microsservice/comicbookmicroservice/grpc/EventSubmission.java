@@ -19,6 +19,21 @@ public class EventSubmission {
     @Autowired
     private EurekaClient eurekaClient;
 
+    public Events.ActionType action(String actionType){
+        switch (actionType){
+            case "GET":
+                return Events.ActionType.GET;
+            case "POST":
+                return Events.ActionType.CREATE;
+            case "PUT":
+                return Events.ActionType.UPDATE;
+            case "DELETE":
+                return Events.ActionType.DELETE;
+            default:
+                return null;
+        }
+    }
+
     public void submitEvent(Long idKorisnik, Events.ActionType actionType, String nazivResursa){
         //event dio
         try{
