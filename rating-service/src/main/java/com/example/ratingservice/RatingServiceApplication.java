@@ -22,6 +22,9 @@ import static java.lang.StrictMath.ceil;
 import static java.lang.StrictMath.round;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @EnableSwagger2
 @SpringBootApplication
 @EnableEurekaClient
@@ -63,29 +66,23 @@ class DemoCommandLineRunner implements CommandLineRunner{
 			korisnikRepozitorij.save(k);
 		});
 		//dobavimo stripove iz strip servisa
-		String urlUkupnoStripova = "http://comicbook-service/strip/count";
-		String urlBrojNaStranici = "http://comicbook-service/strip/brojNaStranici";
 		String urlStripoviNaStranici = "http://comicbook-service/strip/svi";
-
-		ResponseEntity<Long> responseBrojStripova = restTemplate.getForEntity(urlUkupnoStripova, Long.class);
-		ResponseEntity<Integer> responseBrojNaStranici = restTemplate.getForEntity(urlBrojNaStranici, int.class);
-
 		ObjectMapper mapperStripovi = new ObjectMapper();
-		Long brojStripova = mapperStripovi.readTree(String.valueOf(responseBrojStripova.getBody())).asLong();
-		Integer brojNaStranici = mapperStripovi.readTree(String.valueOf(responseBrojNaStranici.getBody())).asInt();
-		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.4);
+		int brojStranica = 1;
 
 		int i=0;
 		while(i<brojStranica){
 			ResponseEntity<String> stripoviSaStranice = restTemplate.getForEntity(urlStripoviNaStranici + "?brojStranice="+i, String.class);
+			brojStranica = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("brojStranica").asInt();
 			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("stripovi");
+			List<Strip> stripovi = new ArrayList<>();
 			svi.forEach(strip->{
 				Strip s = new Strip(strip.path("id").asLong());
-				stripRepozitorij.save(s);
+				stripovi.add(s);
 			});
+			stripRepozitorij.saveAll(stripovi);
 			i++;
 		}
-
 		//dodamo nekoliko komentara i ocjena
 		User k2 = korisnikRepozitorij.getOne(2L);
 		User k3 = korisnikRepozitorij.getOne(3L);

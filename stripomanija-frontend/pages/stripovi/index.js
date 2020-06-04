@@ -22,7 +22,7 @@ const Stripovi = ()=>{
     const [params, setParams] = useState([]);
     //add comic to catalogue
     const [isAddToCatalogueModalOpen, setIsAddToCatalogueModalOpen] = useState(false);
-    const [catalogueList, setCatalogueList] = useState(null);
+    const [catalogueList, setCatalogueList] = useState([]);
     const [comic, setComic] = useState(null);
     //toast message
     const [toast, setToast] = useState(null);
@@ -85,7 +85,7 @@ const AddToCatalogueModal = ({setIsAddToCatalogueModalOpen, catalogueList, setCa
                 setCatalogueList={setCatalogueList}
             />
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-primary" onClick={()=>addComicToCatalogue(comic, activeCatalogue, setIsAddToCatalogueModalOpen, setToast, setToastIsOpen)}>Dodaj!</button>
+                <button disabled={catalogueList.length === 0} type="button" className="btn btn-primary" onClick={()=>addComicToCatalogue(comic, activeCatalogue, setIsAddToCatalogueModalOpen, setToast, setToastIsOpen)}>Dodaj!</button>
             </div>
         </GenericModal>
     );
@@ -98,19 +98,22 @@ const CatalogueList = ({catalogueList, activeCatalogue, setCatalogueList, setAct
     }, []);
     return(
         <div className={cx("d-flex form-group flex-wrap", styles.modal)}>
-            {catalogueList && activeCatalogue && catalogueList.map((catalogue)=>
-                <div className="d-flex flex-column" key={catalogue.id}>
-                    <div className={cx(["d-flex flex-column mx-2 my-1 align-items-center", activeCatalogue.id === catalogue.id ? styles.activeKat : ""])}
-                         onClick={()=>changeSelectedCatalogue(catalogue.id, activeCatalogue, setActiveCatalogue, catalogueList)}>
-                        <div className={cx("card text-white", styles.katalogContainer)}>
-                            <div className="card-body">
-                                <h5 className="card-title">{catalogue.naziv}</h5>
+            {catalogueList.length === 0 ?
+                <span>Trenutno nemate nijedan katalog. Molimo, kreirajte ga.</span>
+            :
+                activeCatalogue && catalogueList.map((catalogue)=>
+                    <div className="d-flex flex-column" key={catalogue.id}>
+                        <div className={cx(["d-flex flex-column mx-2 my-1 align-items-center", activeCatalogue.id === catalogue.id ? styles.activeKat : ""])}
+                             onClick={()=>changeSelectedCatalogue(catalogue.id, activeCatalogue, setActiveCatalogue, catalogueList)}>
+                            <div className={cx("card text-white", styles.katalogContainer)}>
+                                <div className="card-body">
+                                    <h5 className="card-title">{catalogue.naziv}</h5>
+                                </div>
                             </div>
                         </div>
+                        {activeCatalogue.id === catalogue.id && <span className="text-primary text-center">Odabrani katalog</span>}
                     </div>
-                    {activeCatalogue.id === catalogue.id && <span className="text-primary text-center">Odabrani katalog</span>}
-                </div>
-            )}
+                )}
         </div>
     );
 }
@@ -168,6 +171,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                     setCurrentPage={setCurrentPage}
                     setToastIsOpen={setToastIsOpen}
                     setToast={setToast}
+                    isSearchQueried={isSearchQueried}
                 />
             </div>
             <div className="d-flex w-100 justify-content-center mt-2">
@@ -181,9 +185,11 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
                     setNumberOfPages={setNumberOfPages}
                     setSearchResults={setSearchResults}
                     currentPage={currentPage}
+                    isSearchQueried={isSearchQueried}
+
                 /> }
             </div>
-            {isSearchQueried && numberOfPages &&
+            {isSearchQueried && numberOfPages !== null &&
             <SearchResults
                 searchResults={searchResults}
                 numberOfPages={numberOfPages}
@@ -204,7 +210,7 @@ const CustomSearchBar = ({setActiveSearchType, isDropDownOpen, setIsDropDownOpen
 
 //SELECT SEARCH TYPE
 const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType, activeSearchType, setCurrentPage, setToast, setToastIsOpen,
-                            setIsSearchDisabled, setUrl, url, currentPage, searchQuery, setIsSearchQueried, setNumberOfPages, setSearchResults, setSearchQuery})=>{
+                            setIsSearchDisabled, setUrl, url, currentPage, searchQuery, isSearchQueried, setIsSearchQueried, setNumberOfPages, setSearchResults, setSearchQuery})=>{
     const searchValues = Object.values(SEARCH_TYPES);
     const searchKeys = Object.keys(SEARCH_TYPES);
     //state update
@@ -222,17 +228,17 @@ const SearchDropDown = ({isDropDownOpen, setIsDropDownOpen, setActiveSearchType,
                 }
             </div>
             <button className={cx("btn my-2 my-sm-0", styles.button)} type="button"
-                    onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen)}>Traži!</button>
+                    onClick={()=>handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen, isSearchQueried)}>Traži!</button>
         </div>
     );
 }
 
 //RENDER GENRE OR PUBLISHER BUTTONS
-const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage, setSearchQuery})=>{
+const GenrePublisherButtons = ({array, url, activeSearchType, setIsSearchQueried, setNumberOfPages, setSearchResults, currentPage, setSearchQuery, isSearchQueried})=>{
     return(
         array.map(value=>
             <button type="button" value={value.id} key={value.naziv} className={`btn btn-outline-${value.boja} mr-4`}
-                    onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setSearchQuery, setNumberOfPages, setSearchResults, currentPage)}>{value.naziv}</button>)
+                    onClick={(e)=>handleSearch(url, activeSearchType, setIsSearchQueried, value.id, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, isSearchQueried)}>{value.naziv}</button>)
     );
 }
 
@@ -243,16 +249,20 @@ const SearchResults = ({searchResults, numberOfPages, setCurrentPage, setNumberO
         <div className="d-flex w-100 flex-column justify-content-center">
             <h2 className={styles.title}>Rezultati pretrage</h2>
             <div className={cx("d-flex w-100 mt-4 justify-content-center", styles.wrapResults)}>
-                {searchResults.map(comic=>{
-                    let izdanje = "";
-                    if(comic.izdanje) izdanje = `#${comic.izdanje}`;
-                    return(
-                        <div className={cx("d-flex flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
-                            <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} id={comic.id}/>
-                            <button type="button" className={cx("btn btn-info btn-lg btn-block", styles.addToCatButton)} onClick={()=>{setIsAddToCatalogueModalOpen(true); setComic(comic);}}>Dodaj u katalog</button>
-                        </div>
-                    )
-                })}
+                {searchResults.length === 0 ?
+                <span>Nije pronađen niti jedan strip.</span>
+                    :
+                    searchResults.map(comic=>{
+                        let izdanje = "";
+                        if(comic.izdanje) izdanje = `#${comic.izdanje}`;
+                        return(
+                            <div className={cx("d-flex flex-column justify-content-between", styles.thumbnailContainer)} key={comic.id}>
+                                <StripThumbnail animated image={comic.slika} title={`${comic.naziv} ${izdanje}`} id={comic.id}/>
+                                <button type="button" className={cx("btn btn-info btn-lg btn-block", styles.addToCatButton)} onClick={()=>{setIsAddToCatalogueModalOpen(true); setComic(comic);}}>Dodaj u katalog</button>
+                            </div>
+                        )
+                    })
+                }
             </div>
             <div className="d-flex fixed-bottom justify-content-center">
                 <Pagination currentPage={currentPage} setCurrentPage={setCurrentPage} numberOfPages={numberOfPages} url={url}
@@ -308,10 +318,10 @@ function handleChangeInput(e, setSearchQuery){
 }
 
 //send request
-function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen){
+function handleSearch(url, activeSearchType, setIsSearchQueried, searchQuery, setSearchQuery, setNumberOfPages, setSearchResults, currentPage, setToast, setToastIsOpen, isSearchQueried){
     setIsSearchQueried(true);
     let queryParams = extractParams(url, activeSearchType, setIsSearchQueried, searchQuery, setNumberOfPages, setSearchResults, currentPage);
-    fetchComics(url, queryParams, setNumberOfPages, setSearchResults, setToast, setToastIsOpen);
+    fetchComics(url, queryParams, setNumberOfPages, setSearchResults, setToast, setToastIsOpen, isSearchQueried);
     if(activeSearchType === SEARCH_TYPES.IZDAVAC || activeSearchType === SEARCH_TYPES.ZANR){
         setSearchQuery(searchQuery);
     }
@@ -323,6 +333,8 @@ function fetchGenreOrPublisher(url, setArray, setToast, setToastIsOpen){
     const colors = ["success", "info", "danger", "warning"];
     authenticatedApi.get(url).then(res=>{
         let genreArray = res.data;
+        if(genreArray.hasOwnProperty("zanrovi")) genreArray = res.data.zanrovi;
+        else genreArray = res.data.izdavaci;
         genreArray.map((item, index)=>{
             item.boja = colors[index % colors.length];
         });
@@ -337,20 +349,22 @@ function fetchGenreOrPublisher(url, setArray, setToast, setToastIsOpen){
     });
 }
 
-function fetchComics(url, params, setNumberOfPages, setSearchResults, setToast, setToastIsOpen){
+function fetchComics(url, params, setNumberOfPages, setSearchResults, setToast, setToastIsOpen, isSearchQueried){
     authenticatedApi.get(url, {
         params: params
     }).then(res=>{
-        console.log(res.data.brojStranica)
         setNumberOfPages(res.data.brojStranica);
         setSearchResults(res.data.stripovi);
     }).catch(err=>{
+        if(!isSearchQueried){}
+        else{
+            setToast({
+                type: "danger",
+                message: "Došlo je do greške!"
+            });
+            setToastIsOpen(true);
+        }
         console.log(err);
-        setToast({
-            type: "danger",
-            message: comicbookServiceOfflineError
-        });
-        setToastIsOpen(true);
     });
 }
 
@@ -360,8 +374,8 @@ function fetchCatalogues(setCatalogueList,setActiveCatalogue, setToast, setIsToa
             authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path,{
                 params: {id_korisnik: response.data.id},
             }).then(res=>{
-                setCatalogueList(res.data);
-                setActiveCatalogue(res.data[0]);
+                setCatalogueList(res.data.katalozi);
+                setActiveCatalogue(res.data.katalozi[0]);
             }).catch(err=>{
                 console.log(err);
                 setIsToastOpen(true);

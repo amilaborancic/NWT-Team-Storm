@@ -9,13 +9,14 @@ import java.util.List;
 
 @Repository
 public interface StripRepository extends JpaRepository<Strip, Long> {
-    List<Strip> findByIdIzdavac(Long id, Pageable pageable);
-    List<Strip> findByIdZanr(Long id, Pageable pageable);
-    List<Strip> findByNazivContains(String naziv, Pageable pageable);
-    List<Strip> findAllByAutori_ImeContains(String ime, Pageable pageable);
-    List<Strip> findAllByAutori_PrezimeContains(String ime, Pageable pageable);
-    List<Strip> findAllByAutori_ImeContainsAndAutori_PrezimeContains(String ime, String prezime, Pageable pageable);
+    List<Strip> findByIdIzdavacOrderByNaziv(Long id, Pageable pageable);
+    List<Strip> findByIdZanrOrderByNaziv(Long id, Pageable pageable);
+    List<Strip> findByNazivContainsOrderByNaziv(String naziv, Pageable pageable);
+    List<Strip> findAllByAutori_ImeContainsOrderByNaziv(String ime, Pageable pageable);
+    List<Strip> findAllByAutori_PrezimeContainsOrderByNaziv(String ime, Pageable pageable);
+    List<Strip> findAllByAutori_ImeContainsAndAutori_PrezimeContainsOrderByNaziv(String ime, String prezime, Pageable pageable);
     List<Strip> findAllByIdIn(List<Long> idStripova);
+    List<Strip> findAllByOrderByNaziv(Pageable pageable);
     Long countStripByIdZanr(Long id);
     Long countStripByIdIzdavac(Long id);
     Long countStripByNazivContains(String naziv);

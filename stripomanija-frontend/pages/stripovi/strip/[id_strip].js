@@ -10,6 +10,7 @@ import GenericModal from "../../../components/GenericModal/GenericModal";
 import ToastMessage from "../../../components/ToastMessage/ToastMessage";
 import cx from "classnames";
 import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
+import {handleFieldChange} from "../../index";
 
 const StripDetails = ({ router: { query } })=>{
     const [comic, setComic] = useState({});
@@ -40,7 +41,9 @@ const StripDetails = ({ router: { query } })=>{
             }));
         }
     }, [query.id_strip]);
-
+    useEffect(()=>{
+        fetchComicReviews(query.id_strip, setCommentList, setToast, setIsToastOpen);
+    }, [commentList]);
     return(
         <NavbarContainer>
             <div className={styles.wrapper}>
@@ -156,7 +159,6 @@ function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, set
             newObj.korisnik = {id:res.data.id};
             setNewRateReview(newObj);
             //send post for new rating
-            console.log(newRateReview);
             authenticatedApi.post(routes.rating.path + routes.rating.novi.path, newRateReview).then(res=>{
                 //close modal, show toast
                 setIsModalOpen(false);
@@ -193,16 +195,6 @@ function rateReview(ocjena, newRateReview, setNewRateReview, setIsModalOpen, set
 }
 
 
-//field change function
-function handleFieldChange(e, field, setField){
-    const {name, value} = e.target;
-    setField(prevState=>({
-            ...prevState,
-            [name]: value
-        })
-    )
-}
-
 function fetchComicDetails(idStrip, setComic, setToast, setIsToastOpen){
     authenticatedApi.get(routes.strip.path, {
         params:{
@@ -210,7 +202,7 @@ function fetchComicDetails(idStrip, setComic, setToast, setIsToastOpen){
         }
     })
         .then(res=>{
-            setComic(res.data);
+            setComic(res.data.strip);
         })
         .catch(err=>{
             console.log(err);
@@ -225,7 +217,7 @@ function fetchComicDetails(idStrip, setComic, setToast, setIsToastOpen){
 function fetchComicReviews(stripId, setCommentList, setIsToastOpen, setToast){
     authenticatedApi.get(routes.rating.path + routes.rating.komentari.path + stripId)
         .then(res=>{
-            setCommentList(Object.entries(res.data));
+            setCommentList(Object.entries(res.data.komentari));
         })
         .catch(err=>{
             console.log(err);

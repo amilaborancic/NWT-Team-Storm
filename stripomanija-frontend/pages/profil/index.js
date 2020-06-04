@@ -4,7 +4,6 @@ import styles from "./index.module.css";
 import KatalogThumbnail from "../../components/KatalogThumbnail/KatalogThumbnail";
 import {authenticatedApi, catalogue} from "../../util/url";
 import {routes} from "../../util/routes";
-import {useRouter} from "next/router";
 import cx from "classnames";
 import GenericField from "../../components/FormFields/GenericField";
 import GenericModal from "../../components/GenericModal/GenericModal";
@@ -69,12 +68,15 @@ const Katalozi = ({user})=>{
                 <button type="button" className={cx("ml-4", styles.newButton)} onClick={()=>setIsOpen(true)}>+</button>
             </div>
             <div className={cx(styles.wrapper, "flex-wrap")}>
-                {catalogueList && catalogueList.map(katalog=>
-                    <div className="d-flex flex-column mx-3 my-2" key={katalog.id}>
-                        <KatalogThumbnail animated title={katalog.naziv} id={katalog.id}/>
-                        <button type="button" className="btn btn-primary" onClick={()=>deleteCatalogue(katalog, user, setIsToastOpen, setToast)}>Obriši</button>
-                    </div>
-                )}
+                {catalogueList !== null && catalogueList.length === 0 ?
+                    <span>Trenutno nemate nijedan katalog.<span className="text-primary" onClick={()=>setIsOpen(true)}> Kreirajte</span> jedan.</span>
+                    :
+                    catalogueList && catalogueList.map(katalog=>
+                        <div className="d-flex flex-column mx-3 my-2" key={katalog.id}>
+                            <KatalogThumbnail animated title={katalog.naziv} id={katalog.id}/>
+                            <button type="button" className="btn btn-primary" onClick={()=>deleteCatalogue(katalog, user, setIsToastOpen, setToast)}>Obriši</button>
+                        </div>
+                    )}
             </div>
             <GenericModal showModal={isOpen} closeModal={()=>setIsOpen(false)} modalTitle={"Vaš novi katalog"}
                           bottomText={"Dobro organizovan katalog olakšava pronalazak dobrih stripova :D"}>
@@ -112,25 +114,20 @@ function deleteCatalogue(catalogue, user, setIsToastOpen, setToast){
         })
 }
 
-function fetchUserDetails(setUser, setToast, setIsToastOpen){
+function fetchUserDetails(setUser){
     authenticatedApi(routes.user.path + routes.user.details.path + localStorage.getItem("username"))
         .then(res=>{
             setUser(res.data);
         })
         .catch(err=>{
             console.log(err);
-            setToast({
-                type:"danger",
-                message:"Došlo je do greške prilikom dobavljanja informacija o korisniku."
-            });
-            setIsToastOpen(true);
         });
 }
 
 function fetchCatalogueList(setCatalogueList, setToast, setIsToastOpen){
     authenticatedApi.get(routes.katalozi.path + routes.katalozi.svi.path)
         .then(res=>{
-            setCatalogueList(res.data);
+            setCatalogueList(res.data.katalozi);
         })
         .catch(err=>{
             console.log(err);

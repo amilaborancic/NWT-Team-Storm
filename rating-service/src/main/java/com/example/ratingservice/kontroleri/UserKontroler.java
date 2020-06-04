@@ -1,5 +1,6 @@
 package com.example.ratingservice.kontroleri;
 
+import com.example.ratingservice.DTO.KorisnikInfoRating;
 import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.modeli.User;
 import com.example.ratingservice.repozitorij.RatingRepozitorij;
@@ -7,6 +8,7 @@ import com.example.ratingservice.servisi.UserServis;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.desktop.ScreenSleepEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,6 +31,14 @@ public class UserKontroler {
 	public void addUser() {
 		User korisnik=new User();
 		korisnikServis.save(korisnik);
+	}
+	@PostMapping(value="/novi-korisnik")
+	public String noviKorisnik(@RequestBody KorisnikInfoRating korisnik){
+		User user = new User(korisnik.getId());
+		korisnikServis.save(user);
+		System.out.println(korisnik.getBroj_losih_reviewa());
+		System.out.println(korisnik.getUkupno_reviewa());
+		return "Uspjesno kreiran";
 	}
 	//vraca podatke o korisniku sa nekim id-om
 	@RequestMapping(value="/korisnik/{id}", method=RequestMethod.GET)

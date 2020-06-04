@@ -124,6 +124,12 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		List<Autor> autori_6 = new ArrayList<>();
 		autori_6.add(a7);
 
+		String opis_7 = "When a turf war puts Black Mask in Red Hood's crosshairs, Jason discovers that the False Face Society is not what it seems, and that the organization is about to auction off a powerful weapon. As criminals from all over the globe descend on Gotham City, Jason must prove that he belongs amongst the city's worst in order to gain access to this Dark Summit!";
+		String slika_7 = "https://res.cloudinary.com/digbjjfm9/image/upload/v1590565768/covers/redhood_and_the_outlaws__1_ecpfze.jpg";
+		List<Autor> autori_7 = new ArrayList<>();
+		autori_7.add(a1);
+		autori_7.add(a3);
+
 		Long id_marvel = izdavacRepository.findAll().get(0).getId(); //marvel
 		Long id_dc = izdavacRepository.findAll().get(1).getId(); //dc
 		Long id_mirage = izdavacRepository.findAll().get(2).getId();
@@ -135,6 +141,7 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		Strip s4 = new Strip("Birds of Prey Trouble in Mind", opis_4, slika_4, 0.0, 0, 1, id_dc, id_zanr, autori_4);
 		Strip s5 = new Strip("Teenage Mutant Ninja Turtles Universe", opis_5, slika_5, 0.0, 0, 20, id_mirage, id_zanr, autori_5);
 		Strip s6 = new Strip("Uncanny X-Men (2018-2019) Annual", opis_6, slika_6, 0.0, 0, 1, id_marvel, id_zanr, autori_6);
+		Strip s7 = new Strip("Red Hood and the Outlaws (2016)", opis_7, slika_7, 0.0, 0, 1, id_dc, id_zanr, autori_7);
 
 		stripRepository.save(s1);
 		stripRepository.save(s2);
@@ -142,6 +149,6 @@ class InitialCommandLineRunner implements CommandLineRunner {
 		stripRepository.save(s4);
 		stripRepository.save(s5);
 		stripRepository.save(s6);
-
+		stripRepository.save(s7);
 	}
 }

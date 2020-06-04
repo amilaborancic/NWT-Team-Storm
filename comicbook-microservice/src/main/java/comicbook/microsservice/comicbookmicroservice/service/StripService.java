@@ -36,7 +36,7 @@ public class StripService {
 	RestTemplate restTemplate;
 
     public List<Strip> sviStripovi(int brojStranice, int brojStripovaNaStranici){
-        return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
+        return stripRepository.findAllByOrderByNaziv(PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public Strip jedanStrip(Long id_strip){
@@ -47,17 +47,17 @@ public class StripService {
 
     public List<Strip> stripoviPoAutoru(String ime, String prezime, int brojStranice, int brojStripovaNaStranici){
         if(ime == null || prezime == null || ime.equals("") && prezime.equals("")) return new ArrayList<>();
-        else if(ime.equals("")) return stripRepository.findAllByAutori_PrezimeContains(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
-        else if(prezime.equals("")) return stripRepository.findAllByAutori_ImeContains(ime, PageRequest.of(brojStranice, brojStripovaNaStranici));
-        return stripRepository.findAllByAutori_ImeContainsAndAutori_PrezimeContains(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        else if(ime.equals("")) return stripRepository.findAllByAutori_PrezimeContainsOrderByNaziv(prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        else if(prezime.equals("")) return stripRepository.findAllByAutori_ImeContainsOrderByNaziv(ime, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findAllByAutori_ImeContainsAndAutori_PrezimeContainsOrderByNaziv(ime, prezime, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public List<Strip> stripoviPoIzdavacu(Long id_izdavac, int brojStranice, int brojStripovaNaStranici){
-        return stripRepository.findByIdIzdavac(id_izdavac, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findByIdIzdavacOrderByNaziv(id_izdavac, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public List<Strip> stripoviPoZanru(Long id_zanr, int brojStranice, int brojStripovaNaStranici){
-        return stripRepository.findByIdZanr(id_zanr, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findByIdZanrOrderByNaziv(id_zanr, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public List<Strip> stripoviPoNazivu(String naziv, int brojStranice, int brojStripovaNaStranici){
@@ -67,7 +67,7 @@ public class StripService {
         if(naziv.length() < 3) {
             throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
         }
-        return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
+        return stripRepository.findByNazivContainsOrderByNaziv(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 
     public Long dodajStrip(Strip strip){
@@ -150,7 +150,7 @@ public class StripService {
         return stripRepository.countStripByNazivContains(naziv);
     }
 	public int brojStranica(int brojStripova, int brojNaStranici){
-        return (int) round((double)brojStripova/brojNaStranici + 0.4);
+        return (int) round((double)brojStripova/brojNaStranici + 0.5);
     }
 	
     public List<Autor> autoriStripa(Long id){

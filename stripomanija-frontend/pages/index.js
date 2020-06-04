@@ -21,7 +21,7 @@ export default function Home() {
 
     return (
         <>
-            {isRegisterModalOpen && <RegistrationModal isRegisterModalOpen={isRegisterModalOpen} setIsRegisterModalOpen={setIsRegisterModalOpen}/>}
+            {isRegisterModalOpen && <RegistrationModal setToast={setToast} setIsToastOpen={setIsToastOpen} isRegisterModalOpen={isRegisterModalOpen} setIsRegisterModalOpen={setIsRegisterModalOpen}/>}
             {isLoginModalOpen && <LoginModal setToast={setToast} setIsToastOpen={setIsToastOpen} isLoginModalOpen={isLoginModalOpen} setIsLoginModalOpen={setIsLoginModalOpen}/>}
             <div className={styles.container}>
                 <Head>
@@ -50,7 +50,7 @@ const Buttons = ({setIsRegisterModalOpen, setIsLoginModalOpen})=>{
     );
 }
 
-const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen})=>{
+const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen, setIsToastOpen, setToast})=>{
     const [validationMsg, setValidationMsg] = useState(null);
 
     const [user, setUser] = useState({
@@ -75,7 +75,7 @@ const RegistrationModal = ({setIsRegisterModalOpen, isRegisterModalOpen})=>{
             <GenericField id={"usernameRegistracija"} name={"userName"} label={"Username"} placeholder={"Pomoću username-a se prijavljujete na Stripomaniju."} type={"text"} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <GenericField id={"sifraRegistracija"} name={"sifra"} label={"Šifra"} placeholder={"Vaša šifra"} type={"password"} validationMsg={validationMsg} onChange={(e)=>handleFieldChange(e, user, setUser)}/>
             <div className="d-flex w-100 justify-content-end">
-                <button type="button" className="btn btn-primary" onClick={()=>handleRegistrationRequest(baseUrl + routes.register.path, user, setValidationMsg)}>Predaj</button>
+                <button type="button" className="btn btn-primary" onClick={()=>handleRegistrationRequest(baseUrl + routes.register.path, user, setValidationMsg,setIsToastOpen, setToast, setIsRegisterModalOpen)}>Predaj</button>
             </div>
         </GenericModal>
     );
@@ -143,11 +143,16 @@ function handleLoginRequest(url,reqBody, setValidationMsg, setIsInvalid, setIsTo
     });
 }
 
-function handleRegistrationRequest(url,reqBody, setValidationMsg, setIsToastOpen, setToast){
+function handleRegistrationRequest(url,reqBody, setValidationMsg, setIsToastOpen, setToast, setIsModalOpen){
     axios.post(url, reqBody)
         .then(response=>{
             setValidationMsg(null);
-            Router.push(navbarRoutes.katalozi.path);
+            setIsToastOpen("true");
+            setToast({
+                type:"success",
+                message:"Uspješno ste se registrovali! Sada se možete prijaviti na Stripomaniju."
+            });
+            setIsModalOpen(false);
         }).catch(error=>{
         try{
             console.log(error);

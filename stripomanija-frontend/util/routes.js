@@ -1,4 +1,4 @@
-import {catalogue, user} from "./url";
+import { user} from "./url";
 
 export const navbarRoutes = {
     pretraga: {

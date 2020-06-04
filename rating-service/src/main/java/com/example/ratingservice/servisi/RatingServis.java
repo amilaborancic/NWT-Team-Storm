@@ -99,6 +99,7 @@ public class RatingServis {
 		headers.set("Authorization", "Bearer "+ accessToken);
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
 
+		System.out.println(korisnikRepozitorij.findAll());
 		// dodano zbog exceptiona
 		ResponseEntity<Long> korisnici = restTemplate.exchange("http://user-service/user/count", HttpMethod.GET, entity, Long.class);
 		ResponseEntity<Long> stripovi = restTemplate.getForEntity("http://comicbook-service/strip/count", Long.class);

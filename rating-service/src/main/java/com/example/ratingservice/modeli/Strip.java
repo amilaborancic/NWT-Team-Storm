@@ -15,7 +15,6 @@ import org.hibernate.annotations.Proxy;
 public class Strip {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
 	

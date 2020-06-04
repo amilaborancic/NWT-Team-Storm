@@ -95,6 +95,9 @@ public class UserController {
         //rabbitmq
         User singleUser=userServis.singleUser(user.getUserName());
         producer.send(user.getId().toString());
+        //rating servis mora biti obavijesten o novom korisnik
+        UserRatingDTO userZaRating = new UserRatingDTO(user.getId(), user.getBroj_losih_reviewa(), user.getUkupno_reviewa());
+        restTemplate.postForEntity("http://rating-service/novi-korisnik", userZaRating, String.class);
         return user.getId();
     }
 

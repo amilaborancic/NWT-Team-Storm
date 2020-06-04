@@ -11,8 +11,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.Console;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/katalog")
@@ -40,11 +43,12 @@ public class StripController {
         StripIdsDTO stripovi = new StripIdsDTO(idjevi);
         HttpEntity<StripIdsDTO> requestBody = new HttpEntity<>(stripovi, headers);
         //zovemo endpoint iz strip servisa
-        ResponseEntity<List> listaStripova = restTemplate.exchange("http://comicbook-service/strip/sviPoId", HttpMethod.POST, requestBody, List.class);
-        model.addAttribute("stripovi", listaStripova.getBody());
+        ResponseEntity<Map> listaStripova = restTemplate.exchange("http://comicbook-service/strip/sviPoId", HttpMethod.POST, requestBody, Map.class);
+        model.addAttribute("stripovi", listaStripova.getBody().get("stripovi"));
 
         int ukupnoStripova = stripService.ukupnoStripova(id_katalog).intValue();
         model.addAttribute("ukupnoStranica", stripService.brojStranica(ukupnoStripova, brojStripovaNaStranici));
+        model.addAttribute("nazivResursa", "Stripovi iz kataloga id="+id_katalog+".");
         return "jsonTemplate";
     }
 

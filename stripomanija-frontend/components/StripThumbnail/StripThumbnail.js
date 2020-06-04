@@ -9,7 +9,11 @@ const StripThumbnail = ({children, image, title, animated, id})=>{
     return(
         privileged ?
             <Link href={`${routes.strip.jedan.path}[id_strip]`} as={`${routes.strip.jedan.path}${id}`}>
-                <ThumbnailBody animated={animated} image={image} title={title}>{children}</ThumbnailBody>
+                <div className={cx(["d-flex flex-column", animated ? styles.container : "", styles.wrapper])}>
+                    <img src={image} className={cx("my-3",styles.image)}/>
+                    <h5 className={styles.cursor}>{title}</h5>
+                    {children}
+                </div>
             </Link>
             :
             <ThumbnailBody animated={animated} image={image} title={title}>{children}</ThumbnailBody>
