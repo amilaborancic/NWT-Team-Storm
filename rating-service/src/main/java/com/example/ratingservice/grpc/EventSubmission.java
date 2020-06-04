@@ -16,7 +16,7 @@ public class EventSubmission {
     @Qualifier("eurekaClient")
     @Autowired
     private EurekaClient eurekaClient;
-    public void addEvent(Events.ActionType tipAkcije, String nazivResursa) {
+    public void addEvent( Events.ActionType tipAkcije, String nazivResursa) {
 
         try {
             InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka("system-events", false);

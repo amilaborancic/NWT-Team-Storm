@@ -108,7 +108,6 @@ class DemoCommandLineRunner implements CommandLineRunner {
 		Integer brojNaStranici = mapperStripovi.readTree(String.valueOf(responseBrojNaStranici.getBody())).asInt();
 		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.5);
 		int i=0;
-		System.out.println("sfjnlks");
 		while(i<brojStranica){
 			ResponseEntity<String> stripoviSaStranice = restTemplate.getForEntity(urlStripoviNaStranici + "?brojStranice="+i, String.class);
 			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("stripovi");
@@ -118,7 +117,6 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			});
 			i++;
 		}
-
 
 		Korisnik korisnik = korisnikRepozitorij.getOne(2L);
 		Korisnik korisnik_2 = korisnikRepozitorij.getOne(3L);

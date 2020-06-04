@@ -19,6 +19,8 @@ import user.usermicroservice.RoleName;
 import user.usermicroservice.Servisi.UserServis;
 import user.usermicroservice.exception.ApiRequestException;
 import user.usermicroservice.exception.ApiUnauthorizedException;
+import user.usermicroservice.grpc.EventSubmission;
+import user.usermicroservice.grpc.Events;
 import user.usermicroservice.util.JwtUtil;
 
 import java.util.*;
@@ -39,10 +41,15 @@ public class UserController {
     RoleRepository roleRepository;
     @Autowired
     JwtUtil jwt;
+    @Autowired
+    EventSubmission eventSubmission;
 
     @GetMapping("/{id}")
     public Optional<User> getUser(@PathVariable Long id, @RequestHeader Map<String, String> headers){
         isUserPriviledged(id, headers, "Nemate privilegiju za ovu akciju!");
+        String username = extractUsernameFromHeaders(headers);
+        Long idLogovanog = userServis.findUserByUserName(username).getId();
+        eventSubmission.addEvent(idLogovanog, Events.ActionType.GET, "Korisnik po id-u:"+ id.toString());
         return userServis.findUserById(id);
     }
 
@@ -52,6 +59,7 @@ public class UserController {
         return userServis.singleUser(username);
     }
 
+    //NO LONGER USED
     @PostMapping(value = "/sign-in")
     public Long signIn(@RequestBody UserDTO userDTO){
         String userName = userDTO.getUserName();
@@ -60,7 +68,9 @@ public class UserController {
         sifra = passwordEncoder.encode(sifra);
         if(!userServis.postojiUserName(userName)) throw new ApiRequestException("Username nije ispravan!");
         if(!sifra.equals(userServis.findUserByUserName(userName).getSifra())) throw new ApiRequestException("Unesite ispravnu šifru!");
-        return userServis.findUserByUserName(userName).getId();
+        Long id = userServis.findUserByUserName(userName).getId();
+        eventSubmission.addEvent(id, Events.ActionType.GET, "Sign in.");
+        return id;
     }
 
     @PostMapping(value ="/sign-up")
@@ -80,6 +90,8 @@ public class UserController {
         user.setSifra(passwordEncoder.encode(user.getSifra()));
         //spasavanje u bazu
         userServis.addNewUser(user);
+        //grpc
+        eventSubmission.addEvent(user.getId(), Events.ActionType.CREATE, "Dodan novi korisnik");
         //rabbitmq
         User singleUser=userServis.singleUser(user.getUserName());
         producer.send(user.getId().toString());
@@ -89,6 +101,9 @@ public class UserController {
     @PutMapping(value="/update-rating")
     public void updateUser(@RequestBody UserRatingDTO userRatingInfo, @RequestHeader Map<String,String> headers) {
         isUserPriviledged(userRatingInfo.getId(), headers, "Nemate privilegiju da updateujete ovaj rating!");
+        String username = extractUsernameFromHeaders(headers);
+        Long id = userServis.findUserByUserName(username).getId();
+        eventSubmission.addEvent(id, Events.ActionType.UPDATE, "Update rating i review korisnika.");
         userServis.updateUser(userRatingInfo);
     }
 
@@ -104,14 +119,15 @@ public class UserController {
 
     @GetMapping("/single/id/{id}")
     public UserAuthDTO getById(@PathVariable Long id){
-        System.out.println(id);
         User user = userServis.singlebyId(id);
         return new UserAuthDTO(user.getId(), user.getUserName(), user.getSifra(), user.getRole().getRoleName().toString());
     }
 
     //samo za testiranje kroz postman
     @GetMapping("/svi")
-    public List<User> svi(){ return userServis.svi(); }
+    public List<User> svi(){
+        return userServis.svi();
+    }
 
     @GetMapping("/username/{id}")
     public String getUsername(@PathVariable Long id) {
@@ -122,7 +138,12 @@ public class UserController {
     public Long brojKorisnikaUBazi(){return userServis.brojKorisnikaUBazi();}
 
     @GetMapping(value="/naziv-role/{username}")
-    public String getNazivRole(@PathVariable String username){return userServis.getNazivRole(username);}
+    public String getNazivRole(@PathVariable String username, @RequestHeader Map<String, String> headers){
+        String user = extractUsernameFromHeaders(headers);
+        Long id = userServis.findUserByUserName(user).getId();
+        eventSubmission.addEvent(id, Events.ActionType.GET, "Naziv role.");
+        return userServis.getNazivRole(username);
+    }
 
     private String extractUsernameFromHeaders(Map<String, String> headers){
         String token = headers.get("authorization").substring(7);
@@ -135,12 +156,15 @@ public class UserController {
         Long id_logovanog = logovani_user.getId();
         String role = logovani_user.getRole().getRoleName().toString();
         if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !id.equals(id_logovanog)) throw new ApiUnauthorizedException(errorMsg);
+        eventSubmission.addEvent(id_logovanog, Events.ActionType.GET, "Pronadjen korisnik.");
     }
     private void isUserPriviledged(String username, Map<String, String> headers, String errorMsg){
         String usernameFromToken = extractUsernameFromHeaders(headers);
-        User logovani_user = userServis.singleUser(username);
+        User logovani_user = userServis.singleUser(usernameFromToken);
         String role = logovani_user.getRole().getRoleName().toString();
+        System.out.println(role);
         if(!role.equals(RoleName.ROLE_ADMIN.toString()) && !username.equals(usernameFromToken)) throw new ApiUnauthorizedException(errorMsg);
+        eventSubmission.addEvent(logovani_user.getId(), Events.ActionType.GET, "Privilegije korisnika.");
     }
 
     //for other services

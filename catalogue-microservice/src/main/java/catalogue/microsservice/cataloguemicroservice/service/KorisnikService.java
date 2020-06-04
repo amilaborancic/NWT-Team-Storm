@@ -17,8 +17,6 @@ public class KorisnikService {
     KorisnikRepository korisnikRepository;
     @Autowired
     KatalogService katalogService;
-    @Autowired
-    EventSubmission eventSubmission;
 
     public Long dodajKorisnika(Korisnik korisnik){
         //prvo dodamo korisnika

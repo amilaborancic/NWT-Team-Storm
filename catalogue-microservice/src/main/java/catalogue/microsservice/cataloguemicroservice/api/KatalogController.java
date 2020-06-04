@@ -12,6 +12,8 @@ import com.netflix.discovery.converters.Auto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -19,11 +21,9 @@ import java.security.Principal;
 import java.util.*;
 import java.util.List;
 
-@RestController
+@Controller
 @RequestMapping("/katalog")
 public class KatalogController {
-
-    private int brojKatalogaNaStranici = 5;
 
     @Autowired
     KatalogService katalogService;
@@ -33,21 +33,24 @@ public class KatalogController {
     JwtUtil jwt;
     @Autowired
     RestTemplate restTemplate;
+    private String jsonTemplate = "jsonTemplate";
 
     //svi katalozi za jednog usera
     @GetMapping(value="/svi")
-    public List<Katalog> sviKatalozi(@RequestHeader Map<String,String> headers){
+    public String sviKatalozi(@RequestHeader Map<String,String> headers, Model model){
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
         //pronadjemo usera
         ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/" + username, UserAuthDTO.class);
         Long id_korisnik = res.getBody().getId();
-        return katalogService.sviKatalozi(id_korisnik);
+        model.addAttribute("katalozi", katalogService.sviKatalozi(id_korisnik));
+        model.addAttribute("nazivResursa", "Katalozi korisnika id="+id_korisnik+".");
+        return jsonTemplate;
     }
 
     //kreiranje kataloga za nekog usera
     @PostMapping(value="/novi")
-    public Katalog kreirajKatalog(@RequestBody Katalog katalog, @RequestHeader Map<String,String> headers){
+    public String kreirajKatalog(@RequestBody Katalog katalog, @RequestHeader Map<String,String> headers, Model model){
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
         UserAuthDTO user = null;
@@ -56,12 +59,12 @@ public class KatalogController {
             if(res.getBody() == null || !res.getBody().getUsername().equals(username)) throw new ApiUnauthorizedException("Nemate privilegiju da kreirate ovaj katalog!");
             user = res.getBody();
         }
-
         Katalog novi = new Katalog(katalog.getNaziv(), user.getId());
         katalogService.kreirajKatalog(novi);
         restTemplate.put("http://catalogue-service/korisnik/update", novi);
-
-        return novi;
+        model.addAttribute("katalog", novi);
+        model.addAttribute("nazivResursa", "Novi katalog");
+        return jsonTemplate;
     }
 
     //kreiranje kataloga za nekog usera
@@ -73,7 +76,7 @@ public class KatalogController {
 
     //dodavanje stripa u katalog uz provjeru da li je prethodno dodan
     @PutMapping(value="/dodavanje-stripa")
-    public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody,  @RequestHeader Map<String,String> headers){
+    public String dodajStripUKatalog(@RequestBody Map<String, Long> requestBody,  @RequestHeader Map<String,String> headers, Model model){
         Long id_strip = requestBody.get("id_strip");
         Long id_katalog = requestBody.get("id_katalog");
 
@@ -85,19 +88,23 @@ public class KatalogController {
             vlasnikKataloga(id_katalog, username, "Nemate privilegiju da dodate strip u ovaj katalog!");
         }
         katalogService.dodajStripUKatalog(id_strip, id_katalog);
-        return "Strip je uspješno dodan u katalog!";
+        model.addAttribute("message", "Strip je uspješno dodan u katalog!");
+        model.addAttribute("nazivResursa", "Stripovi iz kataloga");
+        return jsonTemplate;
     }
 
 
     //jedan katalog
     @GetMapping(value="/jedan")
-    public Katalog getKatalog(@Param("id_katalog") Long id_katalog){
-        return katalogService.getKatalog(id_katalog);
+    public String getKatalog(@Param("id_katalog") Long id_katalog, Model model){
+        model.addAttribute("katalog",  katalogService.getKatalog(id_katalog));
+        model.addAttribute("nazivResursa", "Jedan katalog.");
+        return jsonTemplate;
     }
 
     //brisanje stripa iz kataloga
     @DeleteMapping(value="/brisanje-stripa")
-    public String obrisiStrip(@RequestBody Map<String, Long> body, @RequestHeader Map<String,String> headers){
+    public String obrisiStrip(@RequestBody Map<String, Long> body, @RequestHeader Map<String,String> headers, Model model){
         //provjera vlasnika kataloga
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
@@ -108,13 +115,19 @@ public class KatalogController {
             //nadjemo vlasnika kataloga
             vlasnikKataloga(id_katalog, username, "Nemate privilegiju da obrisete strip iz ovog kataloga!");
         }
-        if(katalogService.obrisiStrip(id_strip, id_katalog)) return "Strip je uspjesno obrisan iz kataloga!";
-        return "Strip sa id-jem " + id_strip + " se ne nalazi u katalogu!";
+        if(katalogService.obrisiStrip(id_strip, id_katalog)){
+            model.addAttribute("message", "Strip je uspjesno obrisan iz kataloga!");
+            model.addAttribute("nazivResursa", "Obrisan strip");
+            return jsonTemplate;
+        }
+        model.addAttribute("message", "Strip se ne nalazi u katalogu!");
+        model.addAttribute("nazivResursa", "Greška!");
+        return jsonTemplate;
     }
 
     //brisanje kataloga
     @DeleteMapping(value="/brisanje-kataloga")
-    public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise, @RequestHeader Map<String,String> headers){
+    public String obrisiKatalog(@RequestBody Map<String, Long> katalogKojiSeBrise, @RequestHeader Map<String,String> headers, Model model){
         String token = headers.get("authorization").substring(7);
         String username = jwt.extractUsername(token);
         Long id_katalog = katalogKojiSeBrise.get("idKatalog");
@@ -124,8 +137,9 @@ public class KatalogController {
             //nadjemo vlasnika kataloga
             vlasnikKataloga(id_katalog, username, "Nemate privilegiju da obrisete ovaj katalog!");
         }
-
-        return katalogService.obrisiKatalog(id_katalog);
+        model.addAttribute("message", katalogService.obrisiKatalog(id_katalog));
+        model.addAttribute("nazivResursa", "Obrisan katalog.");
+        return jsonTemplate;
     }
 
     private void vlasnikKataloga(Long id_katalog, String username, String errorMsg) {
@@ -134,11 +148,7 @@ public class KatalogController {
         ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id_vlasnik, UserAuthDTO.class);
         if(res.getBody() == null || !res.getBody().getUsername().equals(username)) throw new ApiUnauthorizedException(errorMsg);
     }
-    private boolean isUserAdmin(Long id){
-        ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/id/" + id, UserAuthDTO.class);
-        if(res.getBody() == null || !res.getBody().getRola().equals("ROLE_ADMIN")) return false;
-        return true;
-    }
+
     private boolean isUserAdmin(String username){
         ResponseEntity<UserAuthDTO> res = restTemplate.getForEntity("http://user-service/user/single/" + username, UserAuthDTO.class);
         if(res.getBody() == null || !res.getBody().getRola().equals("ROLE_ADMIN")) return false;

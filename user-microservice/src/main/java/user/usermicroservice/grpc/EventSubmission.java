@@ -16,7 +16,7 @@ public class EventSubmission {
     @Qualifier("eurekaClient")
     @Autowired
     private EurekaClient eurekaClient;
-    public void addEvent(Events.ActionType tipAkcije, String nazivResursa) {
+    public void addEvent(Long idKorisnik, Events.ActionType tipAkcije, String nazivResursa) {
 
         try {
             InstanceInfo instanceInfo = eurekaClient.getNextServerFromEureka("system-events", false);
@@ -29,7 +29,7 @@ public class EventSubmission {
             Events.Response response=stub.logAction(Events.Request.newBuilder()
                     .setTimestamp(ts)
                     .setNazivServisa("user-service")
-                    .setIdKorisnik(10000L)
+                    .setIdKorisnik(idKorisnik)
                     .setTipAkcije(tipAkcije)
                     .setNazivResursa(nazivResursa)
                     .build()

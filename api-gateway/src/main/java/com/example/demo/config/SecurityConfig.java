@@ -40,11 +40,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/user/name/*", "/strip/count", "/strip/brojNaStranici", "/strip/svi*").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/sign-in", "/user/sign-up", "/authenticate", "/loggedUser").permitAll()
 
-                .antMatchers(HttpMethod.GET,"/rating/**", "/user/*").hasRole("USER")
+                .antMatchers(HttpMethod.GET,"/rating/**").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/rating/dodaj-rating", "/strip/sviPoId", "/katalog/novi").hasRole("USER")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
 
-                .antMatchers(HttpMethod.GET, "/zanr/svi*", "/user/single/id/**", "/strip*",
+                .antMatchers(HttpMethod.GET, "/zanr/svi*", "/user/single/id/**", "/strip*","/user/*",
                         "/katalog/svi", "/izdavac/svi*", "/autor/svi*", "/katalog/iz-kataloga/**", "/rating/komentari-stripa/**", "/strip/trazi-autor*", "/strip/trazi-zanr*",
                         "/strip/trazi-izdavac*","/strip/trazi-naziv*").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/strip/sviPoId").hasAnyRole("USER", "ADMIN")
