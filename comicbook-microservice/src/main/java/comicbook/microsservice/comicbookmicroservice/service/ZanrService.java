@@ -14,22 +14,16 @@ import java.util.List;
 public class ZanrService {
     @Autowired
     ZanrRepository zanrRepository;
-    private Long idAdmin = 1000L;
-    @Autowired
-    EventSubmission eventSubmission;
 
     public List<Zanr> sviZanrovi(){
-        eventSubmission.submitEvent(idAdmin, Events.ActionType.GET, "Svi zanrovi");
         return zanrRepository.findAll();
     }
 
     public Long dodajZanr(Zanr zanr){
         if(zanr.getNaziv().equals("") || zanr.getNaziv() == null) {
-            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Naziv zanra ne smije biti prazan!");
             throw new ApiRequestException("Naziv zanra ne smije biti prazan!");
         }
         zanrRepository.save(zanr);
-        eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi zanr, id: " + zanr.getId());
         return zanr.getId();
     }
 }
