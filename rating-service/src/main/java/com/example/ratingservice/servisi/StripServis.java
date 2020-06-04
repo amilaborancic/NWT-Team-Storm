@@ -18,32 +18,14 @@ public class StripServis {
 	@Autowired
 	private StripRepozitorij stripRepozitorij;
 
-	@Autowired
-	EventSubmission eventSubmission;
-
 	public Strip getOne(Long id) {
 		if(stripRepozitorij.findById(id).isPresent()) {
-			eventSubmission.addEvent(Events.ActionType.GET,"strip id "+id.toString());
 			return stripRepozitorij.getOne(id);
 		}
 		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronadjen!");
 	}
-
-	public void save(Strip strip) {
-		eventSubmission.addEvent(Events.ActionType.CREATE,"dodavanje stripa");
-		stripRepozitorij.save(strip);
-	}
-
 	public List<Strip> findAll() {
-		eventSubmission.addEvent(Events.ActionType.GET,"svi stripovi");
 		return stripRepozitorij.findAll();
 	}
-
-	public Optional<Strip> findById(Long id) {
-		eventSubmission.addEvent(Events.ActionType.GET,"strip id "+id.toString());
-		return stripRepozitorij.findById(id);
-	}
-
-
 
 }

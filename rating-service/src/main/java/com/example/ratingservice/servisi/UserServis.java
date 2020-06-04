@@ -23,37 +23,27 @@ public class UserServis {
 
 	@Autowired
 	private RestTemplate restTemplate;
-
 	@Autowired
 	private KorisnikRepozitorij korisnikRepozitorij;
-
 	@Autowired
 	private RatingRepozitorij ratingRepozitorij;
 
-	@Autowired
-	EventSubmission eventSubmission;
-
-
 	public User getOne(Long id) {
 		if(korisnikRepozitorij.findById(id).isPresent()) {
-			eventSubmission.addEvent(Events.ActionType.GET,"user id "+id.toString());
 			return korisnikRepozitorij.getOne(id);
 		}
 		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronadjen!");
 	}
 
 	public List<User> findAll() {
-		eventSubmission.addEvent(Events.ActionType.GET,"svi korisnici");
 		return korisnikRepozitorij.findAll();
 	}
 
 	public void save(User korisnik) {
-		eventSubmission.addEvent(Events.ActionType.GET,"dodavanje korisnika");
 		korisnikRepozitorij.save(korisnik);
 	}
 
 	public List<String> korisniciStripa(Long id){
-
 		List<String> korisnici=new ArrayList<>();
 		List<Rating> rejtinzi=ratingRepozitorij.findAll();
 		for(Rating r:rejtinzi){
@@ -66,6 +56,4 @@ public class UserServis {
 		}
 		return korisnici;
 	}
-
-
 }

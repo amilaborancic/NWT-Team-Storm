@@ -35,8 +35,6 @@ public class RatingServis {
 	@Autowired
 	private RestTemplate restTemplate;
 	@Autowired
-	EventSubmission eventSubmission;
-	@Autowired
 	private RatingRepozitorij ratingRepozitorij;
 	@Autowired
 	private KorisnikRepozitorij korisnikRepozitorij;
@@ -44,32 +42,25 @@ public class RatingServis {
 	private StripRepozitorij stripRepozitorij;
 
 	public List<Rating> findAll(){
-		eventSubmission.addEvent(Events.ActionType.GET,"svi rejtinzi");
 		return ratingRepozitorij.findAll();
 	}
 
 	public Rating getOne(Long id) {
-
 		if(ratingRepozitorij.findById(id).isPresent()) {
-			eventSubmission.addEvent(Events.ActionType.GET, "rating sa id "+id.toString());
 			return ratingRepozitorij.getOne(id);
 		}
-
 		else throw new ApiRequestException("Rating sa id "+id.toString()+" nije pronadjen!");
 	}
 
 	public List<Rating> findByKorisnik(Long id) {
-
 		if(korisnikRepozitorij.findById(id).isPresent()) {
 			List<Rating> all_ratings=ratingRepozitorij.findAll();
 			List<Rating> ratings_by_user=new ArrayList<Rating>();
-
 			for (Rating r:all_ratings) {
 				if(r.getKorisnik().getId()==id) {
 					ratings_by_user.add(r);
 				}
 			}
-			eventSubmission.addEvent(Events.ActionType.GET, "rejtinzi korisnika");
 			return ratings_by_user;
 		}
 		throw new ApiRequestException("Korisnik sa id "+id.toString()+" nije pronadjen!");
@@ -84,14 +75,12 @@ public class RatingServis {
 					ratings_by_strip.add(r);
 				}
 			}
-			eventSubmission.addEvent(Events.ActionType.GET, "rejtinzi stripa");
 			return ratings_by_strip;
 		}
 		throw new ApiRequestException("Strip sa id "+id.toString()+" nije pronadjen!");
 	}
 
 	public void save(Rating rating) {
-		eventSubmission.addEvent(Events.ActionType.CREATE,"dodavanje ratinga");
 		ratingRepozitorij.save(rating);
 	}
 
@@ -124,7 +113,7 @@ public class RatingServis {
 		String url = "http://comicbook-service/strip?id_strip=" + rating.getStrip().getId();
 		ResponseEntity<String> response_strip = restTemplate.getForEntity(url, String.class);
 		ObjectMapper mapper = new ObjectMapper();
-		JsonNode root = mapper.readTree(response_strip.getBody());
+		JsonNode root = mapper.readTree(response_strip.getBody()).path("strip");
 		// podaci o stripu
 		Double ukupni_rating = Double.valueOf(root.path("ukupniRating").toString());
 		Long strip_id = Long.valueOf(root.path("id").toString());
@@ -199,8 +188,6 @@ public class RatingServis {
 		rating.setKorisnik(korisnik);
 		rating.setStrip(strip);
 		ratingRepozitorij.save(rating);
-
-		eventSubmission.addEvent(Events.ActionType.CREATE, "kreiranje ratinga");
 		return "Uspjesno ste ostavili recenziju na strip!";
 	}
 
@@ -217,17 +204,9 @@ public class RatingServis {
 					korisnik_komentar.put(username.getBody(), r.getKomentar());
 				}
 			}
-			eventSubmission.addEvent(Events.ActionType.GET, "komentari korisnika na strip");
 			return korisnik_komentar;
 		} else throw new ApiRequestException("Strip sa id " + id.toString() + " nije pronadjen!");
 	}
 
-	public List<Integer> ocjeneStripa(Long id){
-		List<Integer> ocjeneStripa=new ArrayList<>();
-		for(Rating r:ratingRepozitorij.findAll()){
-			ocjeneStripa.add(r.getOcjena());
-		}
-		return ocjeneStripa;
-	}
 
 }

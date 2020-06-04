@@ -4,6 +4,8 @@ import com.example.ratingservice.modeli.Rating;
 import com.example.ratingservice.servisi.RatingServis;
 import com.example.ratingservice.servisi.StripServis;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -12,72 +14,71 @@ import java.util.List;
 import java.util.Map;
 
 @RequestMapping("/rating")
-@RestController
+@Controller
 public class RatingKontroler {
 	@Autowired
 	private RatingServis ratingServis;
 	@Autowired
 	private StripServis stripServis;
+	private String jsonTemplate = "jsonTemplate";
 
 	// vraca sve ratinge
 	@GetMapping(value = "/svi")
-	public List<Rating> all() {
-		return ratingServis.findAll();
-	}
-
-	// vraca rating na osnovu id-a
-	@GetMapping(value = "/{id}")
-	Rating ratingById(@PathVariable Long id) {
-		return ratingServis.getOne(id);
+	public String all(Model model) {
+		model.addAttribute("ratings", ratingServis.findAll());
+		model.addAttribute("nazivResursa", "Svi rejtinzi.");
+		return jsonTemplate;
 	}
 
 	// vraca sve ratinge za nekog korisnika
 	@GetMapping(value = "/korisnika/{id}", produces = "application/json")
-	public List<Rating> ratingsByUser(@PathVariable Long id) {
-		return ratingServis.findByKorisnik(id);
+	public String ratingsByUser(@PathVariable Long id, Model model) {
+		model.addAttribute("ratings", ratingServis.findByKorisnik(id));
+		model.addAttribute("nazivResursa", "Rejtinzi korisnika id=" + id + ".");
+		return jsonTemplate;
 	}
 
 	// vraca sve komentare i usera za neki strip
 	//KOMUNICIRA SA USER SERVISOM
 	@GetMapping(value = "/komentari-stripa/{id}", produces = "application/json")
-	public Map<String, String> commentsByStrip(@PathVariable Long id) {
-
+	public String commentsByStrip(@PathVariable Long id, Model model) {
 		if (stripServis.getOne(id) != null) {
-			return ratingServis.commentsByStrip(id);
+			model.addAttribute("komentari", ratingServis.commentsByStrip(id));
+			model.addAttribute("nazivResursa", "Komentari na strip.");
+			return jsonTemplate;
 		}
 		throw new ApiRequestException("Strip nije pronadjen");
 	}
 
-	// vraca sve ratinge za neki strip
-	@GetMapping(value = "/stripa/{id}", produces = "application/json")
-	List<Rating> ratingsByStrip(@PathVariable Long id) {
-		return ratingServis.findByStrip(id);
-	}
-
 	// kreiranje novog ratinga - komunicira sa user i strip ms
 	@PostMapping(value = "/dodaj-rating", consumes = "application/json")
-	public String addRating(@RequestBody @Valid Rating rating, @RequestHeader Map<String, String> headers) throws Exception {
+	public String addRating(@RequestBody @Valid Rating rating, @RequestHeader Map<String, String> headers, Model model) throws Exception {
 		String token = headers.get("authorization").substring(7);
-		return ratingServis.addRating(rating, token);
+		model.addAttribute("nazivResursa", "Uspjesno ostavljena recenzija.");
+		ratingServis.addRating(rating, token);
+		return jsonTemplate;
 	}
 
-	//vraca ocjene
+	//NO LONGER USED
 	@GetMapping(value = "/ocjene/{id}", produces = "application/json")
-	public @ResponseBody List<Integer> ocjeneStripa(@PathVariable Long id){
+	public String ocjeneStripa(@PathVariable Long id, Model model){
 		List<Integer> ocjeneStripa=new ArrayList<>();
 		for(Rating r:ratingServis.findAll()){
 			ocjeneStripa.add(r.getOcjena());
 		}
-		return ocjeneStripa;
+		model.addAttribute("ocjene", ocjeneStripa);
+		model.addAttribute("nazivResursa", "Ocjene stripa.");
+		return jsonTemplate;
 	}
-
-	//vraca komentare
+	//NO LONGER USED
 	@GetMapping(value = "/komentari/{id}", produces = "application/json")
-	public @ResponseBody List<String> komentariStripa(@PathVariable Long id){
+	public String komentariStripa(@PathVariable Long id, Model model){
 		List<String> komentariStripa=new ArrayList<>();
 		for(Rating r:ratingServis.findAll()){
 			komentariStripa.add(r.getKomentar());
 		}
-		return komentariStripa;
+		model.addAttribute("komentari", komentariStripa);
+		model.addAttribute("nazivResursa", "Komentari stripa.");
+		return jsonTemplate;
 	}
 }
