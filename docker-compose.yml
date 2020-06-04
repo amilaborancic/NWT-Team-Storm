@@ -35,9 +35,20 @@ services:
       - 8085
     ports:
       - 8085:8085
+    networks:
+      - stripomanija
     restart: on-failure
     depends_on:
+      - mysql
       - discovery
+    environment:
+      #mysql konekcija
+      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/user-service?useSSL=false&allowPublicKeyRetrieval=true'
+      #eureka
+      SPRING_APPLICATION_NAME: user-service
+      SPRING_PROFILES_ACTIVE: enableEureka
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
   comicbook-service:
     image: comicbook-docker
     container_name: comicbook-docker
@@ -94,3 +105,19 @@ services:
       - 8084:8084
     depends_on:
       - discovery
+
+  #mysql konekcije
+  mysql:
+    image: mysql:8.0.2
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: user-service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    ports:
+      - 3306:3306
+    networks:
+      - stripomanija
+networks:
+  stripomanija:
+    driver: bridge
