@@ -62,21 +62,23 @@ class DemoCommandLineRunner implements CommandLineRunner{
 			User k = new User(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
 		});
-
 		//dobavimo stripove iz strip servisa
 		String urlUkupnoStripova = "http://comicbook-service/strip/count";
 		String urlBrojNaStranici = "http://comicbook-service/strip/brojNaStranici";
 		String urlStripoviNaStranici = "http://comicbook-service/strip/svi";
+
 		ResponseEntity<Long> responseBrojStripova = restTemplate.getForEntity(urlUkupnoStripova, Long.class);
 		ResponseEntity<Integer> responseBrojNaStranici = restTemplate.getForEntity(urlBrojNaStranici, int.class);
+
 		ObjectMapper mapperStripovi = new ObjectMapper();
 		Long brojStripova = mapperStripovi.readTree(String.valueOf(responseBrojStripova.getBody())).asLong();
 		Integer brojNaStranici = mapperStripovi.readTree(String.valueOf(responseBrojNaStranici.getBody())).asInt();
-		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.5);
+		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.4);
+
 		int i=0;
 		while(i<brojStranica){
 			ResponseEntity<String> stripoviSaStranice = restTemplate.getForEntity(urlStripoviNaStranici + "?brojStranice="+i, String.class);
-			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody());
+			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("stripovi");
 			svi.forEach(strip->{
 				Strip s = new Strip(strip.path("id").asLong());
 				stripRepozitorij.save(s);

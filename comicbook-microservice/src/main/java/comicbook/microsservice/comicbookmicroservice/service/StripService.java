@@ -127,10 +127,8 @@ public class StripService {
 			strip_iz_baze.setUkupniRating(stripRatingInfo.getUkupniRating());
 			strip_iz_baze.setUkupnoKomentara(stripRatingInfo.getUkupnoKomentara());
 			stripRepository.save(strip_iz_baze);
-            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.UPDATE, "Rating stripa azuriran.");
 		}
 		else {
-            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Strip ne postoji!.");
             throw new ApiRequestException("Strip sa id-jem " + stripRatingInfo.getId().toString() + " ne postoji.");
         }
 	}
@@ -142,14 +140,9 @@ public class StripService {
 
 	public ResponseEntity<Map<String, String>> komentariStripa(Long id) {
 		if (stripRepository.findById(id).isPresent()) {
-			ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange(
-					"http://rating-service/komentari-stripa/" + id.toString(), HttpMethod.GET, null,
-					new ParameterizedTypeReference<Map<String, String>>() {
-					});
-            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Komentari stripa, id: " + id);
+			ResponseEntity<Map<String, String>> komentari_stripa = restTemplate.exchange("http://rating-service/rating/komentari-stripa/" + id.toString(), HttpMethod.GET, null, new ParameterizedTypeReference<Map<String, String>>() {});
 			return komentari_stripa;
 		}
-		eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Strip ne postoji!");
 		throw new ApiRequestException("Strip sa id-jem " + id.toString() + " ne postoji.");
 	}
 

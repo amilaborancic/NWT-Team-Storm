@@ -22,23 +22,25 @@ public class AuthInterceptor implements HandlerInterceptor {
 
     @Override
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) {
-        String username = jwtUtil.extractUsername(request.getHeader("authorization").substring(7));
-        //fetch user from user service
-        ResponseEntity<Map> res = restTemplate.getForEntity("http://user-service/user/single/" + username, Map.class);
-        //grpc
-        Integer id_raw = (Integer) res.getBody().get("id");
-        Long id = id_raw.longValue();
+        if(request.getHeader("authorization") != null){
+            String username = jwtUtil.extractUsername(request.getHeader("authorization").substring(7));
+            //fetch user from user service
+            ResponseEntity<Map> res = restTemplate.getForEntity("http://user-service/user/single/" + username, Map.class);
+            //grpc
+            Integer id_raw = (Integer) res.getBody().get("id");
+            Long id = id_raw.longValue();
 
-        if(modelAndView!=null){
-            String resurs = modelAndView.getModel().get("nazivResursa").toString();
-            eventSubmission.submitEvent(id, eventSubmission.action(request.getMethod()), resurs);
-            System.out.println(resurs);
-        }
-        else{
-            if(response.getStatus() == 500){
-                eventSubmission.submitEvent(id, eventSubmission.action(request.getMethod()), "Greška!");
+            if(modelAndView!=null){
+                String resurs = modelAndView.getModel().get("nazivResursa").toString();
+                eventSubmission.submitEvent(id, eventSubmission.action(request.getMethod()), resurs);
+            }
+            else{
+                if(response.getStatus() == 500){
+                    eventSubmission.submitEvent(id, eventSubmission.action(request.getMethod()), "Greška!");
+                }
             }
         }
+
     }
 
 }

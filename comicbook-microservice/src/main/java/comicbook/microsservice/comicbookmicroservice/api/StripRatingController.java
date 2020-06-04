@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,8 +16,7 @@ import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.service.StripService;
 
-
-@RestController
+@Controller
 @CrossOrigin(origins = "http://localhost:3000")
 public class StripRatingController {
 
@@ -23,15 +24,20 @@ public class StripRatingController {
 	StripService stripService;
 	@Autowired
 	RestTemplate restTemplate;
+	private String jsonTemplate = "jsonTemplate";
 
 	@PutMapping(value = "/strip/update-rating")
-	public void azurirajStrip(@RequestBody StripRatingInfo stripRatingInfo) {
+	public String azurirajStrip(@RequestBody StripRatingInfo stripRatingInfo, Model model) {
+		model.addAttribute("nazivResursa", "Rating stripa - ažuriran.");
 		stripService.azurirajStrip(stripRatingInfo);
+		return jsonTemplate;
 	}
 
-	@GetMapping(value = "strip/komentari/{id}")
-	public ResponseEntity<Map<String, String>> komentariStripa(@PathVariable Long id) {
-		return stripService.komentariStripa(id);
+	@GetMapping(value = "/strip/komentari/{id}")
+	public String komentariStripa(@PathVariable Long id, Model model) {
+		model.addAttribute("komentari", stripService.komentariStripa(id));
+		model.addAttribute("nazivResursa", "Komentari na strip sa id="+id+".");
+		return jsonTemplate;
 	}
 
 }

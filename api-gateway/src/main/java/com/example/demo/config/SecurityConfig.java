@@ -37,7 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         // autorizacija
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/user/name/*").permitAll()
+                .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/user/name/*", "/strip/count", "/strip/brojNaStranici", "/strip/svi*").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/sign-in", "/user/sign-up", "/authenticate", "/loggedUser").permitAll()
 
                 .antMatchers(HttpMethod.GET,"/rating/**", "/user/*").hasRole("USER")
@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
 
                 .antMatchers(HttpMethod.GET, "/zanr/svi*", "/user/single/id/**", "/strip*",
-                        "/katalog/svi", "/strip/svi*", "/izdavac/svi*", "/autor/svi*", "/katalog/iz-kataloga/**", "/rating/komentari-stripa/**", "/strip/trazi-autor*", "/strip/trazi-zanr*",
+                        "/katalog/svi", "/izdavac/svi*", "/autor/svi*", "/katalog/iz-kataloga/**", "/rating/komentari-stripa/**", "/strip/trazi-autor*", "/strip/trazi-zanr*",
                         "/strip/trazi-izdavac*","/strip/trazi-naziv*").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.POST, "/strip/sviPoId").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.DELETE,"/katalog/brisanje-kataloga").hasAnyRole("USER", "ADMIN")

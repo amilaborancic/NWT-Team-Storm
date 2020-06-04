@@ -124,7 +124,9 @@ public class StripController {
     }
 
     @GetMapping(value="/count")
-    public @ResponseBody Long brojStripovaUBazi(){return stripService.brojStripovaUBazi();}
+    public @ResponseBody Long brojStripovaUBazi(){
+        return stripService.brojStripovaUBazi();
+    }
 
     @GetMapping(value="/brojNaStranici")
     public @ResponseBody int brojNaStranici(){return this.brojStripovaNaStranici;}
