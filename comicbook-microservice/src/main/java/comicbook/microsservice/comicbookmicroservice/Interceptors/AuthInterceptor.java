@@ -1,8 +1,4 @@
 package comicbook.microsservice.comicbookmicroservice.Interceptors;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.netflix.discovery.converters.Auto;
-import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
 import comicbook.microsservice.comicbookmicroservice.grpc.EventSubmission;
 import comicbook.microsservice.comicbookmicroservice.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +30,9 @@ public class AuthInterceptor implements HandlerInterceptor {
         Long id = id_raw.longValue();
 
         if(modelAndView!=null){
-            String resurs = ((TextNode) modelAndView.getModel().get("nazivResursa")).textValue();
+            String resurs = modelAndView.getModel().get("nazivResursa").toString();
             eventSubmission.submitEvent(id, eventSubmission.action(request.getMethod()), resurs);
+            System.out.println(resurs);
         }
         else{
             if(response.getStatus() == 500){

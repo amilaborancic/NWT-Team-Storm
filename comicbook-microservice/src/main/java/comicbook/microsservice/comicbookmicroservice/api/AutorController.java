@@ -15,9 +15,7 @@ public class AutorController {
 
     @Autowired
     AutorService autorService;
-
     private String jsonTemplate = "jsonTemplate";
-
     @Autowired
     RestTemplate restTemplate;
 
@@ -25,15 +23,14 @@ public class AutorController {
     public String sviAutori(Model model){
         ObjectNode obj = autorService.sviAutori();
         model.addAttribute("autori", obj.get("autori"));
-        model.addAttribute("nazivResursa", obj.get("nazivResursa"));
+        model.addAttribute("nazivResursa","Svi autori.");
         return jsonTemplate;
     }
 
     @PostMapping(value="/novi")
     public String dodajAutora(@RequestBody Autor autor, Model model){
-        ObjectNode obj = autorService.dodajAutora(autor);
-        model.addAttribute("id", obj.get("id"));
-        model.addAttribute("nazivResursa", obj.get("nazivResursa"));
+        model.addAttribute("id", autorService.dodajAutora(autor));
+        model.addAttribute("nazivResursa", "Novi autor.");
         return jsonTemplate;
     }
 }

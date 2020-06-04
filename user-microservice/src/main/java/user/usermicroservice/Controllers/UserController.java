@@ -37,9 +37,9 @@ public class UserController {
     PasswordEncoder passwordEncoder;
     @Autowired
     RoleRepository roleRepository;
-
     @Autowired
     JwtUtil jwt;
+
     @GetMapping("/{id}")
     public Optional<User> getUser(@PathVariable Long id, @RequestHeader Map<String, String> headers){
         isUserPriviledged(id, headers, "Nemate privilegiju za ovu akciju!");

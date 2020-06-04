@@ -40,16 +40,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/", "/user/svi",  "/user/single/**", "/user/naziv-role/**", "/user/name/*").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/sign-in", "/user/sign-up", "/authenticate", "/loggedUser").permitAll()
 
-                .antMatchers(HttpMethod.GET,"/rating/**","/strip/trazi-autor*","/strip/trazi-zanr*",
-                        "/strip/trazi-izdavac*","/strip/trazi-naziv*", "/user/*").hasRole("USER")
+                .antMatchers(HttpMethod.GET,"/rating/**", "/user/*").hasRole("USER")
                 .antMatchers(HttpMethod.POST, "/rating/dodaj-rating", "/strip/sviPoId", "/katalog/novi").hasRole("USER")
                 .antMatchers(HttpMethod.PUT,"/katalog/dodavanje-stripa", "/user/update-rating").hasRole("USER")
 
-                .antMatchers(HttpMethod.GET, "/zanr/svi*", "/strip/sviPoId", "/user/single/id/**", "/strip*",
-                        "/katalog/svi", "/strip/svi*", "/izdavac/svi*", "/autor/svi*", "/katalog/iz-kataloga/**", "/rating/komentari-stripa/**").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.GET, "/zanr/svi*", "/user/single/id/**", "/strip*",
+                        "/katalog/svi", "/strip/svi*", "/izdavac/svi*", "/autor/svi*", "/katalog/iz-kataloga/**", "/rating/komentari-stripa/**", "/strip/trazi-autor*", "/strip/trazi-zanr*",
+                        "/strip/trazi-izdavac*","/strip/trazi-naziv*").hasAnyRole("USER", "ADMIN")
+                .antMatchers(HttpMethod.POST, "/strip/sviPoId").hasAnyRole("USER", "ADMIN")
                 .antMatchers(HttpMethod.DELETE,"/katalog/brisanje-kataloga").hasAnyRole("USER", "ADMIN")
 
-                .antMatchers(HttpMethod.GET, "/strip/**", "/user/**").hasRole("ADMIN")
+                .antMatchers(HttpMethod.GET, "/strip/*", "/user/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST,"/katalog/**", "/strip/**", "/user/**", "/rating/**", "/autor/novi").hasRole("ADMIN")
                 .antMatchers(HttpMethod.DELETE, "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.PUT,"/katalog/**", "/strip/**", "/user/**", "/rating/**").hasRole("ADMIN")

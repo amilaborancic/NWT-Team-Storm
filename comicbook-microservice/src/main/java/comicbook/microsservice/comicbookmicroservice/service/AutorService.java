@@ -18,10 +18,6 @@ public class AutorService {
     @Autowired
     AutorRepository autorRepository;
 
-    @Autowired
-    private EventSubmission eventSubmission;
-    private Long idAdmin = 1000L;
-
     public ObjectNode sviAutori(){
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode res = mapper.createObjectNode();
@@ -35,25 +31,17 @@ public class AutorService {
             arrayNode.add(autorProperties);
         }
         res.putPOJO("autori", arrayNode);
-        res.put("nazivResursa", "Svi autori");
         return res;
     }
-    public ObjectNode dodajAutora(Autor autor){
+    public Long dodajAutora(Autor autor){
         //provjera da li su ime i prezime korektni
         if(autor.getIme().equals("") || autor.getIme() == null) {
-          //  eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Ime autora ne smije biti prazno!");
             throw new ApiRequestException("Ime autora ne smije biti prazno!");
         }
         if(autor.getPrezime().equals("") || autor.getPrezime() == null) {
-            eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Prezime autora ne smije biti prazno!");
             throw new ApiRequestException("Prezime autora ne smije biti prazno!");
         }
         autorRepository.save(autor);
-        eventSubmission.submitEvent(idAdmin, Events.ActionType.CREATE, "Novi autor, id: " + autor.getId());
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode objectNode1 = mapper.createObjectNode();
-        objectNode1.put("id", autor.getId().toString());
-        objectNode1.put("nazivResursa", "Novi autor, id: " + autor.getId().toString());
-        return objectNode1;
+        return autor.getId();
     }
 }
