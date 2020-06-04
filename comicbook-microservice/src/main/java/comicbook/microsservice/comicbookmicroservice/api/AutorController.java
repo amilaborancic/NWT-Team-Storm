@@ -19,6 +19,7 @@ public class AutorController {
     @Autowired
     RestTemplate restTemplate;
 
+    //svi autori
     @GetMapping(value="/svi")
     public String sviAutori(Model model){
         ObjectNode obj = autorService.sviAutori();
