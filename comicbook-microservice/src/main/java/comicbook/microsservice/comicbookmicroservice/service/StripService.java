@@ -2,8 +2,6 @@ package comicbook.microsservice.comicbookmicroservice.service;
 
 import comicbook.microsservice.comicbookmicroservice.DTO.StripRatingInfo;
 import comicbook.microsservice.comicbookmicroservice.exceptions.ApiRequestException;
-import comicbook.microsservice.comicbookmicroservice.grpc.EventSubmission;
-import comicbook.microsservice.comicbookmicroservice.grpc.Events;
 import comicbook.microsservice.comicbookmicroservice.model.Autor;
 import comicbook.microsservice.comicbookmicroservice.model.Strip;
 import comicbook.microsservice.comicbookmicroservice.repository.AutorRepository;
@@ -36,9 +34,6 @@ public class StripService {
     AutorRepository autorRepository;
     @Autowired
 	RestTemplate restTemplate;
-    @Autowired
-    EventSubmission eventSubmission;
-    private Long idLogovanogKorisnika = 500L;
 
     public List<Strip> sviStripovi(int brojStranice, int brojStripovaNaStranici){
         return stripRepository.findAll(PageRequest.of(brojStranice, brojStripovaNaStranici)).getContent();
@@ -67,15 +62,11 @@ public class StripService {
 
     public List<Strip> stripoviPoNazivu(String naziv, int brojStranice, int brojStripovaNaStranici){
         if(naziv == null) {
-            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Naziv mora biti poslan!");
             throw new ApiRequestException("Naziv mora biti poslan!");
         }
         if(naziv.length() < 3) {
-            eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Potrebna su barem tri slova u nazivu.");
             throw new ApiRequestException("Potrebna su barem tri slova u nazivu.");
         }
-        int brStr = brojStranice + 1;
-        eventSubmission.submitEvent(idLogovanogKorisnika, Events.ActionType.GET, "Svi stripovi sa kljucnom rjecju " + naziv + ", stranica " + brStr);
         return stripRepository.findByNazivContains(naziv, PageRequest.of(brojStranice, brojStripovaNaStranici));
     }
 

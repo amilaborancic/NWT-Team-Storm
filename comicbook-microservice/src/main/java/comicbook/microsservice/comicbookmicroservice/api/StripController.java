@@ -90,6 +90,7 @@ public class StripController {
         model.addAttribute("stripovi", stripService.stripoviPoNazivu(naziv, brojStranice, brojStripovaNaStranici));
         int brojStripova = stripService.brojStripovaPoNazivu(naziv).intValue();
         model.addAttribute("brojStranica", stripService.brojStranica(brojStripova, brojStripovaNaStranici));
+        model.addAttribute("nazivResursa", "Svi stripovi sa ključnom rječju " + naziv + ".");
         return jsonTemplate;
     }
 
