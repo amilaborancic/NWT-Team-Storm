@@ -67,9 +67,7 @@ function fetchNextPage(url, params, setSearchResults){
     authenticatedApi.get(url, {
         params: params
     }).then(res=>{
-        const stripovi = res.data.stripovi;
-        let results = stripovi.length === 0 ? "Nije pronađen nijedan strip." : stripovi;
-        setSearchResults(results);
+        setSearchResults(res.data.stripovi);
     }).catch(err=>{
         console.log(err);
     })

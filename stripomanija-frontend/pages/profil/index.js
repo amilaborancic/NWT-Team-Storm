@@ -2,7 +2,8 @@ import React, {useState, useEffect} from "react";
 import NavbarContainer from "../../components/NavbarContainer/NavbarContainer";
 import styles from "./index.module.css";
 import KatalogThumbnail from "../../components/KatalogThumbnail/KatalogThumbnail";
-import {authenticatedApi, catalogue} from "../../util/url";
+import {authenticatedApi} from "../../util/url";
+import {handleFieldChange} from "../index";
 import {routes} from "../../util/routes";
 import cx from "classnames";
 import GenericField from "../../components/FormFields/GenericField";
@@ -137,16 +138,6 @@ function fetchCatalogueList(setCatalogueList, setToast, setIsToastOpen){
             });
             setIsToastOpen(true);
         });
-}
-
-
-function handleFieldChange(e, catalogue, setCatalogue){
-    const {name, value} = e.target;
-    setCatalogue(prevState=>({
-            ...prevState,
-            [name]: value
-        })
-    )
 }
 
 function createNewCatalogue(newCatalogue, setIsOpen, setIsToastOpen, setCatalogue, setToast){

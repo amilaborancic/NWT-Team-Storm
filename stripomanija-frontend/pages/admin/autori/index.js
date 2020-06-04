@@ -11,8 +11,6 @@ import {routes} from "../../../util/routes";
 import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions";
 import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
 
-
-
 const Autori = ()=>{
     const [isOpen, setIsOpen] = useState(false);
     const [isToastOpen, setIsToastOpen] = useState(false);
@@ -94,7 +92,7 @@ const Body = ({authorList, setIsOpen, isOpen, newAuthor, setNewAuthor, setIsToas
 function fetchAuthors(setAuthors){
     authenticatedApi.get(routes.autor.path + routes.autor.svi.path)
         .then(res=>{
-            setAuthors(res.data);
+            setAuthors(res.data.autori);
         })
         .catch(err=>{console.log(err)})
 }

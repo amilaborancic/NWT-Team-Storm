@@ -91,7 +91,7 @@ const Body = ({publisherList, setIsOpen, isOpen, newPublisher, setNewPublisher, 
 function fetchPublishers(setPublisherList){
     authenticatedApi.get(routes.izdavac.path + routes.izdavac.svi.path)
         .then(res=>{
-            setPublisherList(res.data);
+            setPublisherList(res.data.izdavaci);
         })
         .catch(err=>{console.log(err)})
 }

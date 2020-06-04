@@ -89,7 +89,7 @@ const Body = ({genreList, setIsOpen, isOpen, newGenre, setNewGenre, setIsToastOp
 function fetchGenre(setGenreList){
     authenticatedApi.get(routes.zanr.path + routes.zanr.svi.path)
         .then(res=>{
-            setGenreList(res.data);
+            setGenreList(res.data.zanrovi);
         })
         .catch(err=>{console.log(err)})
 }

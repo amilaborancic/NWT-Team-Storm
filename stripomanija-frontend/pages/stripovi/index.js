@@ -398,14 +398,13 @@ function addComicToCatalogue(comic, catalogue, setIsModalOpen, setToast, setToas
                 type: "success",
                 message: "Uspješno ste dodali strip " + comic.naziv + " u katalog " + catalogue.naziv + "."
             });
-            console.log(res);
             setToastIsOpen(true);
             setIsModalOpen(false);
         })
         .catch(err=>{
             setToast({
                 type: "danger",
-                message: "Došlo je do greške!"
+                message: "Strip " + comic.naziv + " se već nalazi u katalogu " + catalogue.naziv + "!"
             });
             setToastIsOpen(true);
             setIsModalOpen(false);

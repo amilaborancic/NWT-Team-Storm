@@ -11,6 +11,7 @@ import {useWindowDimensions} from "../../../components/hooks/useWindowDimensions
 import NavbarContainer from "../../../components/NavbarContainer/NavbarContainer";
 import styles from "./index.module.css";
 import cx from "classnames";
+import {handleFieldChange} from "../../index";
 
 const fetchUrl = routes.strip.path + routes.strip.pretraga.svi.path;
 
@@ -32,7 +33,7 @@ const Stripovi = ()=>{
 
     useEffect(()=>{
         fetchItems(fetchUrl, params, setStripList, setTotalPages, setIsToastOpen, setToast);
-    }, []);
+    }, [stripList]);
 
     return(
         windowDimensions.width <= 749 ?
@@ -205,7 +206,6 @@ function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpe
     //send request
     authenticatedApi.post(routes.strip.path + routes.strip.novi.path, newComic)
         .then(res=>{
-            console.log(res);
             //close modal, show toast
             setIsOpen(false);
             setIsToastOpen(true);
@@ -240,21 +240,16 @@ function addNewComic(newComic, setNewComic, checkedAuthors, authorList, setIsOpe
 //fetch genre and publishers
 function fetchAdditionalResources(url, setArray){
     authenticatedApi.get(url).then(res=>{
-        setArray(res.data);
+        let results = res.data;
+        if(results.hasOwnProperty("izdavaci")) results = res.data.izdavaci;
+        else if(results.hasOwnProperty("autori")) results = res.data.autori;
+        else results = res.data.zanrovi;
+        setArray(results);
     }).catch(error=>{
         console.log(error);
     });
 }
 
-//field change function
-function handleFieldChange(e, field, setField){
-    const {name, value} = e.target;
-    setField(prevState=>({
-            ...prevState,
-            [name]: value
-        })
-    )
-}
 
 //fetch items
 function fetchItems(fetchUrl, params, setStripList, setNumberOfPages, setIsToastOpen, setToast){
