@@ -1,20 +1,21 @@
-# pull official base image
-FROM node:13.12.0-alpine
+FROM node:12
 
-# set working directory
-WORKDIR /stripomanija-frontend
+ENV PORT 3000
 
-# add `/app/node_modules/.bin` to $PATH
-ENV PATH /stripomanija-frontend/node_modules/.bin:$PATH
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# install app dependencies
-COPY package.json ./
-COPY package-lock.json ./
-RUN npm install --silent
-RUN npm install react-scripts@3.4.1 -g --silent
+# Installing dependencies
+COPY package*.json /usr/src/app/
+RUN npm install
 
-# add app
-COPY . ./
+# Copying source files
+COPY . /usr/src/app
 
-# start app
-CMD ["npm", "start"]
+# Building app
+RUN npm run build
+EXPOSE 3000
+
+# Running the app
+CMD "npm" "run" "dev"
