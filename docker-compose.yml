@@ -13,20 +13,35 @@ services:
       - 8761:8761
     networks:
       - stripomanija
-  api-gateway:
-    image: gateway-docker
-    container_name: gateway-docker
-    build:
-      context: ./api-gateway
-      dockerfile: Dockerfile
-    expose:
-      - 8086
-    ports:
-      - 8086:8086
-    restart: on-failure
-    depends_on:
-      - discovery
-      - user-service
+
+  #mysql konekcije
+  mysql:
+    image: mysql:8.0.2
+    container_name: mysql
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: user-service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - stripomanija
+  mysql-comicbook:
+    image: mysql:8.0.2
+    container_name: mysql-comicbook
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: stripovi
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - stripomanija
+  mysql-rating:
+    image: mysql:8.0.2
+    container_name: mysql-rating
+    environment:
+      MYSQL_ROOT_USER: root
+      MYSQL_DATABASE: rating-service
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+    networks:
+      - stripomanija
   user-service:
     image: user-docker
     container_name: user-docker
@@ -63,8 +78,8 @@ services:
     ports:
       - 8083:8083
     depends_on:
-      - discovery
       - mysql-comicbook
+      - discovery
     networks:
       - stripomanija
     environment:
@@ -72,6 +87,32 @@ services:
       SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-comicbook:3306/stripovi?useSSL=false&allowPublicKeyRetrieval=true'
       #eureka
       SPRING_APPLICATION_NAME: comicbook-service
+      SPRING_PROFILES_ACTIVE: enableEureka
+      EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
+  rating-service:
+    image: rating-service
+    container_name: rating-service
+    build:
+      context: ./rating-service
+      dockerfile: Dockerfile
+    restart: on-failure
+    expose:
+      - 8081
+    ports:
+      - 8081:8081
+    depends_on:
+      - mysql-rating
+      - discovery
+      - comicbook-service
+      - user-service
+    networks:
+      - stripomanija
+    environment:
+      #mysql konekcija
+      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-rating:3306/rating-service?useSSL=false&allowPublicKeyRetrieval=true'
+      #eureka
+      SPRING_APPLICATION_NAME: rating-service
       SPRING_PROFILES_ACTIVE: enableEureka
       EUREKA_INSTANCE_PREFER_IP_ADDRESS: "true"
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka/
@@ -90,20 +131,19 @@ services:
       - discovery
       - user-service
       - comicbook-service
-  rating-service:
-    image: rating-service
-    container_name: rating-service
+  api-gateway:
+    image: gateway-docker
+    container_name: gateway-docker
     build:
-      context: ./rating-service
+      context: ./api-gateway
       dockerfile: Dockerfile
-    restart: on-failure
     expose:
-      - 8081
+      - 8086
     ports:
-      - 8081:8081
+      - 8086:8086
+    restart: on-failure
     depends_on:
       - discovery
-      - comicbook-service
       - user-service
   system-events:
     image: events-docker
@@ -118,25 +158,6 @@ services:
       - 8084:8084
     depends_on:
       - discovery
-  #mysql konekcije
-  mysql:
-    image: mysql:8.0.2
-    container_name: mysql
-    environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_DATABASE: user-service
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    networks:
-      - stripomanija
-  mysql-comicbook:
-    image: mysql:8.0.2
-    container_name: mysql-comicbook
-    environment:
-      MYSQL_ROOT_USER: root
-      MYSQL_DATABASE: stripovi
-      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-    networks:
-      - stripomanija
 
 networks:
   stripomanija:
