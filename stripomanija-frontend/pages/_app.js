@@ -21,10 +21,10 @@ const MyApp = ({ Component, pageProps }) => {
         }
     });
     return (
-        <>
+        <AuthProvider>
             {isLoading && <PageLoader/>}
             <Component {...pageProps} />
-        </>
+        </AuthProvider>
     )
 }
 

@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
-import {navbarRoutes} from "./routes";
+import {routes} from "./routes";
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
@@ -22,13 +22,13 @@ function AuthProvider({ children }) {
         // Check that a new route is OK
         const handleRouteChange = url => {
             if(!token || url.substring(1, 6) === "admin" && role !== "ROLE_ADMIN"){
-                router.push(navbarRoutes.home.path);
+                router.push(routes.home.path);
             }
         }
 
         // Check that initial route is OK
         if(!token || pathname.substring(1, 6) === "admin" && role !== "ROLE_ADMIN"){
-            router.push(navbarRoutes.home.path);
+            router.push(routes.home.path);
         }
 
         // Monitor routes

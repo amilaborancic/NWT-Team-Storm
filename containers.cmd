@@ -1,15 +1,14 @@
-call docker system prune -a
 cd ./eureka
-call mvn clean install
+call mvn clean install -DskipTests
 cd ../user-service
 call mvn clean install -DskipTests
 cd ../api-gateway
 call mvn clean install -DskipTests
 cd ../comicbook-service
 call mvn clean install -DskipTests
-cd ../rating-service
-call mvn clean install -DskipTests
 cd ../catalogue-service
+call mvn clean install -DskipTests
+cd ../rating-service
 call mvn clean install -DskipTests
 cd ../system-events
 call mvn clean install -DskipTests

@@ -3,6 +3,16 @@ server:
 spring:
   application:
     name: api-gateway
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: THREAD
+          thread:
+            timeoutInMilliseconds: 100000
+ribbon:
+  ReadTimeout: 6000
 
 # zuul
 zuul:
@@ -59,6 +69,6 @@ eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
-    service-url:
+    serviceUrl:
       defaultZone:
-        ${EUREKA_URI:http://localhost:8761/eureka}
+        http://discovery:8761/eureka

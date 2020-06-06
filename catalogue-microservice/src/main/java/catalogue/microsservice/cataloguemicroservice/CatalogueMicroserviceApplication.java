@@ -61,8 +61,7 @@ class DemoCommandLineRunner implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 
-		//NE BRISATI OVO!!
-		//korisnike dobavljamo od user servisa
+		//dobavimo usere iz user servisa
 		String resourceURL = "http://user-service/user/svi";
 		ResponseEntity<String> response = restTemplate.getForEntity(resourceURL, String.class);
 		ObjectMapper mapper = new ObjectMapper();
@@ -71,50 +70,23 @@ class DemoCommandLineRunner implements CommandLineRunner {
 			Korisnik k = new Korisnik(korisnik.path("id").asLong());
 			korisnikRepozitorij.save(k);
 		});
-/*
-		Korisnik k1 = new Korisnik((long) 1);
-		Korisnik k2 = new Korisnik((long) 2);
-		Korisnik k3 = new Korisnik((long) 3);
-		Korisnik k4 = new Korisnik((long) 4);
-		korisnikRepozitorij.save(k1);
-		korisnikRepozitorij.save(k2);
-		korisnikRepozitorij.save(k3);
-		korisnikRepozitorij.save(k4);
 
-		Strip s1 = new Strip((long) 1);
-		Strip s2 = new Strip((long) 2);
-		Strip s3 = new Strip((long) 3);
-		Strip s4 = new Strip((long) 4);
-		Strip s5 = new Strip((long) 5);
-		Strip s6 = new Strip((long) 6);
-
-
-		stripRepozitorij.save(s1);
-		stripRepozitorij.save(s2);
-		stripRepozitorij.save(s3);
-		stripRepozitorij.save(s4);
-		stripRepozitorij.save(s5);
-		stripRepozitorij.save(s6);
-*/
-		/*stripove dobijamo iz strip servisa*/
-
-		String urlUkupnoStripova = "http://comicbook-service/strip/count";
-		String urlBrojNaStranici = "http://comicbook-service/strip/brojNaStranici";
+		//dobavimo stripove iz strip servisa
 		String urlStripoviNaStranici = "http://comicbook-service/strip/svi";
-		ResponseEntity<Long> responseBrojStripova = restTemplate.getForEntity(urlUkupnoStripova, Long.class);
-		ResponseEntity<Integer> responseBrojNaStranici = restTemplate.getForEntity(urlBrojNaStranici, int.class);
 		ObjectMapper mapperStripovi = new ObjectMapper();
-		Long brojStripova = mapperStripovi.readTree(String.valueOf(responseBrojStripova.getBody())).asLong();
-		Integer brojNaStranici = mapperStripovi.readTree(String.valueOf(responseBrojNaStranici.getBody())).asInt();
-		int brojStranica = (int) round((double)brojStripova/brojNaStranici + 0.5);
+		int brojStranica = 1;
+
 		int i=0;
 		while(i<brojStranica){
 			ResponseEntity<String> stripoviSaStranice = restTemplate.getForEntity(urlStripoviNaStranici + "?brojStranice="+i, String.class);
+			brojStranica = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("brojStranica").asInt();
 			JsonNode svi = mapperStripovi.readTree(stripoviSaStranice.getBody()).path("stripovi");
+			List<Strip> stripovi = new ArrayList<>();
 			svi.forEach(strip->{
 				Strip s = new Strip(strip.path("id").asLong());
-				stripRepozitorij.save(s);
+				stripovi.add(s);
 			});
+			stripRepozitorij.saveAll(stripovi);
 			i++;
 		}
 
