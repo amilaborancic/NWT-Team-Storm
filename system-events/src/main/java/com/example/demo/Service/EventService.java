@@ -1,25 +1,22 @@
 package com.example.demo.Service;
 
-import com.example.demo.DatabaseConnection;
 import com.example.demo.GRPC.Events;
 import com.example.demo.GRPC.Events.Request;
 import com.example.demo.GRPC.Events.Response;
 import com.example.demo.GRPC.actionGrpc.actionImplBase;
 import com.example.demo.Models.Event;
+import com.example.demo.Repository.GrpcRepository;
 import io.grpc.stub.StreamObserver;
 import org.lognet.springboot.grpc.GRpcService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.util.ArrayList;
 
 @Component
 @GRpcService
 public class EventService extends actionImplBase {
 
-    private DatabaseConnection connectionConfig = new DatabaseConnection();
+    @Autowired
+    GrpcRepository grpcRepository;
 
     @Override
     public void logAction(Request request, StreamObserver<Response> responseObserver) {
@@ -28,9 +25,7 @@ public class EventService extends actionImplBase {
         try {
             Event event = new Event(request.getTimestamp(), request.getIdKorisnik(), request.getNazivServisa(), request.getTipAkcijeValue(),request.getNazivResursa());
             //spasimo event u bazu
-            PreparedStatement preparedStatement = save(event);
-            preparedStatement.executeUpdate();
-
+            grpcRepository.save(event);
             response.setResponseContent("Spasen event").setResponseType(Events.ResponseType.SUCCESS);
         }
         catch (Exception e) {
@@ -43,28 +38,6 @@ public class EventService extends actionImplBase {
         responseObserver.onNext(response.build());
         responseObserver.onCompleted();
 
-    }
-
-    private PreparedStatement save(Event event) throws Exception {
-        String sql = "INSERT INTO event(timestamp, naziv_servisa, id_korisnik, tip_akcije, naziv_resursa) VALUES(?,?,?,?,?)";
-        ArrayList<String> connectionProps = connectionConfig.getConnectionInfo();
-
-        try{
-            Connection connection = DriverManager.getConnection(connectionProps.get(0), connectionProps.get(1), connectionProps.get(2));
-
-            PreparedStatement noviEvent = connection.prepareStatement(sql);
-
-            noviEvent.setString(1, event.getTimestamp());
-            noviEvent.setString(2, event.getNazivServisa());
-            noviEvent.setLong(3, event.getIdKorisnik());
-            noviEvent.setInt(4, event.getTipAkcije());
-            noviEvent.setString(5, event.getNazivResursa());
-
-            return noviEvent;
-        }
-        catch (Exception e) {
-            throw e;
-        }
     }
 
 }

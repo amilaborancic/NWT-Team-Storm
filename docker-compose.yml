@@ -25,7 +25,7 @@ services:
       - 15672:15672
     networks:
       - stripomanija
-    #mysql konekcije
+  #mysql konekcije
   mysql:
     image: mysql:8.0.2
     container_name: mysql
@@ -86,6 +86,8 @@ services:
     restart: on-failure
     links:
       - discovery:eureka-docker
+      - mysql:mysql
+      - rabbitmq:rabbitmq
     depends_on:
       - mysql
       - discovery
@@ -93,6 +95,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql:3306/user-service?useSSL=false&allowPublicKeyRetrieval=true'
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
   api-gateway:
     image: gateway-docker
     container_name: gateway-docker
@@ -126,7 +129,6 @@ services:
       - 8083:8083
     depends_on:
       - mysql-comicbook
-      - rabbitmq
       - discovery
     networks:
       - stripomanija
@@ -145,6 +147,12 @@ services:
       - 8082
     ports:
       - 8082:8082
+    links:
+      - mysql-catalogue:mysql-catalogue
+      - rabbitmq:rabbitmq
+      - discovery:eureka-docker
+      - user-service:user-docker
+      - comicbook-service:comicbook-docker
     depends_on:
       - mysql-catalogue
       - rabbitmq
@@ -157,6 +165,7 @@ services:
       #mysql konekcija
       SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-catalogue:3306/katalozi?useSSL=false&allowPublicKeyRetrieval=true'
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+      SPRING_RABBITMQ_HOST: rabbitmq
   rating-service:
     image: rating-service
     container_name: rating-service
@@ -179,6 +188,16 @@ services:
       #mysql konekcija
       SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-rating:3306/rating-service?useSSL=false&allowPublicKeyRetrieval=true'
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
+  stripomanija-frontend:
+    container_name: stripomanija-frontend
+    build:
+      context: ./stripomanija-frontend
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 3000:3000
+    networks:
+      - stripomanija
   system-events:
     image: events-docker
     container_name: events-docker
@@ -193,20 +212,11 @@ services:
       - mysql-events
       - discovery
     environment:
-      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-events:3306/system-events'
+      SPRING_DATASOURCE_URL: 'jdbc:mysql://mysql-events:3306/system-events?useSSL=false'
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka
     networks:
       - stripomanija
-  stripomanija-frontend:
-    container_name: stripomanija-frontend
-    build:
-      context: ./stripomanija-frontend
-      dockerfile: Dockerfile
-    restart: always
-    ports:
-      - 3000:3000
-    networks:
-      - stripomanija
+
 networks:
   stripomanija:
     driver: bridge

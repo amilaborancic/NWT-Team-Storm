@@ -1,11 +1,10 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useRouter } from 'next/router';
+import Router, { useRouter } from 'next/router';
 import {routes} from "./routes";
 const AuthContext = createContext();
 
 function AuthProvider({ children }) {
     const { pathname, events } = useRouter();
-    const router = useRouter();
     const [token, setToken] = useState();
     const [role, setRole] = useState();
 
@@ -13,7 +12,6 @@ function AuthProvider({ children }) {
         setToken(localStorage.getItem("jwt"));
         setRole(localStorage.getItem("role"));
     }
-
     useEffect(() => {
         getUserCredentials();
     }, [pathname]);
@@ -22,21 +20,21 @@ function AuthProvider({ children }) {
         // Check that a new route is OK
         const handleRouteChange = url => {
             if(!token || url.substring(1, 6) === "admin" && role !== "ROLE_ADMIN"){
-                router.push(routes.home.path);
+                Router.push(routes.home.path);
             }
         }
 
         // Check that initial route is OK
         if(!token || pathname.substring(1, 6) === "admin" && role !== "ROLE_ADMIN"){
-            router.push(routes.home.path);
+            Router.push(routes.home.path);
         }
 
         // Monitor routes
-        events.on('routeChangeStart', handleRouteChange)
+        Router.events.on('routeChangeStart', handleRouteChange)
         return () => {
-            events.off('routeChangeStart', handleRouteChange)
+            Router.events.off('routeChangeStart', handleRouteChange)
         }
-    }, [pathname])
+    }, [token])
 
     return (
         <AuthContext.Provider value={{ token, role }}>{children}</AuthContext.Provider>
